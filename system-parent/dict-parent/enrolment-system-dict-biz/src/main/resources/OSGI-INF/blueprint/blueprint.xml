@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns:jpa="http://aries.apache.org/xmlns/jpa/v2.0.0"
+           xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.2.0"
+           xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+    <jpa:enable/>
+    <tx:enable-annotations/>
+
+    <reference id="enrolmentDictBeanDao" interface="com.kalix.enrolment.system.dict.api.dao.IEnrolmentDictBeanDao"/>
+
+    <!--字典服务注册-->
+    <bean id="enrolmentDictBeanServiceImpl" class="com.kalix.enrolment.system.dict.biz.EnrolmentDictBeanServiceImpl">
+        <property name="dao" ref="enrolmentDictBeanDao"/>
+    </bean>
+    <service id="enrolmentDictBeanService" ref="enrolmentDictBeanServiceImpl"
+             interface="com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService"/>
+</blueprint>

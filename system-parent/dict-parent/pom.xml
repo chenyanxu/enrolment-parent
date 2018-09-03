@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>system-parent</artifactId>
+        <groupId>com.kalix.enrolment.system</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.kalix.enrolment.system.dict</groupId>
+    <artifactId>dict-parent</artifactId>
+    <name>Kalix Enrolment System Dict Parent</name>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>enrolment-system-dict-entities</module>
+        <module>enrolment-system-dict-api</module>
+        <module>enrolment-system-dict-dao</module>
+        <module>enrolment-system-dict-biz</module>
+        <module>enrolment-system-dict-rest</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.kalix.enrolment.system.dict</groupId>
+                <artifactId>enrolment-system-dict-entities</artifactId>
+                <version>${project.enrolment.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kalix.enrolment.system.dict</groupId>
+                <artifactId>enrolment-system-dict-api</artifactId>
+                <version>${project.enrolment.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
