@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns:jpa="http://aries.apache.org/xmlns/jpa/v2.0.0"
+           xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.2.0"
+           xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+    <jpa:enable/>
+    <tx:enable-annotations/>
+
+    <reference id="enrolmentAdmissionsBeanDao" interface="com.kalix.enrolment.admissions.api.dao.IEnrolmentAdmissionsBeanDao"/>
+
+    <!--录取管理-->
+    <bean id="enrolmentAdmissionsBeanServiceImpl" class="com.kalix.enrolment.admissions.biz.EnrolmentAdmissionsBeanServiceImpl">
+        <property name="dao" ref="enrolmentAdmissionsBeanDao"/>
+    </bean>
+    <service id="enrolmentAdmissionsBeanService" ref="enrolmentAdmissionsBeanServiceImpl"
+             interface="com.kalix.enrolment.admissions.api.biz.IEnrolmentAdmissionsBeanService"/>
+</blueprint>
