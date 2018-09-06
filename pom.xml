@@ -7,6 +7,7 @@
         <module>system-parent</module>
         <module>core-parent</module>
         <module>admissions-parent</module>
+        <module>question-parent</module>
     </modules>
     <parent>
         <groupId>com.kalix</groupId>
