@@ -22,10 +22,6 @@
             <groupId>com.kalix.enrolment.question</groupId>
             <artifactId>enrolment-question-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.kalix.enrolment.question</groupId>
-            <artifactId>enrolment-question-entities</artifactId>
-        </dependency>
     </dependencies>
 
 </project>

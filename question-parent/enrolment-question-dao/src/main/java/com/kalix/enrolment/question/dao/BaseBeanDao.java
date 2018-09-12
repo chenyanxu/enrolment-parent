@@ -1,4 +1,4 @@
-package com.kalix.enrolment.admissions.dao;
+package com.kalix.enrolment.question.dao;
 
 import com.kalix.framework.core.api.persistence.PersistentEntity;
 import com.kalix.framework.core.impl.dao.GenericDao;
@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 public abstract class BaseBeanDao<T extends PersistentEntity, PK extends Serializable> extends GenericDao<T, PK> {
     @Override
-    @PersistenceContext(unitName = "enrolment-admissions-unit")
+    @PersistenceContext(unitName = "enrolment-question-unit")
     public void setEntityManager(EntityManager em) {
         super.setEntityManager(em);
     }

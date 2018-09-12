@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>enrolment-question-entities</artifactId>
-    <name>Kalix Enrolment Question  Entities</name>
+    <name>Kalix Enrolment Question Entities</name>
     <packaging>bundle</packaging>
 
     <properties>

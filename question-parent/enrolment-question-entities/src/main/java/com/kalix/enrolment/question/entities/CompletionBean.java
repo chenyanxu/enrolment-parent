@@ -9,7 +9,6 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "enrolment_question_completion")
-@Inheritance(strategy = InheritanceType.JOINED)
 public class CompletionBean extends PersistentEntity {
     @Column(nullable = false)
     private Integer type; // 类别,字典（类别）
@@ -25,7 +24,6 @@ public class CompletionBean extends PersistentEntity {
     private String answerF; //答案F
     private String answerG; //答案G
     private String analysis; //试题解析
-
 
     public Integer getType() {
         return type;

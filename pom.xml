@@ -45,6 +45,11 @@
                 <artifactId>admin-core-api</artifactId>
                 <version>${project.admin.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.kalix.middleware.excel</groupId>
+                <artifactId>middleware-excel-api</artifactId>
+                <version>${project.middleware.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -61,6 +66,7 @@
             <groupId>com.kalix.admin.core</groupId>
             <artifactId>admin-core-api</artifactId>
         </dependency>
+
     </dependencies>
 
     <build>
