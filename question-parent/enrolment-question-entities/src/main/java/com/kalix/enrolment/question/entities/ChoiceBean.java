@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Table(name = "enrolment_question_choice")
 public class ChoiceBean extends BaseLogicDeleteEntity {
     @Column(nullable = false)
-    private Integer type; // 类别,字典（类别）
+    private String type; // 类别,字典（类别）
     @Lob
     @Column(nullable = false)
     private String stem;  // 题干
@@ -29,11 +29,11 @@ public class ChoiceBean extends BaseLogicDeleteEntity {
     private String answer; //正确选项
     private String analysis; //试题解析
 
-    public Integer getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(String type) {
         this.type = type;
     }
 
