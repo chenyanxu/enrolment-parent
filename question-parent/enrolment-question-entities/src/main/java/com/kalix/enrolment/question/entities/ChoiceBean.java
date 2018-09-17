@@ -14,20 +14,21 @@ import javax.persistence.Table;
 @Table(name = "enrolment_question_choice")
 public class ChoiceBean extends BaseLogicDeleteEntity {
     @Column(nullable = false)
-    private String type; // 类别,字典（类别）
+    private String type;      // 类别，字典[类别]
     @Lob
     @Column(nullable = false)
-    private String stem;  // 题干
+    private String stem;      // 题干
     @Column(nullable = false)
-    private String answerA; //选项A
-    private String answerB; //选项B
-    private String answerC; //选项C
-    private String answerD; //选项D
-    private String answerE; //选项E
-    private String answerF; //选项F
-    private String answerG; //选项G
-    private String answer; //正确选项
-    private String analysis; //试题解析
+    private String answerA;   // 选项A
+    private String answerB;   // 选项B
+    private String answerC;   // 选项C
+    private String answerD;   // 选项D
+    private String answerE;   // 选项E
+    private String answerF;   // 选项F
+    private String answerG;   // 选项G
+    private String answer;    // 正确选项
+    private String analysis;  // 试题解析
+    private String checkFlag; // 审核状态，字典[审核状态]
 
     public String getType() {
         return type;
@@ -115,5 +116,13 @@ public class ChoiceBean extends BaseLogicDeleteEntity {
 
     public void setAnalysis(String analysis) {
         this.analysis = analysis;
+    }
+
+    public String getCheckFlag() {
+        return checkFlag;
+    }
+
+    public void setCheckFlag(String checkFlag) {
+        this.checkFlag = checkFlag;
     }
 }
