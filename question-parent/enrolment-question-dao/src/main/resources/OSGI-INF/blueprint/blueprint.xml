@@ -13,6 +13,18 @@
     </bean>
     <service id="completionBeanDao" ref="completionBeanDaoImpl" interface="com.kalix.enrolment.question.api.dao.ICompletionBeanDao"/>
 
+    <!--选择题dao-->
+    <bean id="choiceBeanDaoImpl" class="com.kalix.enrolment.question.dao.ChoiceBeanDaoImpl">
+        <tx:transaction method="*" value="Required"/>
+    </bean>
+    <service id="choiceBeanDao" ref="choiceBeanDaoImpl" interface="com.kalix.enrolment.question.api.dao.IChoiceBeanDao"/>
+    <!--补全诗句题dao-->
+    <bean id="verseBeanDaoImpl" class="com.kalix.enrolment.question.dao.VerseBeanDaoImpl">
+        <tx:transaction method="*" value="Required"/>
+    </bean>
+    <service id="verseBeanDao" ref="verseBeanDaoImpl" interface="com.kalix.enrolment.question.api.dao.IVerseBeanDao"/>
+
+
     <!--<bean id="testBeanDaoImpl"-->
           <!--class="com.kalix.enrolment.question.dao.TestBeanDaoImpl"> &lt;!&ndash;init-method="init">&ndash;&gt;-->
         <!--<tx:transaction method="*" value="Required"/>-->

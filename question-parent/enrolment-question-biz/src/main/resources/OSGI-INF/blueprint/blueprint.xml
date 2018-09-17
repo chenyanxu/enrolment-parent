@@ -6,11 +6,23 @@
     <tx:enable-annotations/>
 
     <reference id="completionBeanDao" interface="com.kalix.enrolment.question.api.dao.ICompletionBeanDao"/>
+    <reference id="choiceBeanDao" interface="com.kalix.enrolment.question.api.dao.IChoiceBeanDao"/>
+    <reference id="verseBeanDao" interface="com.kalix.enrolment.question.api.dao.IVerseBeanDao"/>
 
     <!--管理-->
     <bean id="completionBeanServiceImpl" class="com.kalix.enrolment.question.biz.CompletionBeanServiceImpl">
         <property name="dao" ref="completionBeanDao"/>
     </bean>
+    <bean id="choiceBeanServiceImpl" class="com.kalix.enrolment.question.biz.ChoiceBeanServiceImpl">
+        <property name="dao" ref="choiceBeanDao"/>
+    </bean>
+    <bean id="verseBeanServiceImpl" class="com.kalix.enrolment.question.biz.VerseBeanServiceImpl">
+        <property name="dao" ref="verseBeanDao"/>
+    </bean>
     <service id="completionBeanService" ref="completionBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.ICompletionBeanService"/>
+    <service id="choiceBeanService" ref="choiceBeanServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.IChoiceBeanService"/>
+    <service id="verseBeanService" ref="verseBeanServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.IVerseBeanService"/>
 </blueprint>

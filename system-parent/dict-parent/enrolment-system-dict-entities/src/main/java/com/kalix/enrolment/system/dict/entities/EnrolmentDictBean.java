@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class EnrolmentDictBean extends PersistentEntity {
     private String label;    // 标签名
-    private Integer value;    // 数据值
+    private String value;    // 数据值
     private String type;    // 类型
     private String description;// 描述
 
@@ -24,11 +24,11 @@ public class EnrolmentDictBean extends PersistentEntity {
         this.label = label;
     }
 
-    public Integer getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(Integer value) {
+    public void setValue(String value) {
         this.value = value;
     }
 

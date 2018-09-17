@@ -5,6 +5,7 @@
 Bundle-Activator: ${bundle.namespace}.internal.InitActivator
 Import-Package: com.kalix.framework.core.api.biz,\
                 com.kalix.framework.core.api.persistence,\
+                com.kalix.framework.extend.api.entities,\
                 com.kalix.enrolment.question.entities,*
 Include-Resource: target/classes
 Bundle-Category: Kalix Enrolment Question
