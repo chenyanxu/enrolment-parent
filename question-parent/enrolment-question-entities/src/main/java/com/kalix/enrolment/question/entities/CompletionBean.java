@@ -1,10 +1,12 @@
 package com.kalix.enrolment.question.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kalix.framework.core.api.persistence.PersistentEntity;
 import com.kalix.framework.extend.api.entities.BaseLogicDeleteEntity;
 import com.kalix.middleware.excel.api.annotation.ExcelField;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by Administrator_ on 2018/9/6.
@@ -26,6 +28,11 @@ public class CompletionBean extends BaseLogicDeleteEntity {
     private String answerF; //答案F
     private String answerG; //答案G
     private String analysis; //试题解析
+    private String checkFlag; // 审核状态，字典[审核状态]
+    private Long checkerId;   // 审核员id
+    private String checker;   // 审核员
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date checkDate;   // 审核时间
 
 
     @ExcelField(title="类别", align=1, dictType="类别", sort=10)
@@ -107,5 +114,37 @@ public class CompletionBean extends BaseLogicDeleteEntity {
 
     public void setAnalysis(String analysis) {
         this.analysis = analysis;
+    }
+
+    public String getCheckFlag() {
+        return checkFlag;
+    }
+
+    public void setCheckFlag(String checkFlag) {
+        this.checkFlag = checkFlag;
+    }
+
+    public Long getCheckerId() {
+        return checkerId;
+    }
+
+    public void setCheckerId(Long checkerId) {
+        this.checkerId = checkerId;
+    }
+
+    public String getChecker() {
+        return checker;
+    }
+
+    public void setChecker(String checker) {
+        this.checker = checker;
+    }
+
+    public Date getCheckDate() {
+        return checkDate;
+    }
+
+    public void setCheckDate(Date checkDate) {
+        this.checkDate = checkDate;
     }
 }
