@@ -12,13 +12,19 @@
         <property name="beanName" value="com.kalix.enrolment.question.entities.CompletionBean"/>
         <property name="rests">
             <list>
-                <!--<bean class="com.kalix.framework.core.api.camel.CustomRest">
-                    <property name="path" value="/teachers/loginname/{loginname}"/>
-                    <property name="getDescription" value="查询登录名是否存在"/>
-                    <property name="getParams" value="loginname:path:string::登录名"/>
-                    <property name="getOutType" value="java.lang.Boolean"/>
-                    <property name="getToUri" value="bean:teacherService?method=existTeacherBeanByLoginName(${header.loginname})"/>
-                </bean>-->
+                <bean class="com.kalix.framework.core.api.camel.CustomRest">
+                    <property name="path" value="/completion/logicDelete"/>
+                    <property name="deleteDescription" value="逻辑删除"/>
+                    <property name="inType" value="com.kalix.enrolment.question.entities.ChoiceBean"/>
+                    <property name="deleteOutType" value="com.kalix.framework.core.api.persistence.JsonStatus"/>
+                    <property name="deleteToUri" value="bean:choiceService?method=logicDeleteEntity(${body})"/>
+                </bean>
+                <bean class="com.kalix.framework.core.api.camel.CustomRest">
+                    <property name="path" value="/completion/batchLogicDelete"/>
+                    <property name="deleteDescription" value="批量逻辑删除"/>
+                    <property name="deleteOutType" value="com.kalix.framework.core.api.persistence.JsonStatus"/>
+                    <property name="deleteToUri" value="bean:choiceService?method=batchLogicDeleteEntity(${header.entityIds},${header.reason}})"/>
+                </bean>
             </list>
         </property>
     </bean>
