@@ -1,6 +1,8 @@
 package com.kalix.enrolment.question.entities;
 
 import com.kalix.framework.core.api.persistence.PersistentEntity;
+import com.kalix.framework.extend.api.entities.BaseLogicDeleteEntity;
+import com.kalix.middleware.excel.api.annotation.ExcelField;
 
 import javax.persistence.*;
 
@@ -9,9 +11,9 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "enrolment_question_completion")
-public class CompletionBean extends PersistentEntity {
+public class CompletionBean extends BaseLogicDeleteEntity {
     @Column(nullable = false)
-    private Integer type; // 类别,字典（类别）
+    private String type; // 类别,字典（类别）
     @Lob
     @Column(nullable = false)
     private String stem;  // 题干
@@ -25,22 +27,24 @@ public class CompletionBean extends PersistentEntity {
     private String answerG; //答案G
     private String analysis; //试题解析
 
-    public Integer getType() {
+
+    @ExcelField(title="类别", align=1, dictType="类别", sort=10)
+    public String getType() {
         return type;
     }
-
-    public void setType(Integer type) {
+    public void setType(String type) {
         this.type = type;
     }
 
+    @ExcelField(title="题干", align=2, sort=20)
     public String getStem() {
         return stem;
     }
-
     public void setStem(String stem) {
         this.stem = stem;
     }
 
+    @ExcelField(title="答案A", align=2, sort=20)
     public String getAnswerA() {
         return answerA;
     }

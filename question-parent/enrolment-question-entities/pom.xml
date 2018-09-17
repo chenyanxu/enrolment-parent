@@ -25,5 +25,10 @@
             </plugin>
         </plugins>
     </build>
-
+    <dependencies>
+        <dependency>
+            <groupId>com.kalix.middleware.excel</groupId>
+            <artifactId>middleware-excel-api</artifactId>
+        </dependency>
+    </dependencies>
 </project>
