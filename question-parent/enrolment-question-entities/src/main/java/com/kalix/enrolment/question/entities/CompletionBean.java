@@ -1,6 +1,7 @@
 package com.kalix.enrolment.question.entities;
 
 import com.kalix.framework.core.api.persistence.PersistentEntity;
+import com.kalix.middleware.excel.api.annotation.ExcelField;
 
 import javax.persistence.*;
 
@@ -25,22 +26,22 @@ public class CompletionBean extends PersistentEntity {
     private String answerG; //答案G
     private String analysis; //试题解析
 
+    @ExcelField(title="类别", align=1, dictType="类别", sort=10)
     public Integer getType() {
         return type;
     }
-
     public void setType(Integer type) {
         this.type = type;
     }
-
+    @ExcelField(title="题干", align=2, sort=20)
     public String getStem() {
         return stem;
     }
-
     public void setStem(String stem) {
         this.stem = stem;
     }
 
+    @ExcelField(title="答案A", align=2, sort=20)
     public String getAnswerA() {
         return answerA;
     }

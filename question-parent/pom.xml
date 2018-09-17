@@ -33,6 +33,11 @@
                 <artifactId>enrolment-question-api</artifactId>
                 <version>${project.enrolment.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.kalix.middleware.excel</groupId>
+                <artifactId>middleware-excel-api</artifactId>
+                <version>${project.middleware.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
