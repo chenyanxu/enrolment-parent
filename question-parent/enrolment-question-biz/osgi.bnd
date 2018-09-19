@@ -13,10 +13,13 @@ Import-Package: com.kalix.framework.core.util,\
                 org.apache.commons.codec.binary,\
                 com.kalix.framework.core.api.osgi,\
                 com.kalix.framework.core.api.persistence,\
+                com.kalix.framework.core.api.dao,\
+                com.kalix.framework.core.api.biz,\
                 com.kalix.framework.extend.api.entities,\
                 com.kalix.framework.core.impl.biz,\
                 com.kalix.framework.extend.impl.biz,\
                 com.kalix.enrolment.question.api.dao,\
                 com.kalix.enrolment.question.api.biz,\
                 com.kalix.enrolment.question.entities,\
+                com.kalix.enrolment.question.dto.model,\
                 org.osgi.service.http
