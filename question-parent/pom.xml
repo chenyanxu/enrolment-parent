@@ -17,6 +17,7 @@
         <module>enrolment-question-entities</module>
         <module>enrolment-question-api</module>
         <module>enrolment-question-dao</module>
+        <module>enrolment-question-dto</module>
         <module>enrolment-question-biz</module>
         <module>enrolment-question-rest</module>
     </modules>
