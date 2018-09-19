@@ -8,5 +8,4 @@ import com.kalix.framework.extend.api.biz.ILogicDeleteService;
  */
 public interface ICompletionBeanService extends ILogicDeleteService<CompletionBean> {
 
-    public void aaa();
 }
