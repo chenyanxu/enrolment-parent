@@ -11,15 +11,4 @@ import org.xm.Similarity;
  */
 public class CompletionBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<ICompletionBeanDao, CompletionBean> implements ICompletionBeanService {
 
-    @Override
-    public void aaa() {
-        //double result = Similarity.cilinSimilarity("教师", "教授");
-        double result = 123;
-        System.out.println(result);
-    }
-
-    public static void main(String[] args) {
-        double result = Similarity.cilinSimilarity("教师", "教授");
-        System.out.println(result);
-    }
 }
