@@ -22,6 +22,12 @@
             <groupId>com.kalix.enrolment.question</groupId>
             <artifactId>enrolment-question-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.xml.similarity</groupId>
+            <artifactId>similarity</artifactId>
+            <version>1.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/similarity-1.1.jar</systemPath>
+        </dependency>
     </dependencies>
-
 </project>

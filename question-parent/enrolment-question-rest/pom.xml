@@ -16,5 +16,4 @@
     <properties>
         <bundle.symbolicName>com.kalix.enrolment.question.rest</bundle.symbolicName>
     </properties>
-
 </project>

@@ -17,13 +17,17 @@
                     <property name="deleteDescription" value="逻辑删除"/>
                     <property name="inType" value="com.kalix.enrolment.question.entities.ChoiceBean"/>
                     <property name="deleteOutType" value="com.kalix.framework.core.api.persistence.JsonStatus"/>
-                    <property name="deleteToUri" value="bean:choiceService?method=logicDeleteEntity(${body})"/>
+                    <property name="deleteToUri" value="bean:completionService?method=logicDeleteEntity(${body})"/>
                 </bean>
                 <bean class="com.kalix.framework.core.api.camel.CustomRest">
                     <property name="path" value="/completion/batchLogicDelete"/>
                     <property name="deleteDescription" value="批量逻辑删除"/>
                     <property name="deleteOutType" value="com.kalix.framework.core.api.persistence.JsonStatus"/>
-                    <property name="deleteToUri" value="bean:choiceService?method=batchLogicDeleteEntity(${header.entityIds},${header.reason}})"/>
+                    <property name="deleteToUri" value="bean:completionService?method=batchLogicDeleteEntity(${header.entityIds},${header.reason}})"/>
+                </bean>
+                <bean class="com.kalix.framework.core.api.camel.CustomRest">
+                    <property name="path" value="/completions/abc"/>
+                    <property name="getToUri" value="bean:completionService?method=aaa"/>
                 </bean>
             </list>
         </property>
