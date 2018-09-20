@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+       http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+    <reference id="choiceService" interface="com.kalix.enrolment.question.api.biz.IChoiceBeanService"/>
+
+    <camelContext id="choiceCamel" xmlns="http://camel.apache.org/schema/blueprint">
+
+        <restConfiguration component="servlet" bindingMode="json">
+            <dataFormatProperty key="prettyPrint" value="${rest.pretty}"/>
+        </restConfiguration>
+
+        <rest path="/choices" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>choice rest service</description>
+
+            <!-- this is a rest GET to find all choices -->
+            <get id="route-getAllChoice">
+                <description>Find all choices</description>
+                <to uri="bean:choiceService?method=getAllEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+            </get>
+
+            <!-- this is a rest POST to create an choice -->
+            <post id="route-addChoice" type="com.kalix.enrolment.question.entities.ChoiceBean"
+                  outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Create a choice</description>
+                <to uri="bean:choiceService?method=saveEntity"/>
+            </post>
+        </rest>
+
+        <rest path="/choices/{id}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <!-- this is a rest GET to view an choice by the given id -->
+            <get id="route-getChoice">
+                <description>Find choice by id</description>
+                <to uri="bean:choiceService?method=getEntity(${header.id})"/>
+            </get>
+            <put id="route-update-Choice" type="com.kalix.enrolment.question.entities.ChoiceBean"
+                 outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Updates a Choice</description>
+                <to uri="bean:choiceService?method=updateEntity"/>
+            </put>
+            <!-- this is a rest DELETE to delete an choice -->
+            <!--<delete id="route-deleteChoice" outType="com.kalix.framework.core.api.persistence.JsonStatus">-->
+                <!--<description>Delete a choice</description>-->
+                <!--<to uri="bean:choiceService?method=deleteEntity(${header.id})"/>-->
+            <!--</delete>-->
+        </rest>
+
+        <rest path="/choices/delete/logicDelete" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <delete id="route-logicDeleteChoice" type="com.kalix.enrolment.question.entities.ChoiceBean"
+                    outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Logic Delete a choice</description>
+                <to uri="bean:choiceService?method=logicDeleteEntity(${body})"/>
+            </delete>
+        </rest>
+
+        <rest path="/choices/delete/batchLogicDelete" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <delete id="route-batchLogicDeleteChoice" outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Batch Logic Delete choices</description>
+                <to uri="bean:choiceService?method=batchLogicDeleteEntity(${header.entityIds},${header.reason})"/>
+            </delete>
+        </rest>
+    </camelContext>
+</blueprint>
