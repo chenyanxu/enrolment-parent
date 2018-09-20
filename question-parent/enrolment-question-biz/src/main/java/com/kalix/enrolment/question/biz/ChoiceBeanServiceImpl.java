@@ -15,7 +15,7 @@ public class ChoiceBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<ICho
     @Override
     public JsonData getAllEntityByQuery(Integer page, Integer limit, String jsonStr, String sort) {
         if (StringUtils.isEmpty(sort)) {
-            sort = "[{'property': 'delFlag', 'direction': 'ASC'}]";
+            sort = "[{'property': 'delFlag', 'direction': 'ASC'},{'property': 'updateDate', 'direction': 'DESC'}]";
         }
         return super.getAllEntityByQuery(page, limit, jsonStr, sort);
     }
