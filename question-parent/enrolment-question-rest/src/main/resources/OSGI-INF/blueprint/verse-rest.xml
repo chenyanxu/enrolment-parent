@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+       http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+    <reference id="verseService" interface="com.kalix.enrolment.question.api.biz.IVerseBeanService"/>
+
+    <camelContext id="verseCamel" xmlns="http://camel.apache.org/schema/blueprint">
+
+        <restConfiguration component="servlet" bindingMode="json">
+            <dataFormatProperty key="prettyPrint" value="${rest.pretty}"/>
+        </restConfiguration>
+
+        <rest path="/verses" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>verse rest service</description>
+
+            <!-- this is a rest GET to find all verses -->
+            <get id="route-getAllVerse">
+                <description>Find all verses</description>
+                <to uri="bean:verseService?method=getAllEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+            </get>
+
+            <!-- this is a rest POST to create a verse -->
+            <post id="route-addVerse" type="com.kalix.enrolment.question.entities.VerseBean"
+                  outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Create a verse</description>
+                <to uri="bean:verseService?method=saveEntity"/>
+            </post>
+        </rest>
+
+        <rest path="/verses/{id}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <!-- this is a rest GET to view a verse by the given id -->
+            <get id="route-getVerse">
+                <description>Find verse by id</description>
+                <to uri="bean:verseService?method=getEntity(${header.id})"/>
+            </get>
+            <put id="route-update-Verse" type="com.kalix.enrolment.question.entities.VerseBean"
+                 outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Updates a Verse</description>
+                <to uri="bean:verseService?method=updateEntity"/>
+            </put>
+            <!-- this is a rest DELETE to delete a verse -->
+            <!--<delete id="route-deleteVerse" outType="com.kalix.framework.core.api.persistence.JsonStatus">-->
+                <!--<description>Delete a verse</description>-->
+                <!--<to uri="bean:verseService?method=deleteEntity(${header.id})"/>-->
+            <!--</delete>-->
+        </rest>
+
+        <rest path="/verses/delete/logicDelete" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <delete id="route-logicDeleteVerse" type="com.kalix.enrolment.question.entities.VerseBean"
+                    outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Logic Delete a verse</description>
+                <to uri="bean:verseService?method=logicDeleteEntity(${body})"/>
+            </delete>
+        </rest>
+
+        <rest path="/verses/delete/batchLogicDelete" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <delete id="route-batchLogicDeleteVerse" outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Batch Logic Delete verses</description>
+                <to uri="bean:verseService?method=batchLogicDeleteEntity(${header.entityIds},${header.reason})"/>
+            </delete>
+        </rest>
+    </camelContext>
+</blueprint>

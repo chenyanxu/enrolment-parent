@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+       http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+    <reference id="completionService" interface="com.kalix.enrolment.question.api.biz.ICompletionBeanService"/>
+
+    <camelContext id="completionCamel" xmlns="http://camel.apache.org/schema/blueprint">
+
+        <restConfiguration component="servlet" bindingMode="json">
+            <dataFormatProperty key="prettyPrint" value="${rest.pretty}"/>
+        </restConfiguration>
+
+        <rest path="/completions" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>completion rest service</description>
+
+            <!-- this is a rest GET to find all completions -->
+            <get id="route-getAllCompletion">
+                <description>Find all completions</description>
+                <to uri="bean:completionService?method=getAllEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+            </get>
+
+            <!-- this is a rest POST to create a completion -->
+            <post id="route-addCompletion" type="com.kalix.enrolment.question.entities.CompletionBean"
+                  outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Create a completion</description>
+                <to uri="bean:completionService?method=saveEntity"/>
+            </post>
+        </rest>
+
+        <rest path="/completions/{id}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <!-- this is a rest GET to view a completion by the given id -->
+            <get id="route-getCompletion">
+                <description>Find completion by id</description>
+                <to uri="bean:completionService?method=getEntity(${header.id})"/>
+            </get>
+            <put id="route-update-Completion" type="com.kalix.enrolment.question.entities.CompletionBean"
+                 outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Updates a Completion</description>
+                <to uri="bean:completionService?method=updateEntity"/>
+            </put>
+            <!-- this is a rest DELETE to delete a completion -->
+            <!--<delete id="route-deleteCompletion" outType="com.kalix.framework.core.api.persistence.JsonStatus">-->
+                <!--<description>Delete a completion</description>-->
+                <!--<to uri="bean:completionService?method=deleteEntity(${header.id})"/>-->
+            <!--</delete>-->
+        </rest>
+
+        <rest path="/completions/delete/logicDelete" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <delete id="route-logicDeleteCompletion" type="com.kalix.enrolment.question.entities.CompletionBean"
+                    outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Logic Delete a completion</description>
+                <to uri="bean:completionService?method=logicDeleteEntity(${body})"/>
+            </delete>
+        </rest>
+
+        <rest path="/completions/delete/batchLogicDelete" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <delete id="route-batchLogicDeleteCompletion" outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Batch Logic Delete completions</description>
+                <to uri="bean:completionService?method=batchLogicDeleteEntity(${header.entityIds},${header.reason})"/>
+            </delete>
+        </rest>
+    </camelContext>
+</blueprint>
