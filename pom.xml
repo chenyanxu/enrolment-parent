@@ -41,6 +41,11 @@
                 <version>${project.framework.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.kalix.framework.core</groupId>
+                <artifactId>framework-core-util</artifactId>
+                <version>${project.framework.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.kalix.framework.extend</groupId>
                 <artifactId>framework-extend-api</artifactId>
                 <version>${project.framework.version}</version>
