@@ -17,25 +17,25 @@ import java.util.Date;
 @Table(name = "enrolment_question_choice")
 public class ChoiceBean extends BaseLogicDeleteEntity {
     @Column(nullable = false)
-    private String type;      // 类别，字典[类别]
+    private String type;            // 类别，字典[类别]
     @Lob
     @Column(nullable = false)
-    private String stem;      // 题干
+    private String stem;            // 题干
     @Column(nullable = false)
-    private String answerA;   // 选项A
-    private String answerB;   // 选项B
-    private String answerC;   // 选项C
-    private String answerD;   // 选项D
-    private String answerE;   // 选项E
-    private String answerF;   // 选项F
-    private String answerG;   // 选项G
-    private String answer;    // 正确选项
-    private String analysis;  // 试题解析
-    private String checkFlag; // 审核状态，字典[审核状态]
-    private Long checkerId;   // 审核员id
-    private String checker;   // 审核员
+    private String answerA;         // 选项A
+    private String answerB;         // 选项B
+    private String answerC;         // 选项C
+    private String answerD;         // 选项D
+    private String answerE;         // 选项E
+    private String answerF;         // 选项F
+    private String answerG;         // 选项G
+    private String answer;          // 正确选项
+    private String analysis;        // 试题解析
+    private String checkFlag = "0"; // 审核状态，字典[审核状态]
+    private Long checkerId;         // 审核员id
+    private String checker;         // 审核员
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date checkDate;   // 审核时间
+    private Date checkDate;         // 审核时间
 
     @ExcelField(title="类别", align=1, dictType="类别", sort=10)
     public String getType() {
