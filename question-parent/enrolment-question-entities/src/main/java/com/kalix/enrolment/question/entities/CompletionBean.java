@@ -60,7 +60,7 @@ public class CompletionBean extends BaseLogicDeleteEntity {
         this.stem = stem;
     }
 
-    @ExcelField(title="答案A", align=2, sort=20)
+    @ExcelField(title="空格A答案", align=2, sort=30)
     public String getAnswerA() {
         return answerA;
     }
@@ -69,6 +69,7 @@ public class CompletionBean extends BaseLogicDeleteEntity {
         this.answerA = answerA;
     }
 
+    @ExcelField(title="空格B答案", align=2, sort=40)
     public String getAnswerB() {
         return answerB;
     }
@@ -77,6 +78,7 @@ public class CompletionBean extends BaseLogicDeleteEntity {
         this.answerB = answerB;
     }
 
+    @ExcelField(title="空格C答案", align=2, sort=50)
     public String getAnswerC() {
         return answerC;
     }
@@ -85,6 +87,7 @@ public class CompletionBean extends BaseLogicDeleteEntity {
         this.answerC = answerC;
     }
 
+    @ExcelField(title="空格D答案", align=2, sort=60)
     public String getAnswerD() {
         return answerD;
     }
@@ -93,6 +96,7 @@ public class CompletionBean extends BaseLogicDeleteEntity {
         this.answerD = answerD;
     }
 
+    @ExcelField(title="空格E答案", align=2, sort=70)
     public String getAnswerE() {
         return answerE;
     }
@@ -101,6 +105,7 @@ public class CompletionBean extends BaseLogicDeleteEntity {
         this.answerE = answerE;
     }
 
+    @ExcelField(title="空格F答案", align=2, sort=80)
     public String getAnswerF() {
         return answerF;
     }
@@ -109,6 +114,7 @@ public class CompletionBean extends BaseLogicDeleteEntity {
         this.answerF = answerF;
     }
 
+    @ExcelField(title="空格G答案", align=2, sort=90)
     public String getAnswerG() {
         return answerG;
     }
@@ -117,6 +123,7 @@ public class CompletionBean extends BaseLogicDeleteEntity {
         this.answerG = answerG;
     }
 
+    @ExcelField(title="试题解析", align=2, sort=100)
     public String getAnalysis() {
         return analysis;
     }
