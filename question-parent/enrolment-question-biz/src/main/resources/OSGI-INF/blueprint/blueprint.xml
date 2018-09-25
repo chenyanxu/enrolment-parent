@@ -8,6 +8,7 @@
     <reference id="completionBeanDao" interface="com.kalix.enrolment.question.api.dao.ICompletionBeanDao"/>
     <reference id="choiceBeanDao" interface="com.kalix.enrolment.question.api.dao.IChoiceBeanDao"/>
     <reference id="verseBeanDao" interface="com.kalix.enrolment.question.api.dao.IVerseBeanDao"/>
+    <reference id="shiroService" interface="com.kalix.framework.core.api.security.IShiroService"/>
 
     <!--管理-->
     <bean id="completionBeanServiceImpl" class="com.kalix.enrolment.question.biz.CompletionBeanServiceImpl">
@@ -19,10 +20,19 @@
     <bean id="verseBeanServiceImpl" class="com.kalix.enrolment.question.biz.VerseBeanServiceImpl">
         <property name="dao" ref="verseBeanDao"/>
     </bean>
+    <bean id="repeatedDtoServiceImpl" class="com.kalix.enrolment.question.biz.RepeatedDtoServiceImpl">
+        <property name="verseBeanDao" ref="verseBeanDao"/>
+        <property name="choiceBeanDao" ref="choiceBeanDao"/>
+        <property name="completionBeanDao" ref="completionBeanDao"/>
+        <property name="shiroService" ref="shiroService"/>
+
+    </bean>
     <service id="completionBeanService" ref="completionBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.ICompletionBeanService"/>
     <service id="choiceBeanService" ref="choiceBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IChoiceBeanService"/>
     <service id="verseBeanService" ref="verseBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IVerseBeanService"/>
+    <service id="repeatedDtoService" ref="repeatedDtoServiceImpl"
+        interface="com.kalix.enrolment.question.api.biz.IRepeatedBeanService"/>
 </blueprint>

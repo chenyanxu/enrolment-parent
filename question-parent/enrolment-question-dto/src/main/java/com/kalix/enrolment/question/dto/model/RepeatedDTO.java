@@ -7,15 +7,25 @@ import com.kalix.framework.core.api.web.model.BaseDTO;
  */
 public class RepeatedDTO extends BaseDTO {
 
-    private Integer questionId;// 试题id
+    private Long questionId;// 试题id
     private String stem; //题干
     private String similarity ; //相似度
+    private String questionType; //题型
 
-    public Integer getQuestionId() {
+
+    public String getQuestionType() {
+        return questionType;
+    }
+
+    public void setQuestionType(String questionType) {
+        this.questionType = questionType;
+    }
+
+    public Long getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(Integer questionId) {
+    public void setQuestionId(Long questionId) {
         this.questionId = questionId;
     }
 

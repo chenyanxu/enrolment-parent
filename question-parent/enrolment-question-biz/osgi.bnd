@@ -12,6 +12,8 @@ Import-Package: com.kalix.framework.core.util,\
                 org.osgi.service.blueprint,\
                 org.apache.commons.codec.binary,\
                 com.kalix.framework.core.api.osgi,\
+                com.kalix.framework.core.api.security,\
+                org.xml.sax,\
                 com.kalix.framework.core.api.persistence,\
                 com.kalix.framework.core.api.dao,\
                 com.kalix.framework.core.api.biz,\
@@ -22,4 +24,5 @@ Import-Package: com.kalix.framework.core.util,\
                 com.kalix.enrolment.question.api.biz,\
                 com.kalix.enrolment.question.entities,\
                 com.kalix.enrolment.question.dto.model,\
+                org.apache.commons.lang,\
                 org.osgi.service.http
