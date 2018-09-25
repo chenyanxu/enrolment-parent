@@ -1,11 +1,13 @@
 package com.kalix.enrolment.question.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kalix.framework.core.api.persistence.PersistentEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * Created by zangyanming on 2018/9/13.
@@ -27,6 +29,54 @@ public class VerseBean extends PersistentEntity {
     private String answerF; //空格F答案
     private String answerG; //空格G答案
     private String analysis; //试题解析
+    private String checkFlag = "0"; // 审核状态，字典[审核状态]
+    private Long checkerId;         // 审核员id
+    private String checker;         // 审核员
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date checkDate;         // 审核时间
+
+
+    private String repeatedFlag="0";
+
+    public String getCheckFlag() {
+        return checkFlag;
+    }
+
+    public void setCheckFlag(String checkFlag) {
+        this.checkFlag = checkFlag;
+    }
+
+    public Long getCheckerId() {
+        return checkerId;
+    }
+
+    public void setCheckerId(Long checkerId) {
+        this.checkerId = checkerId;
+    }
+
+    public String getChecker() {
+        return checker;
+    }
+
+    public void setChecker(String checker) {
+        this.checker = checker;
+    }
+
+    public Date getCheckDate() {
+        return checkDate;
+    }
+
+    public void setCheckDate(Date checkDate) {
+        this.checkDate = checkDate;
+    }
+
+    public String getRepeatedFlag() {
+        return repeatedFlag;
+    }
+
+    public void setRepeatedFlag(String repeatedFlag) {
+        this.repeatedFlag = repeatedFlag;
+    }
 
     public Integer getType() {
         return type;

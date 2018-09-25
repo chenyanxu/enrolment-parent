@@ -37,6 +37,16 @@ public class ChoiceBean extends BaseLogicDeleteEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date checkDate;         // 审核时间
 
+    private String repeatedFlag="0";
+
+    public String getRepeatedFlag() {
+        return repeatedFlag;
+    }
+
+    public void setRepeatedFlag(String repeatedFlag) {
+        this.repeatedFlag = repeatedFlag;
+    }
+
     @ExcelField(title="类别", align=1, dictType="类别", sort=10)
     public String getType() {
         return type;
