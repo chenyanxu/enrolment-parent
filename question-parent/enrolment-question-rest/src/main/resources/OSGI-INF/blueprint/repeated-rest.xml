@@ -20,10 +20,11 @@
         <rest path="/showRepeate" consumes="application/json;charset=utf-8" produces="application/json">
             <description>audit config rest service</description>
             <!-- this is a rest GET to find all audit -->
-            <get id="route-getRepeateConfig" outType="com.kalix.framework.core.api.persistence.JsonData">
+            <post id="route-getRepeateConfig" type="com.kalix.enrolment.question.dto.model.RepeatedDTO"
+                  outType="com.kalix.framework.core.api.persistence.JsonData">
                 <description>Find all Audits</description>
                 <to uri="bean:repeatedService?method=doRepeate(${header.stem},${header.type})"/>
-            </get>
+            </post>
         </rest>
 
         <rest path="/repeatesSave" consumes="application/json;charset=utf-8" produces="application/json">
