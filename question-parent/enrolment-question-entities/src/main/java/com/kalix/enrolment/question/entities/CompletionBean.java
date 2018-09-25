@@ -28,12 +28,21 @@ public class CompletionBean extends BaseLogicDeleteEntity {
     private String answerF; //答案F
     private String answerG; //答案G
     private String analysis; //试题解析
-    private String checkFlag; // 审核状态，字典[审核状态]
+    private String checkFlag="0"; // 审核状态，字典[审核状态]
     private Long checkerId;   // 审核员id
     private String checker;   // 审核员
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date checkDate;   // 审核时间
 
+    private String repeatedFlag="0";
+
+    public String getRepeatedFlag() {
+        return repeatedFlag;
+    }
+
+    public void setRepeatedFlag(String repeatedFlag) {
+        this.repeatedFlag = repeatedFlag;
+    }
 
     @ExcelField(title="类别", align=1, dictType="类别", sort=10)
     public String getType() {
