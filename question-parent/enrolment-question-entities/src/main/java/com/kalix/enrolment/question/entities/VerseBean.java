@@ -2,6 +2,7 @@ package com.kalix.enrolment.question.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kalix.framework.core.api.persistence.PersistentEntity;
+import com.kalix.framework.extend.api.entities.BaseLogicDeleteEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +15,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "enrolment_question_verse")
-public class VerseBean extends PersistentEntity {
+public class VerseBean extends BaseLogicDeleteEntity {
     @Column(nullable = false)
     private Integer type; // 类别,字典（类别）
     @Lob
