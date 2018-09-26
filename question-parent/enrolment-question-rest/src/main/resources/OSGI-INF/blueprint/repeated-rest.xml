@@ -18,7 +18,6 @@
         </rest>
 
         <rest path="/showRepeate" consumes="application/json;charset=utf-8" produces="application/json">
-            <description>audit config rest service</description>
             <!-- this is a rest GET to find all audit -->
             <post id="route-getRepeateConfig" type="com.kalix.enrolment.question.dto.model.RepeatedDTO"
                   outType="com.kalix.framework.core.api.persistence.JsonData">
