@@ -1,5 +1,6 @@
 package com.kalix.enrolment.question.api.biz;
 
+import com.kalix.enrolment.question.dto.model.RepeatedDTO;
 import com.kalix.enrolment.question.entities.CompletionBean;
 import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
@@ -25,7 +26,7 @@ public interface IRepeatedBeanService {
 
 
     //填空题去重
-    public JsonData doRepeate(String stem,String type);
+    public JsonData doRepeate(RepeatedDTO c_repeatedDTO);
 
 
 

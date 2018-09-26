@@ -22,7 +22,7 @@
             <post id="route-getRepeateConfig" type="com.kalix.enrolment.question.dto.model.RepeatedDTO"
                   outType="com.kalix.framework.core.api.persistence.JsonData">
                 <description>Find all Audits</description>
-                <to uri="bean:repeatedService?method=doRepeate(${header.stem},${header.type})"/>
+                <to uri="bean:repeatedService?method=doRepeate(${body})"/>
             </post>
         </rest>
 

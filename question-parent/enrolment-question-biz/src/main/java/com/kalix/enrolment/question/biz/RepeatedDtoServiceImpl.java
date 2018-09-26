@@ -320,9 +320,11 @@ public class RepeatedDtoServiceImpl implements IRepeatedBeanService {
         return jsondata;
     }
 
-
-    public JsonData doRepeate(String stem,String type)
+    @Override
+    public JsonData doRepeate(RepeatedDTO c_repeatedDTO)
     {
+        String stem=c_repeatedDTO.getStem();
+        String type = c_repeatedDTO.getQuestionType();
         JsonData jsondata = new JsonData();
         List<RepeatedCountDTO> repeateList=new ArrayList<RepeatedCountDTO>();
         List<Object> referenceList=new ArrayList<Object>();
