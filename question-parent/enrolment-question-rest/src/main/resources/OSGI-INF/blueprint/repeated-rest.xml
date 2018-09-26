@@ -27,7 +27,7 @@
         </rest>
 
         <rest path="/repeatesSave" consumes="application/json;charset=utf-8" produces="application/json">
-            <post id="route-addAuditConfig" type="com.kalix.enrolment.question.dto.model.RepeatedDTO"
+            <post id="route-addAuditConfig"
                   outType="com.kalix.framework.core.api.persistence.JsonStatus">
                 <description>Create a Audit</description>
                 <to uri="bean:repeatedService?method=doSave(${header.questionId},${header.questionType})"/>
@@ -35,7 +35,7 @@
         </rest>
 
         <rest path="/repeatesDelete" consumes="application/json;charset=utf-8" produces="application/json">
-            <post id="route-deleteAuditConfig" type="com.kalix.enrolment.question.dto.model.RepeatedDTO"
+            <post id="route-deleteAuditConfig"
                   outType="com.kalix.framework.core.api.persistence.JsonStatus">
                 <description>delete a question</description>
                 <to uri="bean:repeatedService?method=doDelete(${header.questionId},${header.questionType})"/>
