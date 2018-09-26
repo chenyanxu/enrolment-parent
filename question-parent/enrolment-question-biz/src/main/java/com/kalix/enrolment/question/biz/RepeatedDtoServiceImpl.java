@@ -328,18 +328,21 @@ public class RepeatedDtoServiceImpl implements IRepeatedBeanService {
         JsonData jsondata = new JsonData();
         List<RepeatedCountDTO> repeateList=new ArrayList<RepeatedCountDTO>();
         List<Object> referenceList=new ArrayList<Object>();
+        List<Object> completionlist=null;
         String hql = "";
         //List<CompletionBean> completionlist =completionBeanDao.getAll();
         if("CompletionBean".equals(type)){
-            hql = "select c from CompletionBean c where c.repeatedFlag='0' and c.delFlag='0'";
+            hql = "select c from CompletionBean c where  and c.delFlag='0'";
+            completionlist=( List<Object>)completionBeanDao.find(hql);
         }else if("ChoiceBean".equals(type))
         {
-            hql = "select c from ChoiceBean c where c.repeatedFlag='0' and c.delFlag='0'";
+            hql = "select c from ChoiceBean c where  c.delFlag='0'";
+            completionlist=( List<Object>)choiceBeanDao.find(hql);
         }else {
-            hql = "select c from VerseBean c where c.repeatedFlag='0' and c.delFlag='0'";
+            hql = "select c from VerseBean c where c.delFlag='0'";
+            completionlist=( List<Object>)verseBeanDao.find(hql);
         }
 
-        List<Object> completionlist=( List<Object>)completionBeanDao.find(hql);
         referenceList.addAll(completionlist);
         int count=1;
             RepeatedCountDTO repeatedCountDTO = new RepeatedCountDTO();
