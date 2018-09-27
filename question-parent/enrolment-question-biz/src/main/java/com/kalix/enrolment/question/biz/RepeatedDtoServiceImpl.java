@@ -292,21 +292,39 @@ public class RepeatedDtoServiceImpl implements IRepeatedBeanService {
     public JsonData doRepeate(RepeatedDTO c_repeatedDTO) {
         String stem = c_repeatedDTO.getStem();
         String type = c_repeatedDTO.getQuestionType();
+        Long questionid=c_repeatedDTO.getQuestionId();
         JsonData jsondata = new JsonData();
         List<RepeatedCountDTO> repeateList = new ArrayList<RepeatedCountDTO>();
         List<Object> referenceList = new ArrayList<Object>();
         List<Object> completionlist = null;
         String hql = "";
         //List<CompletionBean> completionlist =completionBeanDao.getAll();
-        if ("CompletionBean".equals(type)) {
-            hql = "select c from CompletionBean c where  and c.delFlag='0'";
-            completionlist = (List<Object>) completionBeanDao.find(hql);
-        } else if ("ChoiceBean".equals(type)) {
-            hql = "select c from ChoiceBean c where  c.delFlag='0'";
-            completionlist = (List<Object>) choiceBeanDao.find(hql);
-        } else {
-            hql = "select c from VerseBean c where c.delFlag='0'";
-            completionlist = (List<Object>) verseBeanDao.find(hql);
+        if("CompletionBean".equals(type)){
+            if(questionid!=null&&questionid>0)
+            {
+                hql = "select c from CompletionBean c where  and c.delFlag='0' and id<>"+questionid ;
+            }else {
+                hql = "select c from CompletionBean c where  and c.delFlag='0'";
+            }
+
+            completionlist=( List<Object>)completionBeanDao.find(hql);
+        }else if("ChoiceBean".equals(type))
+        {
+            if(questionid!=null&&questionid>0)
+            {
+                hql = "select c from ChoiceBean c where  and c.delFlag='0' and id<>"+questionid ;
+            }else {
+                hql = "select c from ChoiceBean c where  c.delFlag='0'";
+            }
+            completionlist=( List<Object>)choiceBeanDao.find(hql);
+        }else {
+            if(questionid!=null&&questionid>0)
+            {
+                hql = "select c from VerseBean c where  and c.delFlag='0' and id<>"+questionid ;
+            }else {
+                hql = "select c from VerseBean c where c.delFlag='0'";
+            }
+            completionlist=( List<Object>)verseBeanDao.find(hql);
         }
 
         referenceList.addAll(completionlist);
@@ -362,7 +380,6 @@ public class RepeatedDtoServiceImpl implements IRepeatedBeanService {
         //JsonData jsondata = new JsonData();
         return this.doRepeateCompletion();
     }
-
 
     @Override
     public JsonStatus doSave(Long questionId, String questionType) {
