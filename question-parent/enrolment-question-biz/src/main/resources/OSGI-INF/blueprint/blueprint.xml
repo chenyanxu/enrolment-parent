@@ -8,31 +8,60 @@
     <reference id="completionBeanDao" interface="com.kalix.enrolment.question.api.dao.ICompletionBeanDao"/>
     <reference id="choiceBeanDao" interface="com.kalix.enrolment.question.api.dao.IChoiceBeanDao"/>
     <reference id="verseBeanDao" interface="com.kalix.enrolment.question.api.dao.IVerseBeanDao"/>
+    <reference id="musicBeanDao" interface="com.kalix.enrolment.question.api.dao.IMusicBeanDao"/>
+    <reference id="subjectBeanDao" interface="com.kalix.enrolment.question.api.dao.ISubjectBeanDao"/>
+    <reference id="interviewIssueBeanDao" interface="com.kalix.enrolment.question.api.dao.IInterviewIssueBeanDao"/>
     <reference id="shiroService" interface="com.kalix.framework.core.api.security.IShiroService"/>
 
-    <!--管理-->
+    <!-- 填空题服务 -->
     <bean id="completionBeanServiceImpl" class="com.kalix.enrolment.question.biz.CompletionBeanServiceImpl">
         <property name="dao" ref="completionBeanDao"/>
     </bean>
+    <service id="completionBeanService" ref="completionBeanServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.ICompletionBeanService"/>
+
+    <!-- 选择题服务 -->
     <bean id="choiceBeanServiceImpl" class="com.kalix.enrolment.question.biz.ChoiceBeanServiceImpl">
         <property name="dao" ref="choiceBeanDao"/>
     </bean>
+    <service id="choiceBeanService" ref="choiceBeanServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.IChoiceBeanService"/>
+
+    <!-- 补全诗句服务 -->
     <bean id="verseBeanServiceImpl" class="com.kalix.enrolment.question.biz.VerseBeanServiceImpl">
         <property name="dao" ref="verseBeanDao"/>
     </bean>
+    <service id="verseBeanService" ref="verseBeanServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.IVerseBeanService"/>
+
+    <!-- 音乐基础服务 -->
+    <bean id="musicBeanServiceImpl" class="com.kalix.enrolment.question.biz.MusicBeanServiceImpl">
+        <property name="dao" ref="musicBeanDao"/>
+    </bean>
+    <service id="musicBeanService" ref="musicBeanServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.IMusicBeanService"/>
+
+    <!-- 主观题服务 -->
+    <bean id="subjectBeanServiceImpl" class="com.kalix.enrolment.question.biz.SubjectBeanServiceImpl">
+        <property name="dao" ref="subjectBeanDao"/>
+    </bean>
+    <service id="subjectBeanService" ref="subjectBeanServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.ISubjectBeanService"/>
+
+    <!-- 面试题服务 -->
+    <bean id="interviewIssueBeanServiceImpl" class="com.kalix.enrolment.question.biz.InterviewIssueBeanServiceImpl">
+        <property name="dao" ref="interviewIssueBeanDao"/>
+    </bean>
+    <service id="interviewIssueBeanService" ref="interviewIssueBeanServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.IInterviewIssueBeanService"/>
+
+    <!-- 题库排重服务 -->
     <bean id="repeatedDtoServiceImpl" class="com.kalix.enrolment.question.biz.RepeatedDtoServiceImpl">
         <property name="verseBeanDao" ref="verseBeanDao"/>
         <property name="choiceBeanDao" ref="choiceBeanDao"/>
         <property name="completionBeanDao" ref="completionBeanDao"/>
         <property name="shiroService" ref="shiroService"/>
-
     </bean>
-    <service id="completionBeanService" ref="completionBeanServiceImpl"
-             interface="com.kalix.enrolment.question.api.biz.ICompletionBeanService"/>
-    <service id="choiceBeanService" ref="choiceBeanServiceImpl"
-             interface="com.kalix.enrolment.question.api.biz.IChoiceBeanService"/>
-    <service id="verseBeanService" ref="verseBeanServiceImpl"
-             interface="com.kalix.enrolment.question.api.biz.IVerseBeanService"/>
     <service id="repeatedDtoService" ref="repeatedDtoServiceImpl"
         interface="com.kalix.enrolment.question.api.biz.IRepeatedBeanService"/>
 </blueprint>

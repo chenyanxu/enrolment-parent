@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+       http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+    <reference id="subjectService" interface="com.kalix.enrolment.question.api.biz.ISubjectBeanService"/>
+
+    <camelContext id="subjectCamel" xmlns="http://camel.apache.org/schema/blueprint">
+
+        <restConfiguration component="servlet" bindingMode="json">
+            <dataFormatProperty key="prettyPrint" value="${rest.pretty}"/>
+        </restConfiguration>
+
+        <rest path="/subjects" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>subject rest service</description>
+
+            <!-- this is a rest GET to find all subjects -->
+            <get id="route-getAllSubject">
+                <description>Find all subjects</description>
+                <to uri="bean:subjectService?method=getAllEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+            </get>
+
+            <!-- this is a rest POST to create a subject -->
+            <post id="route-addSubject" type="com.kalix.enrolment.question.entities.SubjectBean"
+                  outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Create a subject</description>
+                <to uri="bean:subjectService?method=saveEntity"/>
+            </post>
+        </rest>
+
+        <rest path="/subjects/{id}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <!-- this is a rest GET to view a subject by the given id -->
+            <get id="route-getSubject">
+                <description>Find subject by id</description>
+                <to uri="bean:subjectService?method=getEntity(${header.id})"/>
+            </get>
+            <put id="route-update-Subject" type="com.kalix.enrolment.question.entities.SubjectBean"
+                 outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Updates a Subject</description>
+                <to uri="bean:subjectService?method=updateEntity"/>
+            </put>
+            <!-- this is a rest DELETE to delete a subject -->
+            <!--<delete id="route-deleteSubject" outType="com.kalix.framework.core.api.persistence.JsonStatus">-->
+                <!--<description>Delete a subject</description>-->
+                <!--<to uri="bean:subjectService?method=deleteEntity(${header.id})"/>-->
+            <!--</delete>-->
+        </rest>
+
+        <rest path="/subjects/delete/logicDelete" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <delete id="route-logicDeleteSubject" type="com.kalix.enrolment.question.entities.SubjectBean"
+                    outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Logic Delete a subject</description>
+                <to uri="bean:subjectService?method=logicDeleteEntity(${body})"/>
+            </delete>
+        </rest>
+
+        <rest path="/subjects/delete/batchLogicDelete" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <delete id="route-batchLogicDeleteSubject" outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Batch Logic Delete subjects</description>
+                <to uri="bean:subjectService?method=batchLogicDeleteEntity(${header.entityIds},${header.reason})"/>
+            </delete>
+        </rest>
+    </camelContext>
+</blueprint>

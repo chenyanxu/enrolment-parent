@@ -18,17 +18,28 @@
         <tx:transaction method="*" value="Required"/>
     </bean>
     <service id="choiceBeanDao" ref="choiceBeanDaoImpl" interface="com.kalix.enrolment.question.api.dao.IChoiceBeanDao"/>
+
     <!--补全诗句题dao-->
     <bean id="verseBeanDaoImpl" class="com.kalix.enrolment.question.dao.VerseBeanDaoImpl">
         <tx:transaction method="*" value="Required"/>
     </bean>
     <service id="verseBeanDao" ref="verseBeanDaoImpl" interface="com.kalix.enrolment.question.api.dao.IVerseBeanDao"/>
 
+    <!--音乐基础dao-->
+    <bean id="musicBeanDaoImpl" class="com.kalix.enrolment.question.dao.MusicBeanDaoImpl"> <!--init-method="init">-->
+        <tx:transaction method="*" value="Required"/>
+    </bean>
+    <service id="musicBeanDao" ref="musicBeanDaoImpl" interface="com.kalix.enrolment.question.api.dao.IMusicBeanDao"/>
 
-    <!--<bean id="testBeanDaoImpl"-->
-          <!--class="com.kalix.enrolment.question.dao.TestBeanDaoImpl"> &lt;!&ndash;init-method="init">&ndash;&gt;-->
-        <!--<tx:transaction method="*" value="Required"/>-->
-    <!--</bean>-->
-    <!--<service id="testBeanDao" ref="testBeanDaoImpl" interface="com.kalix.enrolment.q.dict.api.dao.IEnrolmentDictBeanDao"/>-->
+    <!--主观题dao-->
+    <bean id="subjectBeanDaoImpl" class="com.kalix.enrolment.question.dao.SubjectBeanDaoImpl"> <!--init-method="init">-->
+        <tx:transaction method="*" value="Required"/>
+    </bean>
+    <service id="subjectBeanDao" ref="subjectBeanDaoImpl" interface="com.kalix.enrolment.question.api.dao.ISubjectBeanDao"/>
 
+    <!--面试题dao-->
+    <bean id="interviewIssueBeanDaoImpl" class="com.kalix.enrolment.question.dao.InterviewIssueBeanDaoImpl"> <!--init-method="init">-->
+        <tx:transaction method="*" value="Required"/>
+    </bean>
+    <service id="interviewIssueBeanDao" ref="interviewIssueBeanDaoImpl" interface="com.kalix.enrolment.question.api.dao.IInterviewIssueBeanDao"/>
 </blueprint>

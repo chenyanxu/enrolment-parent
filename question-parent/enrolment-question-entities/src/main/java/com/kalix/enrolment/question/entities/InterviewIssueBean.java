@@ -15,9 +15,9 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "enrolment_question_interview")
-public class InterviewBean extends BaseLogicDeleteEntity {
+public class InterviewIssueBean extends BaseLogicDeleteEntity {
     @Column(nullable = false)
-    private String subjectType;               // 面试题类型,字典（类别）
+    private String subjectType;               // 面试题类型,字典（面试题类型）
     @Lob
     @Column(nullable = false)
     private String stem;               // 题干
@@ -50,7 +50,6 @@ public class InterviewBean extends BaseLogicDeleteEntity {
     public void setStem(String stem) {
         this.stem = stem;
     }
-
 
     @ExcelField(title = "年份", align = 1, sort = 30)
     public Date getYear() {
