@@ -67,5 +67,12 @@
                 <to uri="bean:enrolmentDictBeanService?method=getValueByTypeAndLabel(${header.type},${header.label})"/>
             </get>
         </rest>
+        <rest path="/enrolment/dicts/types/values" consumes="application/json;charset=utf-8"
+              produces="application/json;charset=utf-8">
+            <get id="route-getLabelByTypeAndValue">
+                <description>Find dict Label By Type and Value</description>
+                <to uri="bean:enrolmentDictBeanService?method=getLabelByTypeAndValue(${header.type},${header.value})"/>
+            </get>
+        </rest>
     </camelContext>
 </blueprint>
