@@ -60,5 +60,27 @@
                 <to uri="bean:choiceService?method=batchLogicDeleteEntity(${header.entityIds},${header.reason})"/>
             </delete>
         </rest>
+
+        <rest path="/choices/check/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>choice check rest service</description>
+            <get id="route-getAllCheckChoice">
+                <description>Find all check choices</description>
+                <to uri="bean:choiceService?method=getAllEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+            </get>
+        </rest>
+
+        <rest path="/choices/check/list/{id}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <!-- this is a rest GET to view a check choice by the given id -->
+            <get id="route-getCheckChoice">
+                <description>Find check choice by id</description>
+                <to uri="bean:choiceService?method=getEntity(${header.id})"/>
+            </get>
+
+            <put id="route-update-CheckChoice" type="com.kalix.enrolment.question.entities.ChoiceBean"
+                 outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Updates a check Choice</description>
+                <to uri="bean:choiceService?method=updateEntity"/>
+            </put>
+        </rest>
     </camelContext>
 </blueprint>
