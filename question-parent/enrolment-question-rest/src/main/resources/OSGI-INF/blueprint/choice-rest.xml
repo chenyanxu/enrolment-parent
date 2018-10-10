@@ -65,8 +65,14 @@
             <description>choice check rest service</description>
             <get id="route-getAllCheckChoice">
                 <description>Find all check choices</description>
-                <to uri="bean:choiceService?method=getAllEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+                <to uri="bean:choiceService?method=getAllCheckEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
             </get>
+
+            <put id="route-batch-ChoiceCheck" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8"
+                 outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Batch check Choice</description>
+                <to uri="bean:choiceService?method=batchAudit(${header.entityIds},${header.reason})"/>
+            </put>
         </rest>
 
         <rest path="/choices/check/list/{id}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
@@ -75,12 +81,6 @@
                 <description>Find check choice by id</description>
                 <to uri="bean:choiceService?method=getEntity(${header.id})"/>
             </get>
-
-            <put id="route-update-CheckChoice" type="com.kalix.enrolment.question.entities.ChoiceBean"
-                 outType="com.kalix.framework.core.api.persistence.JsonStatus">
-                <description>Updates a check Choice</description>
-                <to uri="bean:choiceService?method=updateEntity"/>
-            </put>
         </rest>
     </camelContext>
 </blueprint>

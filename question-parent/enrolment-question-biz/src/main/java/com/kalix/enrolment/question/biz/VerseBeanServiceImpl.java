@@ -4,6 +4,7 @@ import com.kalix.enrolment.question.api.biz.IVerseBeanService;
 import com.kalix.enrolment.question.api.dao.IVerseBeanDao;
 import com.kalix.enrolment.question.entities.VerseBean;
 import com.kalix.framework.core.api.persistence.JsonData;
+import com.kalix.framework.core.api.persistence.JsonStatus;
 import com.kalix.framework.core.util.StringUtils;
 import com.kalix.framework.extend.impl.biz.LogicDeleteGenericBizServiceImpl;
 
@@ -18,5 +19,15 @@ public class VerseBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<IVers
             sort = "[{'property': 'delFlag', 'direction': 'ASC'},{'property': 'updateDate', 'direction': 'DESC'}]";
         }
         return super.getAllEntityByQuery(page, limit, jsonStr, sort);
+    }
+
+    @Override
+    public JsonData getAllCheckEntityByQuery(Integer page, Integer limit, String jsonStr, String sort) {
+        return null;
+    }
+
+    @Override
+    public JsonStatus batchAudit(String entityIds, String reason) {
+        return null;
     }
 }
