@@ -28,6 +28,16 @@
             </post>
         </rest>
 
+
+        <rest path="/completions/export/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>completion rest service</description>
+            <!-- this is a rest GET to find all completions -->
+            <get id="route-getExportCompletion">
+                <description>Find all completions</description>
+                <to uri="bean:completionService?method=getAllEntityforReport(${header.jsonStr})"/>
+            </get>
+        </rest>
+
         <rest path="/completions/{id}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <!-- this is a rest GET to view a completion by the given id -->
             <get id="route-getCompletion">
