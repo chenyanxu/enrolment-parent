@@ -17,7 +17,7 @@ import java.util.Date;
 @Table(name = "enrolment_question_interview")
 public class InterviewIssueBean extends BaseLogicDeleteEntity {
     @Column(nullable = false)
-    private String subjectType;               // 面试题类型,字典（面试题类型）
+    private String interviewType;               // 面试题类型,字典（面试题类型）
     @Lob
     @Column(nullable = false)
     private String stem;               // 题干
@@ -34,12 +34,12 @@ public class InterviewIssueBean extends BaseLogicDeleteEntity {
     private String repeatedFlag = "0"; // 题库排重标识
 
     @ExcelField(title = "面试题类型", align = 1, dictType = "面试题类型", sort = 10)
-    public String getSubjectType() {
-        return subjectType;
+    public String getInterviewType() {
+        return interviewType;
     }
 
-    public void setSubjectType(String subjectType) {
-        this.subjectType = subjectType;
+    public void setInterviewType(String interviewType) {
+        this.interviewType = interviewType;
     }
 
     @ExcelField(title = "题干", align = 1, sort = 20)
