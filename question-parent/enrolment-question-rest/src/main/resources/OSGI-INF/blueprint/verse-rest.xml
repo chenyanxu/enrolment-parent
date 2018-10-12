@@ -60,5 +60,36 @@
                 <to uri="bean:verseService?method=batchLogicDeleteEntity(${header.entityIds},${header.reason})"/>
             </delete>
         </rest>
+
+        <rest path="/verses/export/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>verse rest service</description>
+            <!-- this is a rest GET to find all verses -->
+            <get id="route-getExportVerses">
+                <description>Find all verses</description>
+                <to uri="bean:verseService?method=getAllEntityforReport(${header.jsonStr})"/>
+            </get>
+        </rest>
+
+        <rest path="/verses/check/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>verse check rest service</description>
+            <get id="route-getAllCheckVerse">
+                <description>Find all check verses</description>
+                <to uri="bean:verseService?method=getAllCheckEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+            </get>
+
+            <put id="route-batch-VerseCheck" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8"
+                 outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Batch check Verse</description>
+                <to uri="bean:verseService?method=batchAudit(${header.entityIds},${header.reason})"/>
+            </put>
+        </rest>
+
+        <rest path="/verses/check/list/{id}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <!-- this is a rest GET to view a check verse by the given id -->
+            <get id="route-getCheckVerse">
+                <description>Find check verse by id</description>
+                <to uri="bean:verseService?method=getEntity(${header.id})"/>
+            </get>
+        </rest>
     </camelContext>
 </blueprint>

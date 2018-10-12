@@ -61,6 +61,15 @@
             </delete>
         </rest>
 
+        <rest path="/choices/export/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>choice rest service</description>
+            <!-- this is a rest GET to find all choices -->
+            <get id="route-getExportChoice">
+                <description>Find all choices</description>
+                <to uri="bean:choiceService?method=getAllEntityforReport(${header.jsonStr})"/>
+            </get>
+        </rest>
+
         <rest path="/choices/check/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <description>choice check rest service</description>
             <get id="route-getAllCheckChoice">

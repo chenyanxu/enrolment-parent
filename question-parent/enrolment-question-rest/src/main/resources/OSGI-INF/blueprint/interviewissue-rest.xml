@@ -60,5 +60,36 @@
                 <to uri="bean:interviewissueService?method=batchLogicDeleteEntity(${header.entityIds},${header.reason})"/>
             </delete>
         </rest>
+
+        <rest path="/interviewissues/export/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>interviewissue rest service</description>
+            <!-- this is a rest GET to find all interviewissues -->
+            <get id="route-getExportInterviewIssue">
+                <description>Find all interviewissues</description>
+                <to uri="bean:interviewissueService?method=getAllEntityforReport(${header.jsonStr})"/>
+            </get>
+        </rest>
+
+        <rest path="/interviewissues/check/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>interviewissue check rest service</description>
+            <get id="route-getAllCheckInterviewIssue">
+                <description>Find all check interviewissues</description>
+                <to uri="bean:interviewissueService?method=getAllCheckEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+            </get>
+
+            <put id="route-batch-InterviewIssueCheck" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8"
+                 outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Batch check InterviewIssue</description>
+                <to uri="bean:interviewissueService?method=batchAudit(${header.entityIds},${header.reason})"/>
+            </put>
+        </rest>
+
+        <rest path="/interviewissues/check/list/{id}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <!-- this is a rest GET to view a check interviewissue by the given id -->
+            <get id="route-getCheckInterviewIssue">
+                <description>Find check interviewissue by id</description>
+                <to uri="bean:interviewissueService?method=getEntity(${header.id})"/>
+            </get>
+        </rest>
     </camelContext>
 </blueprint>

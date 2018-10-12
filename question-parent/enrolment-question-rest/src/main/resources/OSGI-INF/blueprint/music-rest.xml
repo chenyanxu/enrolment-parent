@@ -60,5 +60,36 @@
                 <to uri="bean:musicService?method=batchLogicDeleteEntity(${header.entityIds},${header.reason})"/>
             </delete>
         </rest>
+
+        <rest path="/musics/export/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>music rest service</description>
+            <!-- this is a rest GET to find all musics -->
+            <get id="route-getExportMusic">
+                <description>Find all musics</description>
+                <to uri="bean:musicService?method=getAllEntityforReport(${header.jsonStr})"/>
+            </get>
+        </rest>
+
+        <rest path="/musics/check/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>music check rest service</description>
+            <get id="route-getAllCheckMusic">
+                <description>Find all check musics</description>
+                <to uri="bean:musicService?method=getAllCheckEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+            </get>
+
+            <put id="route-batch-MusicCheck" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8"
+                 outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Batch check Music</description>
+                <to uri="bean:musicService?method=batchAudit(${header.entityIds},${header.reason})"/>
+            </put>
+        </rest>
+
+        <rest path="/musics/check/list/{id}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <!-- this is a rest GET to view a check music by the given id -->
+            <get id="route-getCheckMusic">
+                <description>Find check music by id</description>
+                <to uri="bean:musicService?method=getEntity(${header.id})"/>
+            </get>
+        </rest>
     </camelContext>
 </blueprint>

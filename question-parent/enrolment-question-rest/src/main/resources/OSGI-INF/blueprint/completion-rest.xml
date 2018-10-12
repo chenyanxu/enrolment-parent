@@ -28,16 +28,6 @@
             </post>
         </rest>
 
-
-        <rest path="/completions/export/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
-            <description>completion rest service</description>
-            <!-- this is a rest GET to find all completions -->
-            <get id="route-getExportCompletion">
-                <description>Find all completions</description>
-                <to uri="bean:completionService?method=getAllEntityforReport(${header.jsonStr})"/>
-            </get>
-        </rest>
-
         <rest path="/completions/{id}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <!-- this is a rest GET to view a completion by the given id -->
             <get id="route-getCompletion">
@@ -69,6 +59,37 @@
                 <description>Batch Logic Delete completions</description>
                 <to uri="bean:completionService?method=batchLogicDeleteEntity(${header.entityIds},${header.reason})"/>
             </delete>
+        </rest>
+
+        <rest path="/completions/export/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>completion rest service</description>
+            <!-- this is a rest GET to find all completions -->
+            <get id="route-getExportCompletion">
+                <description>Find all completions</description>
+                <to uri="bean:completionService?method=getAllEntityforReport(${header.jsonStr})"/>
+            </get>
+        </rest>
+
+        <rest path="/completions/check/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>completion check rest service</description>
+            <get id="route-getAllCheckCompletion">
+                <description>Find all check completions</description>
+                <to uri="bean:completionService?method=getAllCheckEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+            </get>
+
+            <put id="route-batch-CompletionCheck" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8"
+                 outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Batch check Completion</description>
+                <to uri="bean:completionService?method=batchAudit(${header.entityIds},${header.reason})"/>
+            </put>
+        </rest>
+
+        <rest path="/completions/check/list/{id}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <!-- this is a rest GET to view a check completion by the given id -->
+            <get id="route-getCheckCompletion">
+                <description>Find check completion by id</description>
+                <to uri="bean:completionService?method=getEntity(${header.id})"/>
+            </get>
         </rest>
     </camelContext>
 </blueprint>

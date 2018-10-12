@@ -60,5 +60,36 @@
                 <to uri="bean:subjectService?method=batchLogicDeleteEntity(${header.entityIds},${header.reason})"/>
             </delete>
         </rest>
+
+        <rest path="/subjects/export/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>subject rest service</description>
+            <!-- this is a rest GET to find all subjects -->
+            <get id="route-getExportSubject">
+                <description>Find all subjects</description>
+                <to uri="bean:subjectService?method=getAllEntityforReport(${header.jsonStr})"/>
+            </get>
+        </rest>
+
+        <rest path="/subjects/check/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>subject check rest service</description>
+            <get id="route-getAllCheckSubject">
+                <description>Find all check subjects</description>
+                <to uri="bean:subjectService?method=getAllCheckEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+            </get>
+
+            <put id="route-batch-SubjectCheck" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8"
+                 outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Batch check Subject</description>
+                <to uri="bean:subjectService?method=batchAudit(${header.entityIds},${header.reason})"/>
+            </put>
+        </rest>
+
+        <rest path="/subjects/check/list/{id}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <!-- this is a rest GET to view a check subject by the given id -->
+            <get id="route-getCheckSubject">
+                <description>Find check subject by id</description>
+                <to uri="bean:subjectService?method=getEntity(${header.id})"/>
+            </get>
+        </rest>
     </camelContext>
 </blueprint>
