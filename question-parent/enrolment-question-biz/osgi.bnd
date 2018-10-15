@@ -13,7 +13,9 @@ Import-Package: com.kalix.framework.core.util,\
                 org.apache.commons.codec.binary,\
                 com.kalix.framework.core.api.osgi,\
                 com.kalix.framework.core.api.security,\
-                org.xml.sax,\
+                org.xml.sax.*,\
+                javax.xml.*,\
+                javax.naming.*,\
                 com.kalix.framework.core.api.persistence,\
                 com.kalix.framework.core.api.dao,\
                 com.kalix.framework.core.api.biz,\
