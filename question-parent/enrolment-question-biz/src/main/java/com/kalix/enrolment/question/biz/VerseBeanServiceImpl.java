@@ -83,7 +83,7 @@ public class VerseBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<IVers
         tempMap.put("question",dataMap);
         String[] str = new String[2];
         str[0] = "123";
-        str[1] = this.createDoc("choice.ftl",tempMap);
+        str[1] = this.createDoc("verse.ftl",tempMap);
         return str;
     }
 

@@ -98,7 +98,7 @@ public class CompletionBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<
         tempMap.put("question",dataMap);
         String[] str = new String[2];
         str[0] = "123";
-        str[1] = this.createDoc("choice.ftl",tempMap);
+        str[1] = this.createDoc("completion.ftl",tempMap);
         return str;
     }
 
