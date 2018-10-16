@@ -46,6 +46,13 @@
             <!--</delete>-->
         </rest>
 
+        <rest path="/choices/templete/review" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <get id="route-logicReviewChoice">
+                <description>Review choice</description>
+                <to uri="bean:choiceService?method=createDoc()"/>
+            </get>
+        </rest>
+
         <rest path="/choices/delete/logicDelete" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <delete id="route-logicDeleteChoice" type="com.kalix.enrolment.question.entities.ChoiceBean"
                     outType="com.kalix.framework.core.api.persistence.JsonStatus">

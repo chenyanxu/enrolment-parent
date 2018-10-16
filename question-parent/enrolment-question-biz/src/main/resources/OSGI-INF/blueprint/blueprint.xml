@@ -64,4 +64,36 @@
     </bean>
     <service id="repeatedDtoService" ref="repeatedDtoServiceImpl"
         interface="com.kalix.enrolment.question.api.biz.IRepeatedBeanService"/>
+
+    <!-- 预览服务 -->
+    <service interface="com.kalix.framework.core.api.biz.IDownloadService"
+             ref="choiceBeanServiceImpl">
+        <service-properties>
+            <entry key="beanName" value="Choice"/>
+        </service-properties>
+    </service>
+    <service interface="com.kalix.framework.core.api.biz.IDownloadService"
+             ref="completionBeanServiceImpl">
+        <service-properties>
+            <entry key="beanName" value="Completion"/>
+        </service-properties>
+    </service>
+    <service interface="com.kalix.framework.core.api.biz.IDownloadService"
+             ref="interviewIssueBeanServiceImpl">
+        <service-properties>
+            <entry key="beanName" value="InterviewIssue"/>
+        </service-properties>
+    </service>
+    <service interface="com.kalix.framework.core.api.biz.IDownloadService"
+             ref="musicBeanServiceImpl">
+        <service-properties>
+            <entry key="beanName" value="Music"/>
+        </service-properties>
+    </service>
+    <service interface="com.kalix.framework.core.api.biz.IDownloadService"
+             ref="verseBeanServiceImpl">
+        <service-properties>
+            <entry key="beanName" value="Verse"/>
+        </service-properties>
+    </service>
 </blueprint>

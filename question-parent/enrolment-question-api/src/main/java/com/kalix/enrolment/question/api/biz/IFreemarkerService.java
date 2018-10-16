@@ -10,8 +10,8 @@ import java.util.Map;
 /**
  * Created by zangyanming at 2018-09-13.
  */
-public interface IChoiceBeanService extends ILogicDeleteService<ChoiceBean> {
-    JsonData getAllCheckEntityByQuery(Integer page, Integer limit, String jsonStr, String sort);
+public interface IFreemarkerService {
 
-    JsonStatus batchAudit(String entityIds, String reason);
+    public String createDoc(String fileName, Map tempMap);
+
 }
