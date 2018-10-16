@@ -38,14 +38,15 @@ public class VerseBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<IVers
     }
 
     @Override
-    public String createDoc(String fileName, Map tempMap) {
-        String htmlStr = "";
+    public String createDoc(String fileName,Map tempMap)
+    {
+        String htmlStr="";
 
         Configuration configuration = new Configuration();
 
         //dataMap 要填入模本的数据文件
         //设置模本装置方法和路径,
-        Template t = null;
+        Template t=null;
         try {
 
             String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
@@ -54,7 +55,7 @@ public class VerseBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<IVers
             }
             String reviewBaseDir = realPath + "questionfiles";
             configuration.setDirectoryForTemplateLoading(new File(reviewBaseDir));
-            t = configuration.getTemplate(fileName, "utf-8");
+            t = configuration.getTemplate(fileName,"utf-8");
             StringWriter stringWriter = new StringWriter();
             BufferedWriter writer = new BufferedWriter(stringWriter);
             t.setEncoding("UTF-8");
@@ -78,15 +79,15 @@ public class VerseBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<IVers
         VerseBean verseBean = this.getEntity(entityId);
 
         Map dataMap = new HashMap();
-        Map tempMap = new HashMap();
-        dataMap.put("stem", verseBean.getStem());
+        Map tempMap= new HashMap();
+        dataMap.put("stem",verseBean.getStem());
 
         tempMap = new HashMap<>();
-        tempMap.put("title", "补全诗句");
-        tempMap.put("question", dataMap);
+        tempMap.put("title","补全诗句");
+        tempMap.put("question",dataMap);
         String[] str = new String[2];
         str[0] = "123";
-        str[1] = this.createDoc("choice.ftl", tempMap);
+        str[1] = this.createDoc("verse.ftl",tempMap);
         return str;
     }
 

@@ -36,14 +36,15 @@ public class SubjectBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<ISu
     }
 
     @Override
-    public String createDoc(String fileName, Map tempMap) {
-        String htmlStr = "";
+    public String createDoc(String fileName,Map tempMap)
+    {
+        String htmlStr="";
 
         Configuration configuration = new Configuration();
 
         //dataMap 要填入模本的数据文件
         //设置模本装置方法和路径,
-        Template t = null;
+        Template t=null;
         try {
 
             String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
@@ -76,15 +77,15 @@ public class SubjectBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<ISu
         SubjectBean subjectBean = this.getEntity(entityId);
 
         Map dataMap = new HashMap();
-        Map tempMap = new HashMap();
-        dataMap.put("stem", subjectBean.getStem());
+        Map tempMap= new HashMap();
+        dataMap.put("stem",subjectBean.getStem());
 
         tempMap = new HashMap<>();
-        tempMap.put("title", "主观题");
-        tempMap.put("question", dataMap);
+        tempMap.put("title","主观题");
+        tempMap.put("question",dataMap);
         String[] str = new String[2];
         str[0] = "123";
-        str[1] = this.createDoc("choice.ftl", tempMap);
+        str[1] = this.createDoc("subject.ftl",tempMap);
         return str;
     }
 
