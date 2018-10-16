@@ -16,13 +16,11 @@ import com.kalix.framework.extend.impl.biz.LogicDeleteGenericBizServiceImpl;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
+import javax.transaction.Transactional;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by zangyanming at 2018-09-13
@@ -153,8 +151,34 @@ public class VerseBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<IVers
     }
 
     @Override
-    public JsonStatus batchAudit(String entityIds, String reason) {
-        return null;
+    @Transactional
+    public JsonStatus batchAudit(String entityIds, String checkFlag, String reason) {
+        JsonStatus jsonStatus = new JsonStatus();
+
+        if (entityIds.isEmpty()) {
+            jsonStatus.setSuccess(false);
+            jsonStatus.setMsg("试题审核失败, 原因：entityIds 不能为空");
+            return jsonStatus;
+        }
+
+        String[] ids = entityIds.split(",");
+
+        VerseBean verseBean = null;
+        for (int i = 0; i < ids.length; i++) {
+            verseBean = this.dao.get(Long.parseLong(ids[i]));
+            verseBean.setCheckFlag(checkFlag);
+            verseBean.setReason(reason);
+            verseBean.setCheckerId(this.shiroService.getCurrentUserId());
+            verseBean.setChecker(this.shiroService.getCurrentUserRealName());
+            verseBean.setCheckDate(new Date());
+
+            this.updateEntity(verseBean);
+        }
+
+        jsonStatus.setSuccess(true);
+        jsonStatus.setMsg("试题审核成功");
+
+        return jsonStatus;
     }
 
     public void setRoleBeanService(IRoleBeanService roleBeanService) {

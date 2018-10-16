@@ -16,13 +16,11 @@ import com.kalix.framework.extend.impl.biz.LogicDeleteGenericBizServiceImpl;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
+import javax.transaction.Transactional;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by zangyanming at 2018-09-13
@@ -155,8 +153,34 @@ public class InterviewIssueBeanServiceImpl extends LogicDeleteGenericBizServiceI
     }
 
     @Override
-    public JsonStatus batchAudit(String entityIds, String reason) {
-        return null;
+    @Transactional
+    public JsonStatus batchAudit(String entityIds, String checkFlag, String reason) {
+        JsonStatus jsonStatus = new JsonStatus();
+
+        if (entityIds.isEmpty()) {
+            jsonStatus.setSuccess(false);
+            jsonStatus.setMsg("试题审核失败, 原因：entityIds 不能为空");
+            return jsonStatus;
+        }
+
+        String[] ids = entityIds.split(",");
+
+        InterviewIssueBean interviewIssueBean = null;
+        for (int i = 0; i < ids.length; i++) {
+            interviewIssueBean = this.dao.get(Long.parseLong(ids[i]));
+            interviewIssueBean.setCheckFlag(checkFlag);
+            interviewIssueBean.setReason(reason);
+            interviewIssueBean.setCheckerId(this.shiroService.getCurrentUserId());
+            interviewIssueBean.setChecker(this.shiroService.getCurrentUserRealName());
+            interviewIssueBean.setCheckDate(new Date());
+
+            this.updateEntity(interviewIssueBean);
+        }
+
+        jsonStatus.setSuccess(true);
+        jsonStatus.setMsg("试题审核成功");
+
+        return jsonStatus;
     }
 
     public void setRoleBeanService(IRoleBeanService roleBeanService) {

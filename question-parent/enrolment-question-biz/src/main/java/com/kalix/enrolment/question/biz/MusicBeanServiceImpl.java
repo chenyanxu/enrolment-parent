@@ -17,14 +17,12 @@ import com.kalix.framework.extend.impl.biz.LogicDeleteGenericBizServiceImpl;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
+import javax.transaction.Transactional;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -157,8 +155,34 @@ public class MusicBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<IMusi
     }
 
     @Override
-    public JsonStatus batchAudit(String entityIds, String reason) {
-        return null;
+    @Transactional
+    public JsonStatus batchAudit(String entityIds, String checkFlag, String reason) {
+        JsonStatus jsonStatus = new JsonStatus();
+
+        if (entityIds.isEmpty()) {
+            jsonStatus.setSuccess(false);
+            jsonStatus.setMsg("试题审核失败, 原因：entityIds 不能为空");
+            return jsonStatus;
+        }
+
+        String[] ids = entityIds.split(",");
+
+        MusicBean musicBean = null;
+        for (int i = 0; i < ids.length; i++) {
+            musicBean = this.dao.get(Long.parseLong(ids[i]));
+            musicBean.setCheckFlag(checkFlag);
+            musicBean.setReason(reason);
+            musicBean.setCheckerId(this.shiroService.getCurrentUserId());
+            musicBean.setChecker(this.shiroService.getCurrentUserRealName());
+            musicBean.setCheckDate(new Date());
+
+            this.updateEntity(musicBean);
+        }
+
+        jsonStatus.setSuccess(true);
+        jsonStatus.setMsg("试题审核成功");
+
+        return jsonStatus;
     }
 
     public void setRoleBeanService(IRoleBeanService roleBeanService) {

@@ -9,25 +9,18 @@ import com.kalix.enrolment.question.entities.ChoiceBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
-import com.kalix.framework.core.util.SerializeUtil;
 import com.kalix.framework.core.util.ConfigUtil;
+import com.kalix.framework.core.util.SerializeUtil;
 import com.kalix.framework.core.util.StringUtils;
 import com.kalix.framework.extend.impl.biz.LogicDeleteGenericBizServiceImpl;
 import freemarker.template.Configuration;
-import freemarker.template.ObjectWrapper;
 import freemarker.template.Template;
-import org.osgi.framework.BundleContext;
 
-import java.io.*;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import javax.transaction.Transactional;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.StringWriter;
+import java.util.*;
 
 /**
  * Created by zangyanming at 2018-09-13
@@ -109,9 +102,32 @@ public class ChoiceBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<ICho
     }
 
     @Override
-    public JsonStatus batchAudit(String entityIds, String reason) {
+    @Transactional
+    public JsonStatus batchAudit(String entityIds, String checkFlag, String reason) {
         JsonStatus jsonStatus = new JsonStatus();
+
+        if (entityIds.isEmpty()) {
+            jsonStatus.setSuccess(false);
+            jsonStatus.setMsg("试题审核失败, 原因：entityIds 不能为空");
+            return jsonStatus;
+        }
+
+        String[] ids = entityIds.split(",");
+
+        ChoiceBean choiceBean = null;
+        for (int i = 0; i < ids.length; i++) {
+            choiceBean = this.dao.get(Long.parseLong(ids[i]));
+            choiceBean.setCheckFlag(checkFlag);
+            choiceBean.setReason(reason);
+            choiceBean.setCheckerId(this.shiroService.getCurrentUserId());
+            choiceBean.setChecker(this.shiroService.getCurrentUserRealName());
+            choiceBean.setCheckDate(new Date());
+
+            this.updateEntity(choiceBean);
+        }
+
         jsonStatus.setSuccess(true);
+        jsonStatus.setMsg("试题审核成功");
 
         return jsonStatus;
     }

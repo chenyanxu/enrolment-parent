@@ -13,5 +13,5 @@ import java.util.Map;
 public interface IChoiceBeanService extends ILogicDeleteService<ChoiceBean> {
     JsonData getAllCheckEntityByQuery(Integer page, Integer limit, String jsonStr, String sort);
 
-    JsonStatus batchAudit(String entityIds, String reason);
+    JsonStatus batchAudit(String entityIds, String checkFlag, String reason);
 }
