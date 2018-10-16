@@ -24,6 +24,7 @@ Import-Package: com.kalix.framework.core.util,\
                 org.apache.log4j.*,\
                 javax.swing.*,\
                 javax.naming.*,\
+                com.kalix.admin.core.api.biz,\
                 com.kalix.enrolment.question.api.dao,\
                 com.kalix.enrolment.question.api.biz,\
                 com.kalix.enrolment.question.entities,\

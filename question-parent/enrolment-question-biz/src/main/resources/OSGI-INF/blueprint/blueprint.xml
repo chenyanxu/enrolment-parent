@@ -17,6 +17,7 @@
     <!-- 填空题服务 -->
     <bean id="completionBeanServiceImpl" class="com.kalix.enrolment.question.biz.CompletionBeanServiceImpl">
         <property name="dao" ref="completionBeanDao"/>
+        <property name="roleBeanService" ref="roleBeanService"/>
     </bean>
     <service id="completionBeanService" ref="completionBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.ICompletionBeanService"/>
@@ -32,6 +33,7 @@
     <!-- 补全诗句服务 -->
     <bean id="verseBeanServiceImpl" class="com.kalix.enrolment.question.biz.VerseBeanServiceImpl">
         <property name="dao" ref="verseBeanDao"/>
+        <property name="roleBeanService" ref="roleBeanService"/>
     </bean>
     <service id="verseBeanService" ref="verseBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IVerseBeanService"/>
@@ -39,6 +41,7 @@
     <!-- 音乐基础服务 -->
     <bean id="musicBeanServiceImpl" class="com.kalix.enrolment.question.biz.MusicBeanServiceImpl">
         <property name="dao" ref="musicBeanDao"/>
+        <property name="roleBeanService" ref="roleBeanService"/>
     </bean>
     <service id="musicBeanService" ref="musicBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IMusicBeanService"/>
@@ -46,6 +49,7 @@
     <!-- 主观题服务 -->
     <bean id="subjectBeanServiceImpl" class="com.kalix.enrolment.question.biz.SubjectBeanServiceImpl">
         <property name="dao" ref="subjectBeanDao"/>
+        <property name="roleBeanService" ref="roleBeanService"/>
     </bean>
     <service id="subjectBeanService" ref="subjectBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.ISubjectBeanService"/>
@@ -53,6 +57,7 @@
     <!-- 面试题服务 -->
     <bean id="interviewIssueBeanServiceImpl" class="com.kalix.enrolment.question.biz.InterviewIssueBeanServiceImpl">
         <property name="dao" ref="interviewIssueBeanDao"/>
+        <property name="roleBeanService" ref="roleBeanService"/>
     </bean>
     <service id="interviewIssueBeanService" ref="interviewIssueBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IInterviewIssueBeanService"/>
