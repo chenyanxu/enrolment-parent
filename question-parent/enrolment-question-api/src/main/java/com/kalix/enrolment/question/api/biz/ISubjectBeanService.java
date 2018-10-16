@@ -14,7 +14,4 @@ public interface ISubjectBeanService extends ILogicDeleteService<SubjectBean> {
     JsonData getAllCheckEntityByQuery(String subjectType, Integer page, Integer limit);
 
     JsonStatus batchAudit(String entityIds, String checkFlag, String reason);
-    JsonStatus batchAudit(String entityIds, String reason);
-
-
 }

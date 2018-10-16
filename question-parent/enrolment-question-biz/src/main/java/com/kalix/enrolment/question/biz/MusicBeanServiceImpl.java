@@ -30,10 +30,10 @@ import java.util.Map;
 /**
  * Created by zangyanming at 2018-09-13
  */
-public class MusicBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<IMusicBeanDao, MusicBean> implements IMusicBeanService {
+public class MusicBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<IMusicBeanDao, MusicBean> implements IMusicBeanService, IDownloadService, IFreemarkerService {
+
     private IRoleBeanService roleBeanService;
     private static String rolename = "音乐基础审核人";
-public class MusicBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<IMusicBeanDao, MusicBean> implements IMusicBeanService,IDownloadService,IFreemarkerService {
 
     @Override
     public JsonData getAllEntityByQuery(Integer page, Integer limit, String jsonStr, String sort) {
@@ -44,15 +44,14 @@ public class MusicBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<IMusi
     }
 
     @Override
-    public String createDoc(String fileName,Map tempMap)
-    {
-        String htmlStr="";
+    public String createDoc(String fileName, Map tempMap) {
+        String htmlStr = "";
 
         Configuration configuration = new Configuration();
 
         //dataMap 要填入模本的数据文件
         //设置模本装置方法和路径,
-        Template t=null;
+        Template t = null;
         try {
 
             String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
@@ -61,7 +60,7 @@ public class MusicBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<IMusi
             }
             String reviewBaseDir = realPath + "questionfiles";
             configuration.setDirectoryForTemplateLoading(new File(reviewBaseDir));
-            t = configuration.getTemplate(fileName,"utf-8");
+            t = configuration.getTemplate(fileName, "utf-8");
             StringWriter stringWriter = new StringWriter();
             BufferedWriter writer = new BufferedWriter(stringWriter);
             t.setEncoding("UTF-8");
@@ -85,15 +84,15 @@ public class MusicBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<IMusi
         MusicBean musicBean = this.getEntity(entityId);
 
         Map dataMap = new HashMap();
-        Map tempMap= new HashMap();
-        dataMap.put("stem",musicBean.getStem());
+        Map tempMap = new HashMap();
+        dataMap.put("stem", musicBean.getStem());
 
         tempMap = new HashMap<>();
-        tempMap.put("title","音乐基础");
-        tempMap.put("question",dataMap);
+        tempMap.put("title", "音乐基础");
+        tempMap.put("question", dataMap);
         String[] str = new String[2];
         str[0] = "123";
-        str[1] = this.createDoc("choice.ftl",tempMap);
+        str[1] = this.createDoc("choice.ftl", tempMap);
         return str;
     }
 
@@ -113,7 +112,7 @@ public class MusicBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<IMusi
         int persons = 0;
         List userIdList = new ArrayList();
         RoleBean roleBean = roleBeanService.queryByRoleName(rolename);
-        if(roleBean != null){
+        if (roleBean != null) {
             userIdList = roleBeanService.getUserIdsByRoleId(roleBean.getId());
             persons = userIdList.size();
         }
@@ -143,7 +142,7 @@ public class MusicBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<IMusi
         String appendWhere = "";
         Map<String, String> jsonMap = SerializeUtil.json2Map(jsonStr);
         for (Map.Entry<String, String> entry : jsonMap.entrySet()) {
-            if(entry.getValue() != null && !entry.getValue().equals("")) {
+            if (entry.getValue() != null && !entry.getValue().equals("")) {
                 appendWhere = appendWhere + " and " + entry.getKey() + " = " + entry.getValue();
             }
         }

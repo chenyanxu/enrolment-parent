@@ -5,14 +5,12 @@ import com.kalix.admin.core.entities.RoleBean;
 import com.kalix.enrolment.question.api.biz.IFreemarkerService;
 import com.kalix.enrolment.question.api.biz.IInterviewIssueBeanService;
 import com.kalix.enrolment.question.api.dao.IInterviewIssueBeanDao;
-import com.kalix.enrolment.question.entities.CompletionBean;
 import com.kalix.enrolment.question.entities.InterviewIssueBean;
-import com.kalix.enrolment.question.entities.MusicBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
-import com.kalix.framework.core.util.SerializeUtil;
 import com.kalix.framework.core.util.ConfigUtil;
+import com.kalix.framework.core.util.SerializeUtil;
 import com.kalix.framework.core.util.StringUtils;
 import com.kalix.framework.extend.impl.biz.LogicDeleteGenericBizServiceImpl;
 import freemarker.template.Configuration;
@@ -21,20 +19,17 @@ import freemarker.template.Template;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by zangyanming at 2018-09-13
  */
-public class InterviewIssueBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<IInterviewIssueBeanDao, InterviewIssueBean> implements IInterviewIssueBeanService {
+public class InterviewIssueBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<IInterviewIssueBeanDao, InterviewIssueBean> implements IInterviewIssueBeanService, IDownloadService, IFreemarkerService {
     private IRoleBeanService roleBeanService;
     private static String rolename = "面试题审核人";
-public class InterviewIssueBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<IInterviewIssueBeanDao, InterviewIssueBean> implements IInterviewIssueBeanService,IDownloadService,IFreemarkerService {
 
     @Override
     public JsonData getAllEntityByQuery(Integer page, Integer limit, String jsonStr, String sort) {
@@ -45,15 +40,14 @@ public class InterviewIssueBeanServiceImpl extends LogicDeleteGenericBizServiceI
     }
 
     @Override
-    public String createDoc(String fileName,Map tempMap)
-    {
-        String htmlStr="";
+    public String createDoc(String fileName, Map tempMap) {
+        String htmlStr = "";
 
         Configuration configuration = new Configuration();
 
         //dataMap 要填入模本的数据文件
         //设置模本装置方法和路径,
-        Template t=null;
+        Template t = null;
         try {
 
             String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
@@ -62,7 +56,7 @@ public class InterviewIssueBeanServiceImpl extends LogicDeleteGenericBizServiceI
             }
             String reviewBaseDir = realPath + "questionfiles";
             configuration.setDirectoryForTemplateLoading(new File(reviewBaseDir));
-            t = configuration.getTemplate(fileName,"utf-8");
+            t = configuration.getTemplate(fileName, "utf-8");
             StringWriter stringWriter = new StringWriter();
             BufferedWriter writer = new BufferedWriter(stringWriter);
             t.setEncoding("UTF-8");
@@ -86,17 +80,17 @@ public class InterviewIssueBeanServiceImpl extends LogicDeleteGenericBizServiceI
         InterviewIssueBean interviewIssueBean = this.getEntity(entityId);
 
         Map dataMap = new HashMap();
-        Map tempMap= new HashMap();
-        dataMap.put("stem",interviewIssueBean.getStem());
+        Map tempMap = new HashMap();
+        dataMap.put("stem", interviewIssueBean.getStem());
 
         // List question = new ArrayList();
         //  question.add(dataMap);
         tempMap = new HashMap<>();
-        tempMap.put("title","面试题");
-        tempMap.put("question",dataMap);
+        tempMap.put("title", "面试题");
+        tempMap.put("question", dataMap);
         String[] str = new String[2];
         str[0] = "123";
-        str[1] = this.createDoc("choice.ftl",tempMap);
+        str[1] = this.createDoc("choice.ftl", tempMap);
         return str;
     }
 
@@ -116,7 +110,7 @@ public class InterviewIssueBeanServiceImpl extends LogicDeleteGenericBizServiceI
         int persons = 0;
         List userIdList = new ArrayList();
         RoleBean roleBean = roleBeanService.queryByRoleName(rolename);
-        if(roleBean != null){
+        if (roleBean != null) {
             userIdList = roleBeanService.getUserIdsByRoleId(roleBean.getId());
             persons = userIdList.size();
         }
@@ -146,7 +140,7 @@ public class InterviewIssueBeanServiceImpl extends LogicDeleteGenericBizServiceI
         String appendWhere = "";
         Map<String, String> jsonMap = SerializeUtil.json2Map(jsonStr);
         for (Map.Entry<String, String> entry : jsonMap.entrySet()) {
-            if(entry.getValue() != null && !entry.getValue().equals("")) {
+            if (entry.getValue() != null && !entry.getValue().equals("")) {
                 appendWhere = appendWhere + " and " + entry.getKey() + " = " + entry.getValue();
             }
         }

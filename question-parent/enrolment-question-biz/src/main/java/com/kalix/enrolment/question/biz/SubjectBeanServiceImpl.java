@@ -5,37 +5,27 @@ import com.kalix.admin.core.entities.RoleBean;
 import com.kalix.enrolment.question.api.biz.IFreemarkerService;
 import com.kalix.enrolment.question.api.biz.ISubjectBeanService;
 import com.kalix.enrolment.question.api.dao.ISubjectBeanDao;
-import com.kalix.enrolment.question.entities.MusicBean;
 import com.kalix.enrolment.question.entities.SubjectBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
-import com.kalix.framework.core.security.impl.ShiroServiceImpl;
-import com.kalix.framework.core.util.SerializeUtil;
 import com.kalix.framework.core.util.ConfigUtil;
 import com.kalix.framework.core.util.StringUtils;
 import com.kalix.framework.extend.impl.biz.LogicDeleteGenericBizServiceImpl;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
+import javax.transaction.Transactional;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by zangyanming at 2018-09-13
  */
-public class SubjectBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<ISubjectBeanDao, SubjectBean> implements ISubjectBeanService {
+public class SubjectBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<ISubjectBeanDao, SubjectBean> implements ISubjectBeanService, IDownloadService, IFreemarkerService {
     private IRoleBeanService roleBeanService;
-public class SubjectBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<ISubjectBeanDao, SubjectBean> implements ISubjectBeanService,IDownloadService,IFreemarkerService {
 
     @Override
     public JsonData getAllEntityByQuery(Integer page, Integer limit, String jsonStr, String sort) {
@@ -46,15 +36,14 @@ public class SubjectBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<ISu
     }
 
     @Override
-    public String createDoc(String fileName,Map tempMap)
-    {
-        String htmlStr="";
+    public String createDoc(String fileName, Map tempMap) {
+        String htmlStr = "";
 
         Configuration configuration = new Configuration();
 
         //dataMap 要填入模本的数据文件
         //设置模本装置方法和路径,
-        Template t=null;
+        Template t = null;
         try {
 
             String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
@@ -63,7 +52,7 @@ public class SubjectBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<ISu
             }
             String reviewBaseDir = realPath + "questionfiles";
             configuration.setDirectoryForTemplateLoading(new File(reviewBaseDir));
-            t = configuration.getTemplate(fileName,"utf-8");
+            t = configuration.getTemplate(fileName, "utf-8");
             StringWriter stringWriter = new StringWriter();
             BufferedWriter writer = new BufferedWriter(stringWriter);
             t.setEncoding("UTF-8");
@@ -87,15 +76,15 @@ public class SubjectBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<ISu
         SubjectBean subjectBean = this.getEntity(entityId);
 
         Map dataMap = new HashMap();
-        Map tempMap= new HashMap();
-        dataMap.put("stem",subjectBean.getStem());
+        Map tempMap = new HashMap();
+        dataMap.put("stem", subjectBean.getStem());
 
         tempMap = new HashMap<>();
-        tempMap.put("title","主观题");
-        tempMap.put("question",dataMap);
+        tempMap.put("title", "主观题");
+        tempMap.put("question", dataMap);
         String[] str = new String[2];
         str[0] = "123";
-        str[1] = this.createDoc("choice.ftl",tempMap);
+        str[1] = this.createDoc("choice.ftl", tempMap);
         return str;
     }
 
@@ -233,25 +222,25 @@ public class SubjectBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<ISu
         this.roleBeanService = roleBeanService;
     }
 
-    public String getRoleName(String subjectType){
+    public String getRoleName(String subjectType) {
         String roleName = "主观题出题人";
-        if(subjectType.equals("1"))
+        if (subjectType.equals("1"))
             roleName = "简答题出题人";
-        if(subjectType.equals("2"))
+        if (subjectType.equals("2"))
             roleName = "论述题出题人";
-        if(subjectType.equals("3"))
+        if (subjectType.equals("3"))
             roleName = "评述题出题人";
-        if(subjectType.equals("4"))
+        if (subjectType.equals("4"))
             roleName = "故事编写出题人";
-        if(subjectType.equals("5"))
+        if (subjectType.equals("5"))
             roleName = "故事续写出题人";
-        if(subjectType.equals("6"))
+        if (subjectType.equals("6"))
             roleName = "微小说编写出题人";
-        if(subjectType.equals("7"))
+        if (subjectType.equals("7"))
             roleName = "摄影作品分析出题人";
-        if(subjectType.equals("8"))
+        if (subjectType.equals("8"))
             roleName = "影片声音分析出题人";
-        if(subjectType.equals("9"))
+        if (subjectType.equals("9"))
             roleName = "影像作品分析出题人";
 
         return roleName;
