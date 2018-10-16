@@ -69,12 +69,12 @@ public class RepeatedDtoServiceImpl implements IRepeatedBeanService {
                 if (completion_child.getId() != completion.getId()) {
                     String comStem = completion_child.getStem();
                     //短语相似度
-                    double result1 = Similarity.phraseSimilarity(stem, comStem);
+                   // double result1 = Similarity.phraseSimilarity(stem, comStem);
                     //词形词序句子相似度值
                     // double morphoSimilarityResult = Similarity.morphoSimilarity(stem, comStem);
                     //词林相似度
                     double result = Similarity.cilinSimilarity(stem, comStem);
-                    if (result > 0.5 || result1 > 0.5) {
+                    if (result > 0.5) {
                         repeaFlag = "0";
                         // completionlist.remove(referenceList.get(i));
                         if (StringUtils.isNotBlank(completionIds)) {
@@ -82,7 +82,8 @@ public class RepeatedDtoServiceImpl implements IRepeatedBeanService {
                                 RepeatedDTO repeatedDTO = new RepeatedDTO();
                                 repeatedDTO.setQuestionId(completion.getId());
                                 repeatedDTO.setStem(completion.getStem());
-                                repeatedDTO.setSimilarity("短语相似度-->" + new DecimalFormat("0.00").format(result1) + "；词林相似度" + new DecimalFormat("0.00").format(result));
+                               // repeatedDTO.setSimilarity("短语相似度-->" + new DecimalFormat("0.00").format(result1) + "；词林相似度" + new DecimalFormat("0.00").format(result));
+                                repeatedDTO.setSimilarity("词林相似度" + new DecimalFormat("0.00").format(result));
                                 repeatedDTO.setQuestionType("CompletionBean");
                                 dtoList.add(repeatedDTO);
                                 completionIds += completion.getId() + ",";
@@ -91,7 +92,7 @@ public class RepeatedDtoServiceImpl implements IRepeatedBeanService {
                             RepeatedDTO repeatedDTO = new RepeatedDTO();
                             repeatedDTO.setQuestionId(completion.getId());
                             repeatedDTO.setStem(completion.getStem());
-                            repeatedDTO.setSimilarity("短语相似度-->" + new DecimalFormat("0.00").format(result1) + "；词林相似度" + new DecimalFormat("0.00").format(result));
+                            repeatedDTO.setSimilarity("词林相似度" + new DecimalFormat("0.00").format(result));
                             repeatedDTO.setQuestionType("CompletionBean");
                             dtoList.add(repeatedDTO);
                             completionIds += completion.getId() + ",";
@@ -100,7 +101,7 @@ public class RepeatedDtoServiceImpl implements IRepeatedBeanService {
                         RepeatedDTO repeatedDTO = new RepeatedDTO();
                         repeatedDTO.setQuestionId(completion_child.getId());
                         repeatedDTO.setStem(completion_child.getStem());
-                        repeatedDTO.setSimilarity("短语相似度-->" + new DecimalFormat("0.00").format(result1) + "；词林相似度" + new DecimalFormat("0.00").format(result));
+                        repeatedDTO.setSimilarity("词林相似度" + new DecimalFormat("0.00").format(result));
                         repeatedDTO.setQuestionType("CompletionBean");
                         dtoList.add(repeatedDTO);
 
@@ -150,19 +151,20 @@ public class RepeatedDtoServiceImpl implements IRepeatedBeanService {
                 if (choice_child.getId() != choice.getId()) {
                     String comStem = choice_child.getStem();
                     //短语相似度
-                    double result1 = Similarity.phraseSimilarity(stem, comStem);
+                    //double result1 = Similarity.phraseSimilarity(stem, comStem);
                     //词形词序句子相似度值
                     // double morphoSimilarityResult = Similarity.morphoSimilarity(stem, comStem);
                     //词林相似度
                     double result = Similarity.cilinSimilarity(stem, comStem);
-                    if (result > 0.5 || result1 > 0.5) {
+                    if (result > 0.5) {
                         repeaFlag = "0";
                         if (StringUtils.isNotBlank(choiceIds)) {
                             if (choiceIds.indexOf(String.valueOf(choice.getId())) < 0) {
                                 RepeatedDTO repeatedDTO = new RepeatedDTO();
                                 repeatedDTO.setQuestionId(choice.getId());
                                 repeatedDTO.setStem(choice.getStem());
-                                repeatedDTO.setSimilarity("短语相似度-->" + new DecimalFormat("0.00").format(result1) + "；词林相似度" + new DecimalFormat("0.00").format(result));
+                               // repeatedDTO.setSimilarity("短语相似度-->" + new DecimalFormat("0.00").format(result1) + "；词林相似度" + new DecimalFormat("0.00").format(result));
+                                repeatedDTO.setSimilarity("词林相似度" + new DecimalFormat("0.00").format(result));
                                 repeatedDTO.setQuestionType("ChoiceBean");
                                 dtoList.add(repeatedDTO);
                                 choiceIds += choice.getId() + ",";
@@ -171,7 +173,7 @@ public class RepeatedDtoServiceImpl implements IRepeatedBeanService {
                             RepeatedDTO repeatedDTO = new RepeatedDTO();
                             repeatedDTO.setQuestionId(choice.getId());
                             repeatedDTO.setStem(choice.getStem());
-                            repeatedDTO.setSimilarity("短语相似度-->" + new DecimalFormat("0.00").format(result1) + "；词林相似度" + new DecimalFormat("0.00").format(result));
+                            repeatedDTO.setSimilarity("词林相似度" + new DecimalFormat("0.00").format(result));
                             repeatedDTO.setQuestionType("ChoiceBean");
                             dtoList.add(repeatedDTO);
                             choiceIds += choice.getId() + ",";
@@ -180,7 +182,7 @@ public class RepeatedDtoServiceImpl implements IRepeatedBeanService {
                         RepeatedDTO repeatedDTO = new RepeatedDTO();
                         repeatedDTO.setQuestionId(choice_child.getId());
                         repeatedDTO.setStem(choice_child.getStem());
-                        repeatedDTO.setSimilarity("短语相似度-->" + new DecimalFormat("0.00").format(result1) + "；词林相似度" + new DecimalFormat("0.00").format(result));
+                        repeatedDTO.setSimilarity("词林相似度" + new DecimalFormat("0.00").format(result));
                         repeatedDTO.setQuestionType("ChoiceBean");
                         dtoList.add(repeatedDTO);
 
@@ -231,12 +233,12 @@ public class RepeatedDtoServiceImpl implements IRepeatedBeanService {
                 if (verse_child.getId() != verse.getId()) {
                     String comStem = verse_child.getStem();
                     //短语相似度
-                    double result1 = Similarity.phraseSimilarity(stem, comStem);
+                    //double result1 = Similarity.phraseSimilarity(stem, comStem);
                     //词形词序句子相似度值
                     double morphoSimilarityResult = Similarity.morphoSimilarity(stem, comStem);
                     //词林相似度
                     double result = Similarity.cilinSimilarity(stem, comStem);
-                    if (result > 0.5 || result1 > 0.5) {
+                    if (result > 0.5) {
                         repeaFlag = "0";
                         // completionlist.remove(referenceList.get(i));
                         if (StringUtils.isNotBlank(completionIds)) {
@@ -244,7 +246,7 @@ public class RepeatedDtoServiceImpl implements IRepeatedBeanService {
                                 RepeatedDTO repeatedDTO = new RepeatedDTO();
                                 repeatedDTO.setQuestionId(verse.getId());
                                 repeatedDTO.setStem(verse.getStem());
-                                repeatedDTO.setSimilarity("短语相似度-->" + new DecimalFormat("0.00").format(result1) + "；词林相似度" + new DecimalFormat("0.00").format(result));
+                                repeatedDTO.setSimilarity("词林相似度" + new DecimalFormat("0.00").format(result));
                                 repeatedDTO.setQuestionType("VerseBean");
                                 dtoList.add(repeatedDTO);
                                 completionIds += verse.getId() + ",";
@@ -253,7 +255,7 @@ public class RepeatedDtoServiceImpl implements IRepeatedBeanService {
                             RepeatedDTO repeatedDTO = new RepeatedDTO();
                             repeatedDTO.setQuestionId(verse.getId());
                             repeatedDTO.setStem(verse.getStem());
-                            repeatedDTO.setSimilarity("短语相似度-->" + new DecimalFormat("0.00").format(result1) + "；词林相似度" + new DecimalFormat("0.00").format(result));
+                            repeatedDTO.setSimilarity("词林相似度" + new DecimalFormat("0.00").format(result));
                             repeatedDTO.setQuestionType("VerseBean");
                             dtoList.add(repeatedDTO);
                             completionIds += verse.getId() + ",";
@@ -262,7 +264,7 @@ public class RepeatedDtoServiceImpl implements IRepeatedBeanService {
                         RepeatedDTO repeatedDTO = new RepeatedDTO();
                         repeatedDTO.setQuestionId(verse_child.getId());
                         repeatedDTO.setStem(verse_child.getStem());
-                        repeatedDTO.setSimilarity("短语相似度-->" + new DecimalFormat("0.00").format(result1) + "；词林相似度" + new DecimalFormat("0.00").format(result));
+                        repeatedDTO.setSimilarity("词林相似度" + new DecimalFormat("0.00").format(result));
                         repeatedDTO.setQuestionType("VerseBean");
                         dtoList.add(repeatedDTO);
 
@@ -371,8 +373,32 @@ public class RepeatedDtoServiceImpl implements IRepeatedBeanService {
 
     @Override
     public JsonData doRepeate(String type) {
+        JsonData jsondata = new JsonData();
+
+        if ("CompletionBean".equals(type)) {
+            return this.doRepeateCompletion();
+        }else if("VerseBean".equals(type)){
+
+            return this.doRepeateVerseBean();
+        }else if("ChoiceBean".equals(type)){
+
+            return this.doRepeateChoiceBean();
+        }else {
+            JsonData completion= this.doRepeateCompletion();
+            JsonData verseBean= this.doRepeateVerseBean();
+            JsonData choiceBean= this.doRepeateChoiceBean();
+
+            List list = new ArrayList();
+
+            list.addAll(completion.getData());
+            list.addAll(verseBean.getData());
+            list.addAll(choiceBean.getData());
+            jsondata.setData(list);
+            return jsondata;
+
+        }
         //JsonData jsondata = new JsonData();
-        return this.doRepeateCompletion();
+
     }
 
     @Override

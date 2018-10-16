@@ -12,6 +12,7 @@
     <reference id="subjectBeanDao" interface="com.kalix.enrolment.question.api.dao.ISubjectBeanDao"/>
     <reference id="interviewIssueBeanDao" interface="com.kalix.enrolment.question.api.dao.IInterviewIssueBeanDao"/>
     <reference id="shiroService" interface="com.kalix.framework.core.api.security.IShiroService"/>
+    <reference id="roleBeanService" interface="com.kalix.admin.core.api.biz.IRoleBeanService"/>
 
     <!-- 填空题服务 -->
     <bean id="completionBeanServiceImpl" class="com.kalix.enrolment.question.biz.CompletionBeanServiceImpl">
@@ -23,6 +24,7 @@
     <!-- 选择题服务 -->
     <bean id="choiceBeanServiceImpl" class="com.kalix.enrolment.question.biz.ChoiceBeanServiceImpl">
         <property name="dao" ref="choiceBeanDao"/>
+        <property name="roleBeanService" ref="roleBeanService"/>
     </bean>
     <service id="choiceBeanService" ref="choiceBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IChoiceBeanService"/>
@@ -64,4 +66,36 @@
     </bean>
     <service id="repeatedDtoService" ref="repeatedDtoServiceImpl"
         interface="com.kalix.enrolment.question.api.biz.IRepeatedBeanService"/>
+
+    <!-- 预览服务 -->
+    <service interface="com.kalix.framework.core.api.biz.IDownloadService"
+             ref="choiceBeanServiceImpl">
+        <service-properties>
+            <entry key="beanName" value="Choice"/>
+        </service-properties>
+    </service>
+    <service interface="com.kalix.framework.core.api.biz.IDownloadService"
+             ref="completionBeanServiceImpl">
+        <service-properties>
+            <entry key="beanName" value="Completion"/>
+        </service-properties>
+    </service>
+    <service interface="com.kalix.framework.core.api.biz.IDownloadService"
+             ref="interviewIssueBeanServiceImpl">
+        <service-properties>
+            <entry key="beanName" value="InterviewIssue"/>
+        </service-properties>
+    </service>
+    <service interface="com.kalix.framework.core.api.biz.IDownloadService"
+             ref="musicBeanServiceImpl">
+        <service-properties>
+            <entry key="beanName" value="Music"/>
+        </service-properties>
+    </service>
+    <service interface="com.kalix.framework.core.api.biz.IDownloadService"
+             ref="verseBeanServiceImpl">
+        <service-properties>
+            <entry key="beanName" value="Verse"/>
+        </service-properties>
+    </service>
 </blueprint>

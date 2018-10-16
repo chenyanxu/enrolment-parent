@@ -7,19 +7,23 @@ Bundle-Category: Kalix Enrolment Question
 Embed-Dependency:*;artifactId=!admin-core-api|framework-core-impl|framework-core-util|enrolment-question-api|framework-extend-api|framework-extend-impl
 Import-Package: com.kalix.framework.core.util,\
                 com.kalix.framework.core.api.system,\
-                org.lightcouch,\
-                org.osgi.framework,\
-                org.osgi.service.blueprint,\
-                org.apache.commons.codec.binary,\
-                com.kalix.framework.core.api.osgi,\
-                com.kalix.framework.core.api.security,\
-                org.xml.sax,\
                 com.kalix.framework.core.api.persistence,\
                 com.kalix.framework.core.api.dao,\
                 com.kalix.framework.core.api.biz,\
                 com.kalix.framework.extend.api.entities,\
                 com.kalix.framework.core.impl.biz,\
                 com.kalix.framework.extend.impl.biz,\
+                org.lightcouch,\
+                org.osgi.framework,\
+                org.osgi.service.blueprint,\
+                org.apache.commons.codec.binary,\
+                com.kalix.framework.core.api.osgi,\
+                com.kalix.framework.core.api.security,\
+                org.xml.sax.*,\
+                javax.xml.*,\
+                org.apache.log4j.*,\
+                javax.swing.*,\
+                javax.naming.*,\
                 com.kalix.enrolment.question.api.dao,\
                 com.kalix.enrolment.question.api.biz,\
                 com.kalix.enrolment.question.entities,\
