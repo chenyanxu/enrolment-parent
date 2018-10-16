@@ -12,6 +12,7 @@
     <reference id="subjectBeanDao" interface="com.kalix.enrolment.question.api.dao.ISubjectBeanDao"/>
     <reference id="interviewIssueBeanDao" interface="com.kalix.enrolment.question.api.dao.IInterviewIssueBeanDao"/>
     <reference id="shiroService" interface="com.kalix.framework.core.api.security.IShiroService"/>
+    <reference id="roleBeanService" interface="com.kalix.admin.core.api.biz.IRoleBeanService"/>
 
     <!-- 填空题服务 -->
     <bean id="completionBeanServiceImpl" class="com.kalix.enrolment.question.biz.CompletionBeanServiceImpl">
@@ -23,6 +24,7 @@
     <!-- 选择题服务 -->
     <bean id="choiceBeanServiceImpl" class="com.kalix.enrolment.question.biz.ChoiceBeanServiceImpl">
         <property name="dao" ref="choiceBeanDao"/>
+        <property name="roleBeanService" ref="roleBeanService"/>
     </bean>
     <service id="choiceBeanService" ref="choiceBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IChoiceBeanService"/>
