@@ -9,7 +9,7 @@ import com.kalix.framework.extend.api.biz.ILogicDeleteService;
  * Created by zangyanming at 2018-09-13.
  */
 public interface ISubjectBeanService extends ILogicDeleteService<SubjectBean> {
-    JsonData getAllCheckEntityByQuery(Integer page, Integer limit, String jsonStr, String sort);
+    JsonData getAllCheckEntityByQuery(String subjectType, Integer page, Integer limit);
 
-    JsonStatus batchAudit(String entityIds, String reason);
+    JsonStatus batchAudit(String entityIds, String checkFlag, String reason);
 }

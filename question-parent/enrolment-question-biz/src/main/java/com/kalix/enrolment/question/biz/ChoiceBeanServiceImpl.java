@@ -7,11 +7,13 @@ import com.kalix.enrolment.question.api.dao.IChoiceBeanDao;
 import com.kalix.enrolment.question.entities.ChoiceBean;
 import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
+import com.kalix.framework.core.util.SerializeUtil;
 import com.kalix.framework.core.util.StringUtils;
 import com.kalix.framework.extend.impl.biz.LogicDeleteGenericBizServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zangyanming at 2018-09-13
@@ -19,14 +21,19 @@ import java.util.List;
 public class ChoiceBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<IChoiceBeanDao, ChoiceBean> implements IChoiceBeanService {
 
     private IRoleBeanService roleBeanService;
-    private static String rolename = "选择题出题人";
+    private static String rolename = "选择题审核人";
 
     @Override
     public JsonData getAllEntityByQuery(Integer page, Integer limit, String jsonStr, String sort) {
-        JsonData jsonData = new JsonData();
         if (StringUtils.isEmpty(sort)) {
             sort = "[{'property': 'delFlag', 'direction': 'ASC'},{'property': 'updateDate', 'direction': 'DESC'}]";
         }
+
+        return super.getAllEntityByQuery(page, limit, jsonStr, sort);
+    }
+
+    @Override
+    public JsonData getAllCheckEntityByQuery(Integer page, Integer limit, String jsonStr, String sort) {
 
         // 未审核试题总数
         String countSql = "select count(1) from " + dao.getTableName()
@@ -55,34 +62,36 @@ public class ChoiceBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<ICho
 
         int ys = total % persons;
 
-        int lpoint = 0;
+        int offset = 0;
         Long currentUserId = shiroService.getCurrentUserId();
         for (int i = 0; i < userIdList.size(); i++) {
             if (userIdList.get(i).equals(currentUserId)) {
                 if (i < ys) {
-                    lpoint = i * perCnt + 1;
+                    offset = i * perCnt + 1;
                 } else {
-                    lpoint = i * perCnt;
+                    offset = i * perCnt;
                 }
                 break;
             }
         }
 
-        String sql = "select * from " + dao.getTableName()
+        //条件
+        String appendWhere = "";
+        Map<String, String> jsonMap = SerializeUtil.json2Map(jsonStr);
+        for (Map.Entry<String, String> entry : jsonMap.entrySet()) {
+            if(entry.getValue() != null && !entry.getValue().equals("")) {
+                appendWhere = appendWhere + " and " + entry.getKey() + " = " + entry.getValue();
+            }
+        }
+
+        String sql = "select * from " + dao.getTableName() + " a"
                 + " where checkFlag = '0' and delFlag = '0'"
                 + " and (substr(to_char(creationdate,'yyyy-mm-dd hh:mi:ss'),1,4) = to_char(now(),'yyyy-mm-dd hh:mi:ss'))"
-                + " order by id limit " + perCnt + " offset " + lpoint;
+                + appendWhere
+                + " order by delFlag asc, updateDate desc limit " + perCnt + " offset " + offset;
 
-        jsonData = dao.findByNativeSql(sql, page, limit, ChoiceBean.class);
-
-        return jsonData;
-        //return super.getAllEntityByQuery(page, limit, jsonStr, sort);
-    }
-
-    @Override
-    public JsonData getAllCheckEntityByQuery(Integer page, Integer limit, String jsonStr, String sort) {
-
-        return getAllEntityByQuery(page, limit, jsonStr, sort);
+        return dao.findByNativeSql(sql, page, limit, ChoiceBean.class);
+        //return getAllEntityByQuery(page, limit, jsonStr, sort);
     }
 
     @Override

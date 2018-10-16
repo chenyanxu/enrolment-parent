@@ -74,13 +74,13 @@
             <description>subject check rest service</description>
             <get id="route-getAllCheckSubject">
                 <description>Find all check subjects</description>
-                <to uri="bean:subjectService?method=getAllCheckEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+                <to uri="bean:subjectService?method=getAllCheckEntityByQuery(${header.subjectType},${header.page},${header.limit})"/>
             </get>
 
             <put id="route-batch-SubjectCheck" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8"
                  outType="com.kalix.framework.core.api.persistence.JsonStatus">
                 <description>Batch check Subject</description>
-                <to uri="bean:subjectService?method=batchAudit(${header.entityIds},${header.reason})"/>
+                <to uri="bean:subjectService?method=batchAudit(${header.entityIds},${header.checkFlag}},${header.reason})"/>
             </put>
         </rest>
 
