@@ -5,6 +5,8 @@ import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
 import com.kalix.framework.extend.api.biz.ILogicDeleteService;
 
+import java.util.Map;
+
 /**
  * Created by dell on 14-1-17.
  */
