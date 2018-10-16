@@ -172,8 +172,6 @@ public class ChoiceBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<ICho
         dataMap.put("answerC",choiceBean.getAnswerC());
         dataMap.put("answerD",choiceBean.getAnswerD());
 
-        // List question = new ArrayList();
-        //  question.add(dataMap);
         tempMap = new HashMap<>();
         tempMap.put("title","选择题");
         tempMap.put("question",dataMap);
@@ -182,5 +180,7 @@ public class ChoiceBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<ICho
         str[1] = this.createDoc("choice.ftl",tempMap);
         return str;
     }
+
+
 
 }
