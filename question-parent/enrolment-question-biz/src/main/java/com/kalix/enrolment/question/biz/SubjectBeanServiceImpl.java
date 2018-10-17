@@ -17,10 +17,6 @@ import java.util.Map;
  */
 public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubjectBeanDao, SubjectBean>
         implements ISubjectBeanService, IQuestionAuditService, IDownloadService, IFreemarkerService {
-
-    private static String AUDIT_ROLE_NAME1 = "主观题审核人";
-    private static String AUDIT_ROLE_NAME2 = "主观题审核人";
-
     @Override
     public String getQuestionType() {
         return QuestionType.SUBJECT;
@@ -30,12 +26,34 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
     public String getAuditRoleName(String subType) {
         String roleName = "";
         switch (subType) {
-            case SubjectType.A:
-                roleName = AUDIT_ROLE_NAME1;
+            case SubjectType.SHORT_ANSWER_QUESTIONS:
+                roleName = SubjectType.SHORT_ANSWER_QUESTIONS_ROLENAME;
                 break;
-            case SubjectType.B:
-                roleName = AUDIT_ROLE_NAME2;
+            case SubjectType.TOPIC_DISCUSSION:
+                roleName = SubjectType.TOPIC_DISCUSSION_ROLENAME;
                 break;
+            case SubjectType.COMMENTARY:
+                roleName = SubjectType.COMMENTARY_ROLENAME;
+                break;
+            case SubjectType.STORY_WRITING:
+                roleName = SubjectType.STORY_WRITING_ROLENAME;
+                break;
+            case SubjectType.STORY_RENEW:
+                roleName = SubjectType.STORY_RENEW_ROLENAME;
+                break;
+            case SubjectType.MICRO_WRITING:
+                roleName = SubjectType.MICRO_WRITING_ROLENAME;
+                break;
+            case SubjectType.PHOTOGRAPHY_ANALYSIS:
+                roleName = SubjectType.PHOTOGRAPHY_ANALYSIS_ROLENAME;
+                break;
+            case SubjectType.FILM_SOUND_ANALYSIS:
+                roleName = SubjectType.FILM_SOUND_ANALYSIS_ROLENAME;
+                break;
+            case SubjectType.IMAGE_ANALYSIS:
+                roleName = SubjectType.IMAGE_ANALYSIS_ROLENAME;
+                break;
+
         }
         return roleName;
     }

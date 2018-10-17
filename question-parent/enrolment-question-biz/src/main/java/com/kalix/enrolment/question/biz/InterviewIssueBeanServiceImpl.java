@@ -17,10 +17,6 @@ import java.util.Map;
  */
 public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl<IInterviewIssueBeanDao, InterviewIssueBean>
         implements IInterviewIssueBeanService, IQuestionAuditService, IDownloadService, IFreemarkerService {
-
-    private static String AUDIT_ROLE_NAME1 = "面试题审核人";
-    private static String AUDIT_ROLE_NAME2 = "面试题审核人";
-
     @Override
     public String getQuestionType() {
         return QuestionType.INTERVIEW;
@@ -30,11 +26,35 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
     public String getAuditRoleName(String subType) {
         String roleName = "";
         switch (subType) {
-            case InterviewType.A_1:
-                roleName = AUDIT_ROLE_NAME1;
+            case InterviewType.NEWS_BROADCAST:
+                roleName = InterviewType.NEWS_BROADCAST_ROLENAME;
                 break;
-            case "2":
-                roleName = AUDIT_ROLE_NAME2;
+            case InterviewType.TOPIC_DISCUSSION:
+                roleName = InterviewType.TOPIC_DISCUSSION_ROLENAME;
+                break;
+            case InterviewType.PROPOSITIONAL_STORY:
+                roleName = InterviewType.PROPOSITIONAL_STORY_ROLENAME;
+                break;
+            case InterviewType.PROPOSITION_TWO_PERSON_ESSAY:
+                roleName = InterviewType.PROPOSITION_TWO_PERSON_ESSAY_ROLENAME;
+                break;
+            case InterviewType.ENGLISH_STUDY:
+                roleName = InterviewType.ENGLISH_STUDY_ROLENAME;
+                break;
+            case InterviewType.DRAMA_FILM_LITERATURE:
+                roleName = InterviewType.DRAMA_FILM_LITERATURE_ROLENAME;
+                break;
+            case InterviewType.DRAMA_DIRECTOR:
+                roleName = InterviewType.DRAMA_DIRECTOR_ROLENAME;
+                break;
+            case InterviewType.FILM_PRODUCTION:
+                roleName = InterviewType.FILM_PRODUCTION_ROLENAME;
+                break;
+            case InterviewType.FLIGHT_ATTENDANTS_INTERVIEW:
+                roleName = InterviewType.FLIGHT_ATTENDANTS_INTERVIEW_ROLENAME;
+                break;
+            case InterviewType.EXTEMPORE_REVIEW:
+                roleName = InterviewType.EXTEMPORE_REVIEW_ROLENAME;
                 break;
         }
         return roleName;
