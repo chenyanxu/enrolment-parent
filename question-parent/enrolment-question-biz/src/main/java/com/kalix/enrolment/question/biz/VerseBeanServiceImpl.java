@@ -21,7 +21,7 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
 
     @Override
     public String getQuestionType() {
-        return QuestionType.INTERVIEW;
+        return QuestionType.VERSE;
     }
 
     @Override
