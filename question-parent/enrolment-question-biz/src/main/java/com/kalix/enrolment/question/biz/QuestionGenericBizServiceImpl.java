@@ -61,19 +61,19 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             countSql = "select count(1) from " + dao.getTableName()
                     + " where delFlag = '0'"
                     + " and checkFlag = '0'"
-                    + " and (substr(to_char(creationdate,'yyyy-mm-dd hh:mi:ss'),1,4) = to_char(now(),'yyyy-mm-dd hh:mi:ss'))";
+                    + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))";
         } else {
             if (questionType.equals(QuestionType.SUBJECT)) {
                 countSql = "select count(1) from " + dao.getTableName()
                         + " where delFlag = '0'"
                         + " and checkFlag = '0'"
-                        + " and (substr(to_char(creationdate,'yyyy-mm-dd hh:mi:ss'),1,4) = to_char(now(),'yyyy-mm-dd hh:mi:ss'))"
+                        + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
                         + " and subjectType = '" + subType + "'";
             } else if (questionType.equals(QuestionType.INTERVIEW)) {
                 countSql = "select count(1) from " + dao.getTableName()
                         + " where delFlag = '0'"
                         + " and checkFlag = '0'"
-                        + " and (substr(to_char(creationdate,'yyyy-mm-dd hh:mi:ss'),1,4) = to_char(now(),'yyyy-mm-dd hh:mi:ss'))"
+                        + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
                         + " and interviewType = '" + subType + "'";
             }
         }
@@ -117,20 +117,20 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
 //            checkCountSql = "select count(1) from " + dao.getTableName()
 //                    + " where delFlag = '0' "
 //                    + " and checkFlag != '0'"
-//                    + " and (substr(to_char(creationdate,'yyyy-mm-dd hh:mi:ss'),1,4) = to_char(now(),'yyyy-mm-dd hh:mi:ss'))"
+//                    + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
 //                    + " and checkerId = " + currentUserId;
 //        else if (questionType.equals(QuestionType.SUBJECT)) {
 //            checkCountSql = "select count(1) from " + dao.getTableName()
 //                    + " where delFlag = '0' "
 //                    + " and checkFlag != '0'"
-//                    + " and (substr(to_char(creationdate,'yyyy-mm-dd hh:mi:ss'),1,4) = to_char(now(),'yyyy-mm-dd hh:mi:ss'))"
+//                    + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
 //                    + " and subjectType = '" + questionSubType
 //                    + "' and checkerId = " + currentUserId;
 //        } else if (questionType.equals(QuestionType.INTERVIEW)) {
 //            checkCountSql = "select count(1) from " + dao.getTableName()
 //                    + " where delFlag = '0' "
 //                    + " and checkFlag != '0'"
-//                    + " and (substr(to_char(creationdate,'yyyy-mm-dd hh:mi:ss'),1,4) = to_char(now(),'yyyy-mm-dd hh:mi:ss'))"
+//                    + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
 //                    + " and interviewType = '" + questionSubType
 //                    + "' and checkerId = " + currentUserId;
 //        }
@@ -157,25 +157,25 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         if (StringUtils.isEmpty(subType)) {
             sql = "(select * from " + dao.getTableName()
                     + " where delFlag = '0' and checkFlag = '0'"
-                    + " and (substr(to_char(creationdate,'yyyy-mm-dd hh:mi:ss'),1,4) = to_char(now(),'yyyy-mm-dd hh:mi:ss'))"
+                    + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
                     + " order by updateDate desc limit " + perCnt + " offset " + offset
                     + ") union all ("
                     + "select * from " + dao.getTableName()
                     + " where delFlag = '0' and checkFlag != '0'"
-                    + " and (substr(to_char(creationdate,'yyyy-mm-dd hh:mi:ss'),1,4) = to_char(now(),'yyyy-mm-dd hh:mi:ss'))"
+                    + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
                     + " and checkerId = " + currentUserId
                     + " order by updateDate desc)";
         } else {
             if (questionType.equals(QuestionType.SUBJECT)) {
                 sql = "(select * from " + dao.getTableName()
                         + " where delFlag = '0' and checkFlag = '0'"
-                        + " and (substr(to_char(creationdate,'yyyy-mm-dd hh:mi:ss'),1,4) = to_char(now(),'yyyy-mm-dd hh:mi:ss'))"
+                        + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
                         + " and subjectType = '" + subType + "'"
                         + " order by updateDate desc limit " + perCnt + " offset " + offset
                         + ") union all ("
                         + "select * from " + dao.getTableName()
                         + " where delFlag = '0' and checkFlag != '0'"
-                        + " and (substr(to_char(creationdate,'yyyy-mm-dd hh:mi:ss'),1,4) = to_char(now(),'yyyy-mm-dd hh:mi:ss'))"
+                        + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
                         + " and subjectType = '" + subType + "'"
                         + " and checkerId = " + currentUserId
                         + " order by updateDate desc)";
@@ -183,20 +183,26 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             } else if (questionType.equals(QuestionType.INTERVIEW)) {
                 sql = "(select * from " + dao.getTableName()
                         + " where delFlag = '0' and checkFlag = '0'"
-                        + " and (substr(to_char(creationdate,'yyyy-mm-dd hh:mi:ss'),1,4) = to_char(now(),'yyyy-mm-dd hh:mi:ss'))"
+                        + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
                         + " and interviewType = '" + subType + "'"
                         + " order by updateDate desc limit " + perCnt + " offset " + offset
                         + ") union all ("
                         + "select * from " + dao.getTableName()
                         + " where delFlag = '0' and checkFlag != '0'"
-                        + " and (substr(to_char(creationdate,'yyyy-mm-dd hh:mi:ss'),1,4) = to_char(now(),'yyyy-mm-dd hh:mi:ss'))"
+                        + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
                         + " and interviewType = '" + subType + "'"
                         + " and checkerId = " + currentUserId
                         + " order by updateDate desc)";
             }
         }
 
-        return dao.findByNativeSql(sql, page, limit, SubjectBean.class);
+        Class cls = null;
+        try {
+            cls = Class.forName(this.entityClassName);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return dao.findByNativeSql(sql, page, limit, cls);
     }
 
     @Override
