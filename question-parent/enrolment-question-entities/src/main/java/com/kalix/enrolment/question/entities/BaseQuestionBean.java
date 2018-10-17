@@ -27,11 +27,6 @@ public abstract class BaseQuestionBean extends BaseLogicDeleteEntity {
     private String checkReason;        // 审核不通过原因
     private String repeatedFlag = "0"; // 题库排重标识
 
-    @Transient
-    private String questionType;       // 试题类型
-    @Transient
-    private String qustionSubType;     // 试题子类型
-
     public String getStem() {
         return stem;
     }
@@ -94,21 +89,5 @@ public abstract class BaseQuestionBean extends BaseLogicDeleteEntity {
 
     public void setRepeatedFlag(String repeatedFlag) {
         this.repeatedFlag = repeatedFlag;
-    }
-
-    public String getQuestionType() {
-        return questionType;
-    }
-
-    public void setQuestionType(String questionType) {
-        this.questionType = questionType;
-    }
-
-    public String getQustionSubType() {
-        return qustionSubType;
-    }
-
-    public void setQustionSubType(String qustionSubType) {
-        this.qustionSubType = qustionSubType;
     }
 }
