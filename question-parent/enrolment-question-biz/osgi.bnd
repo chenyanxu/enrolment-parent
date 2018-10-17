@@ -6,28 +6,28 @@ Bundle-Activator: ${bundle.namespace}.internal.InitActivator
 Bundle-Category: Kalix Enrolment Question
 Embed-Dependency:*;artifactId=!admin-core-api|framework-core-impl|framework-core-util|enrolment-question-api|framework-extend-api|framework-extend-impl
 Import-Package: com.kalix.framework.core.util,\
+                com.kalix.framework.core.api.osgi,\
+                com.kalix.framework.core.api.security,\
                 com.kalix.framework.core.api.system,\
                 com.kalix.framework.core.api.persistence,\
                 com.kalix.framework.core.api.dao,\
                 com.kalix.framework.core.api.biz,\
-                com.kalix.framework.extend.api.entities,\
                 com.kalix.framework.core.impl.biz,\
+                com.kalix.framework.extend.api.entities,\
                 com.kalix.framework.extend.impl.biz,\
-                com.kalix.admin.core.api.biz.*,\
+                com.kalix.admin.core.api.biz,\
                 org.lightcouch,\
                 org.osgi.framework,\
                 org.osgi.service.blueprint,\
                 org.apache.commons.codec.binary,\
-                com.kalix.framework.core.api.osgi,\
-                com.kalix.framework.core.api.security,\
                 org.xml.sax.*,\
                 javax.xml.*,\
                 org.apache.log4j.*,\
                 javax.swing.*,\
                 javax.naming.*,\
-                com.kalix.admin.core.api.biz,\
                 com.kalix.enrolment.question.api.dao,\
                 com.kalix.enrolment.question.api.biz,\
+                com.kalix.enrolment.question.api.model,\
                 com.kalix.enrolment.question.entities,\
                 com.kalix.enrolment.question.dto.model,\
                 org.apache.commons.lang,\
