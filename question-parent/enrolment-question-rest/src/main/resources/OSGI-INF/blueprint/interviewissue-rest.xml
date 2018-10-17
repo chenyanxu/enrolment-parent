@@ -3,7 +3,8 @@
            xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
            xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
        http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
-    <reference id="interviewissueService" interface="com.kalix.enrolment.question.api.biz.IInterviewIssueBeanService"/>
+    <reference id="interviewIssueService" interface="com.kalix.enrolment.question.api.biz.IInterviewIssueBeanService"/>
+    <reference id="interviewIssueAuditService" interface="com.kalix.enrolment.question.api.biz.IQuestionAuditService" filter="(beanName=InterviewIssue)"/>
 
     <camelContext id="interviewIssueCamel" xmlns="http://camel.apache.org/schema/blueprint">
 
@@ -17,14 +18,14 @@
             <!-- this is a rest GET to find all interviewIssues -->
             <get id="route-getAllInterviewIssue">
                 <description>Find all interviewIssues</description>
-                <to uri="bean:interviewissueService?method=getAllEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+                <to uri="bean:interviewIssueService?method=getAllEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
             </get>
 
             <!-- this is a rest POST to create a interviewIssue -->
             <post id="route-addInterviewIssue" type="com.kalix.enrolment.question.entities.InterviewIssueBean"
                   outType="com.kalix.framework.core.api.persistence.JsonStatus">
                 <description>Create a interviewIssue</description>
-                <to uri="bean:interviewissueService?method=saveEntity"/>
+                <to uri="bean:interviewIssueService?method=saveEntity"/>
             </post>
         </rest>
 
@@ -32,17 +33,17 @@
             <!-- this is a rest GET to view a interviewIssue by the given id -->
             <get id="route-getInterviewIssue">
                 <description>Find interviewIssue by id</description>
-                <to uri="bean:interviewissueService?method=getEntity(${header.id})"/>
+                <to uri="bean:interviewIssueService?method=getEntity(${header.id})"/>
             </get>
             <put id="route-update-InterviewIssue" type="com.kalix.enrolment.question.entities.InterviewIssueBean"
                  outType="com.kalix.framework.core.api.persistence.JsonStatus">
                 <description>Updates a InterviewIssue</description>
-                <to uri="bean:interviewissueService?method=updateEntity"/>
+                <to uri="bean:interviewIssueService?method=updateEntity"/>
             </put>
             <!-- this is a rest DELETE to delete a interviewIssue -->
             <!--<delete id="route-deleteInterviewIssue" outType="com.kalix.framework.core.api.persistence.JsonStatus">-->
                 <!--<description>Delete a interviewIssue</description>-->
-                <!--<to uri="bean:interviewissueService?method=deleteEntity(${header.id})"/>-->
+                <!--<to uri="bean:interviewIssueService?method=deleteEntity(${header.id})"/>-->
             <!--</delete>-->
         </rest>
 
@@ -50,14 +51,14 @@
             <delete id="route-logicDeleteInterviewIssue" type="com.kalix.enrolment.question.entities.InterviewIssueBean"
                     outType="com.kalix.framework.core.api.persistence.JsonStatus">
                 <description>Logic Delete a interviewIssue</description>
-                <to uri="bean:interviewissueService?method=logicDeleteEntity(${body})"/>
+                <to uri="bean:interviewIssueService?method=logicDeleteEntity(${body})"/>
             </delete>
         </rest>
 
         <rest path="/interviewissues/delete/batchLogicDelete" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <delete id="route-batchLogicDeleteInterviewIssue" outType="com.kalix.framework.core.api.persistence.JsonStatus">
                 <description>Batch Logic Delete interviewIssues</description>
-                <to uri="bean:interviewissueService?method=batchLogicDeleteEntity(${header.entityIds},${header.reason})"/>
+                <to uri="bean:interviewIssueService?method=batchLogicDeleteEntity(${header.entityIds},${header.reason})"/>
             </delete>
         </rest>
 
@@ -66,7 +67,7 @@
             <!-- this is a rest GET to find all interviewissues -->
             <get id="route-getExportInterviewIssue">
                 <description>Find all interviewissues</description>
-                <to uri="bean:interviewissueService?method=getAllEntityforReport(${header.jsonStr})"/>
+                <to uri="bean:interviewIssueService?method=getAllEntityforReport(${header.jsonStr})"/>
             </get>
         </rest>
 
@@ -74,13 +75,13 @@
             <description>interviewissue check rest service</description>
             <get id="route-getAllCheckInterviewIssue">
                 <description>Find all check interviewissues</description>
-                <to uri="bean:interviewissueService?method=getAllCheckEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+                <to uri="bean:interviewIssueAuditService?method=getAllAuditEntityByQuery(${header.page},${header.limit},${header.subType})"/>
             </get>
 
             <put id="route-batch-InterviewIssueCheck" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8"
                  outType="com.kalix.framework.core.api.persistence.JsonStatus">
                 <description>Batch check InterviewIssue</description>
-                <to uri="bean:interviewissueService?method=batchAudit(${header.entityIds},${header.reason})"/>
+                <to uri="bean:interviewIssueAuditService?method=batchAudit(${header.entityIds},${header.checkFlag},${header.reason})"/>
             </put>
         </rest>
 
@@ -88,7 +89,7 @@
             <!-- this is a rest GET to view a check interviewissue by the given id -->
             <get id="route-getCheckInterviewIssue">
                 <description>Find check interviewissue by id</description>
-                <to uri="bean:interviewissueService?method=getEntity(${header.id})"/>
+                <to uri="bean:interviewIssueService?method=getEntity(${header.id})"/>
             </get>
         </rest>
     </camelContext>

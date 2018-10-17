@@ -4,6 +4,7 @@
            xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
        http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
     <reference id="choiceService" interface="com.kalix.enrolment.question.api.biz.IChoiceBeanService"/>
+    <reference id="choiceAuditService" interface="com.kalix.enrolment.question.api.biz.IQuestionAuditService" filter="(beanName=Choice)"/>
 
     <camelContext id="choiceCamel" xmlns="http://camel.apache.org/schema/blueprint">
 
@@ -46,13 +47,6 @@
             <!--</delete>-->
         </rest>
 
-        <rest path="/choices/templete/review" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
-            <get id="route-logicReviewChoice">
-                <description>Review choice</description>
-                <to uri="bean:choiceService?method=createDoc()"/>
-            </get>
-        </rest>
-
         <rest path="/choices/delete/logicDelete" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <delete id="route-logicDeleteChoice" type="com.kalix.enrolment.question.entities.ChoiceBean"
                     outType="com.kalix.framework.core.api.persistence.JsonStatus">
@@ -81,13 +75,13 @@
             <description>choice check rest service</description>
             <get id="route-getAllCheckChoice">
                 <description>Find all check choices</description>
-                <to uri="bean:choiceService?method=getAllCheckEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+                <to uri="bean:choiceAuditService?method=getAllAuditEntityByQuery(${header.page},${header.limit},${header.subType})"/>
             </get>
 
             <put id="route-batch-ChoiceCheck" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8"
                  outType="com.kalix.framework.core.api.persistence.JsonStatus">
                 <description>Batch check Choice</description>
-                <to uri="bean:choiceService?method=batchAudit(${header.entityIds},${header.reason})"/>
+                <to uri="bean:choiceAuditService?method=batchAudit(${header.entityIds},${header.checkFlag},${header.reason})"/>
             </put>
         </rest>
 

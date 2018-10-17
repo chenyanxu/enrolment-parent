@@ -4,6 +4,7 @@
            xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
        http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
     <reference id="subjectService" interface="com.kalix.enrolment.question.api.biz.ISubjectBeanService"/>
+    <reference id="subjectAuditService" interface="com.kalix.enrolment.question.api.biz.IQuestionAuditService" filter="(beanName=Subject)"/>
 
     <camelContext id="subjectCamel" xmlns="http://camel.apache.org/schema/blueprint">
 
@@ -74,13 +75,13 @@
             <description>subject check rest service</description>
             <get id="route-getAllCheckSubject">
                 <description>Find all check subjects</description>
-                <to uri="bean:subjectService?method=getAllCheckEntityByQuery(${header.subjectType},${header.page},${header.limit})"/>
+                <to uri="bean:subjectAuditService?method=getAllAuditEntityByQuery(${header.page},${header.limit},${header.subType})"/>
             </get>
 
             <put id="route-batch-SubjectCheck" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8"
                  outType="com.kalix.framework.core.api.persistence.JsonStatus">
                 <description>Batch check Subject</description>
-                <to uri="bean:subjectService?method=batchAudit(${header.entityIds},${header.checkFlag}},${header.reason})"/>
+                <to uri="bean:subjectAuditService?method=batchAudit(${header.entityIds},${header.checkFlag}},${header.reason})"/>
             </put>
         </rest>
 
