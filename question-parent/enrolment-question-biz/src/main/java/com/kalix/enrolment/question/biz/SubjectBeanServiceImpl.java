@@ -53,7 +53,9 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
             case SubjectType.IMAGE_ANALYSIS:
                 roleName = SubjectType.IMAGE_ANALYSIS_ROLENAME;
                 break;
-
+            case SubjectType.PHOTOGRAPHY_WRITING:
+                roleName = SubjectType.PHOTOGRAPHY_WRITING_ROLENAME;
+                break;
         }
         return roleName;
     }

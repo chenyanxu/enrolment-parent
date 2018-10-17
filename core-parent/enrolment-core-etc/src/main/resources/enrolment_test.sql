@@ -93,6 +93,10 @@ INSERT INTO public.sys_role (id, createby, createbyid, creationdate, updateby, u
   VALUES (845, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.812000', '招生管理', '空乘面试审核人', '空乘面试审核人', 1);
 INSERT INTO public.sys_role (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, app, name, remark, version_)
   VALUES (846, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.812000', '招生管理', '即兴评述审核人', '即兴评述审核人', 1);
+INSERT INTO public.sys_role (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, app, name, remark, version_)
+  VALUES (847, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.812000', '招生管理', '摄影文案创作出题人', '摄影文案创作出题人', 1);
+INSERT INTO public.sys_role (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, app, name, remark, version_)
+  VALUES (848, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.812000', '招生管理', '摄影文案创作审核人', '摄影文案创作审核人', 1);
 
 
 -- enrolment角色分配user，添加苗壮壮和杨宝莹2个用户(用户表里存在)
@@ -280,3 +284,11 @@ INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, update
   VALUES (890, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.916000', 846, 65, 1);
 INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, roleid, userid, version_)
   VALUES (891, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.916000', 846, 75, 1);
+INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, roleid, userid, version_)
+  VALUES (892, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.916000', 847, 65, 1);
+INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, roleid, userid, version_)
+  VALUES (893, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.916000', 847, 75, 1);
+INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, roleid, userid, version_)
+  VALUES (894, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.916000', 848, 65, 1);
+INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, roleid, userid, version_)
+  VALUES (895, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.916000', 848, 75, 1);

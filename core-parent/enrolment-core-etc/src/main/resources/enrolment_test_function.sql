@@ -193,6 +193,14 @@ INSERT INTO "public"."sys_role_application" ("id", "createby", "createbyid", "cr
   SELECT nextval('sys_role_application_id_seq') AS id, '管理员' AS createby, -1 AS createbyid, NULL AS creationdate,
        '管理员' AS updateby, -1 AS updatebyid, '2018-03-16 14:26:10.215' AS updatedate,
        id AS applicationid, '846' AS roleid, '1' AS version_ FROM sys_application WHERE NAME = '招生管理';
+INSERT INTO "public"."sys_role_application" ("id", "createby", "createbyid", "creationdate", "updateby", "updatebyid", "updatedate", "applicationid", "roleid", "version_")
+  SELECT nextval('sys_role_application_id_seq') AS id, '管理员' AS createby, -1 AS createbyid, NULL AS creationdate,
+       '管理员' AS updateby, -1 AS updatebyid, '2018-03-16 14:26:30.22' AS updatedate,
+       id AS applicationid, '847' AS roleid, '1' AS version_ FROM sys_application WHERE NAME = '招生管理';
+INSERT INTO "public"."sys_role_application" ("id", "createby", "createbyid", "creationdate", "updateby", "updatebyid", "updatedate", "applicationid", "roleid", "version_")
+  SELECT nextval('sys_role_application_id_seq') AS id, '管理员' AS createby, -1 AS createbyid, NULL AS creationdate,
+       '管理员' AS updateby, -1 AS updatebyid, '2018-03-16 14:26:10.215' AS updatedate,
+       id AS applicationid, '848' AS roleid, '1' AS version_ FROM sys_application WHERE NAME = '招生管理';
 
 
 
@@ -947,4 +955,36 @@ select fun.id as functionid FROM sys_function fun, sys_application app WHERE fun
 UNION
 select t.id as functionid from sys_function t where t.parentid in (
 	select fun.id from sys_function fun, sys_application app WHERE fun.applicationid=app.id and app.name = '招生管理' and fun.datapermissionkey='extemporereviewcheck')
+) s order by s.functionid) a;
+
+INSERT INTO "public"."sys_role_function" ("id", "createby", "createbyid", "creationdate", "updateby", "updatebyid", "updatedate", "functionid", "roleid", "version_")
+SELECT nextval('sys_role_function_id_seq') AS id, '管理员' AS createby, -1 AS createbyid, NULL AS creationdate,
+       '管理员' AS updateby, -1 AS updatebyid, '2018-03-16 14:26:30' AS updatedate,
+       a.functionid, '847' AS roleid, '1' AS version_
+FROM
+(select DISTINCT s.functionid from (
+select fun.applicationid as functionid FROM sys_function fun, sys_application app WHERE fun.applicationid=app.id and app.name = '招生管理' and fun.datapermissionkey='photographywriting'
+UNION
+select fun.parentid as functionid FROM sys_function fun, sys_application app WHERE fun.applicationid=app.id and app.name = '招生管理' and fun.datapermissionkey='photographywriting'
+UNION
+select fun.id as functionid FROM sys_function fun, sys_application app WHERE fun.applicationid=app.id and app.name = '招生管理' and fun.datapermissionkey='photographywriting'
+UNION
+select t.id as functionid from sys_function t where t.parentid in (
+	select fun.id from sys_function fun, sys_application app WHERE fun.applicationid=app.id and app.name = '招生管理' and fun.datapermissionkey='photographywriting')
+) s order by s.functionid) a;
+
+INSERT INTO "public"."sys_role_function" ("id", "createby", "createbyid", "creationdate", "updateby", "updatebyid", "updatedate", "functionid", "roleid", "version_")
+SELECT nextval('sys_role_function_id_seq') AS id, '管理员' AS createby, -1 AS createbyid, NULL AS creationdate,
+       '管理员' AS updateby, -1 AS updatebyid, '2018-03-16 14:26:30' AS updatedate,
+       a.functionid, '848' AS roleid, '1' AS version_
+FROM
+(select DISTINCT s.functionid from (
+select fun.applicationid as functionid FROM sys_function fun, sys_application app WHERE fun.applicationid=app.id and app.name = '招生管理' and fun.datapermissionkey='photographywritingcheck'
+UNION
+select fun.parentid as functionid FROM sys_function fun, sys_application app WHERE fun.applicationid=app.id and app.name = '招生管理' and fun.datapermissionkey='photographywritingcheck'
+UNION
+select fun.id as functionid FROM sys_function fun, sys_application app WHERE fun.applicationid=app.id and app.name = '招生管理' and fun.datapermissionkey='photographywritingcheck'
+UNION
+select t.id as functionid from sys_function t where t.parentid in (
+	select fun.id from sys_function fun, sys_application app WHERE fun.applicationid=app.id and app.name = '招生管理' and fun.datapermissionkey='photographywritingcheck')
 ) s order by s.functionid) a;
