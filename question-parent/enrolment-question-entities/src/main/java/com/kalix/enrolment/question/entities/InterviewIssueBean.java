@@ -18,6 +18,7 @@ public class InterviewIssueBean extends BaseQuestionBean {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy", timezone = "GMT+8")
     private Date year;                 // 年份
+    private String scoreStandard;      // 评分标准
 
     public String getInterviewType() {
         return interviewType;
@@ -33,5 +34,13 @@ public class InterviewIssueBean extends BaseQuestionBean {
 
     public void setYear(Date year) {
         this.year = year;
+    }
+
+    public String getScoreStandard() {
+        return scoreStandard;
+    }
+
+    public void setScoreStandard(String scoreStandard) {
+        this.scoreStandard = scoreStandard;
     }
 }

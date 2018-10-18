@@ -19,6 +19,7 @@ public class SubjectBean extends BaseQuestionBean {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy", timezone = "GMT+8")
     private Date year;                 // 年份
     private String answerConstraint;   // 答题要求
+    private String scoreStandard;      // 评分标准
 
     public String getSubjectType() {
         return subjectType;
@@ -42,5 +43,13 @@ public class SubjectBean extends BaseQuestionBean {
 
     public void setAnswerConstraint(String answerConstraint) {
         this.answerConstraint = answerConstraint;
+    }
+
+    public String getScoreStandard() {
+        return scoreStandard;
+    }
+
+    public void setScoreStandard(String scoreStandard) {
+        this.scoreStandard = scoreStandard;
     }
 }

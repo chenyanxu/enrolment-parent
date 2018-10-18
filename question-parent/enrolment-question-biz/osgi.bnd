@@ -15,6 +15,7 @@ Import-Package: com.kalix.framework.core.util,\
                 com.kalix.framework.core.impl.biz,\
                 com.kalix.framework.extend.api.entities,\
                 com.kalix.framework.extend.impl.biz,\
+                com.kalix.admin.core.entities,\
                 com.kalix.admin.core.api.biz,\
                 org.lightcouch,\
                 org.osgi.framework,\
