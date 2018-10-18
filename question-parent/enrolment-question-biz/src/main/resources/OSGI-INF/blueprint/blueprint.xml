@@ -35,6 +35,13 @@
             <entry key="beanName" value="Completion"/>
         </service-properties>
     </service>
+    <!-- 填空题成卷服务 -->
+    <service ref="completionBeanServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.ITestPaperService">
+        <service-properties>
+            <entry key="beanName" value="Completion"/>
+        </service-properties>
+    </service>
 
     <!-- 选择题服务 -->
     <bean id="choiceBeanServiceImpl" class="com.kalix.enrolment.question.biz.ChoiceBeanServiceImpl">
@@ -53,6 +60,13 @@
     <!-- 选择题预览服务 -->
     <service ref="choiceBeanServiceImpl"
              interface="com.kalix.framework.core.api.biz.IDownloadService">
+        <service-properties>
+            <entry key="beanName" value="Choice"/>
+        </service-properties>
+    </service>
+    <!-- 选择题成卷服务 -->
+    <service ref="choiceBeanServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.ITestPaperService">
         <service-properties>
             <entry key="beanName" value="Choice"/>
         </service-properties>
@@ -79,6 +93,13 @@
             <entry key="beanName" value="Verse"/>
         </service-properties>
     </service>
+    <!-- 补全诗句成卷服务 -->
+    <service ref="verseBeanServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.ITestPaperService">
+        <service-properties>
+            <entry key="beanName" value="Verse"/>
+        </service-properties>
+    </service>
 
     <!-- 音乐基础服务 -->
     <bean id="musicBeanServiceImpl" class="com.kalix.enrolment.question.biz.MusicBeanServiceImpl">
@@ -97,6 +118,13 @@
     <!-- 音乐基础预览服务 -->
     <service ref="musicBeanServiceImpl"
              interface="com.kalix.framework.core.api.biz.IDownloadService">
+        <service-properties>
+            <entry key="beanName" value="Music"/>
+        </service-properties>
+    </service>
+    <!-- 音乐基础成卷服务 -->
+    <service ref="musicBeanServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.ITestPaperService">
         <service-properties>
             <entry key="beanName" value="Music"/>
         </service-properties>
@@ -123,6 +151,13 @@
             <entry key="beanName" value="Subject"/>
         </service-properties>
     </service>
+    <!-- 音乐基础成卷服务 -->
+    <service ref="subjectBeanServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.ITestPaperService">
+        <service-properties>
+            <entry key="beanName" value="Subject"/>
+        </service-properties>
+    </service>
 
     <!-- 面试题服务 -->
     <bean id="interviewIssueBeanServiceImpl" class="com.kalix.enrolment.question.biz.InterviewIssueBeanServiceImpl">
@@ -145,6 +180,13 @@
             <entry key="beanName" value="InterviewIssue"/>
         </service-properties>
     </service>
+    <!-- 面试题成卷服务 -->
+    <service ref="interviewIssueBeanServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.ITestPaperService">
+        <service-properties>
+            <entry key="beanName" value="InterviewIssue"/>
+        </service-properties>
+    </service>
 
     <!-- 题库排重服务 -->
     <bean id="repeatedDtoServiceImpl" class="com.kalix.enrolment.question.biz.RepeatedDtoServiceImpl">
@@ -155,14 +197,4 @@
     </bean>
     <service id="repeatedDtoService" ref="repeatedDtoServiceImpl"
         interface="com.kalix.enrolment.question.api.biz.IRepeatedBeanService"/>
-
-    <!-- 成卷服务 -->
-    <bean id="testPaperServiceImpl" class="com.kalix.enrolment.question.biz.TestPaperServiceImpl">
-        <property name="verseBeanDao" ref="verseBeanDao"/>
-        <property name="choiceBeanDao" ref="choiceBeanDao"/>
-        <property name="completionBeanDao" ref="completionBeanDao"/>
-        <property name="shiroService" ref="shiroService"/>
-    </bean>
-    <service id="testPaperService" ref="testPaperServiceImpl"
-             interface="com.kalix.enrolment.question.api.biz.ITestPaperService"/>
 </blueprint>

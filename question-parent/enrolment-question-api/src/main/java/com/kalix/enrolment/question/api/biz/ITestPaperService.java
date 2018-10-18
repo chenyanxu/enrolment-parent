@@ -1,16 +1,36 @@
 package com.kalix.enrolment.question.api.biz;
 
-import com.kalix.enrolment.question.entities.ChoiceBean;
 import com.kalix.framework.core.api.IService;
-import com.kalix.framework.core.api.persistence.JsonStatus;
-import com.kalix.framework.extend.api.biz.ILogicDeleteService;
 
 import java.util.Map;
 
 /**
- * Created by zangyanming at 2018-09-13.
+ * Created by hqj at 2018-10-18.
  */
 public interface ITestPaperService extends IService {
-    public JsonStatus createTestPaper(String fileName, Map tempMap);
-    public JsonStatus createTestPaper();
+
+    /**
+     * 获取题库单项题型预览模板文件名
+     *
+     * @param subType
+     * @return
+     */
+    String getTempName(String subType);
+
+    /**
+     * 生成题库单项题型预览结果
+     *
+     * @param tempMap 预览内容
+     * @return
+     */
+    String createSinglePreview(Map tempMap, String subType);
+
+    /**
+     * 生成试卷单项题型试题结果
+     *
+     * @return
+     */
+    Map<String, Object> createSingleTestPaper(String subType);
+
+    void createTestPaper();
 }

@@ -1,8 +1,8 @@
 package com.kalix.enrolment.question.biz;
 
-import com.kalix.enrolment.question.api.biz.IFreemarkerService;
 import com.kalix.enrolment.question.api.biz.IInterviewIssueBeanService;
 import com.kalix.enrolment.question.api.biz.IQuestionAuditService;
+import com.kalix.enrolment.question.api.biz.ITestPaperService;
 import com.kalix.enrolment.question.api.dao.IInterviewIssueBeanDao;
 import com.kalix.enrolment.question.api.model.InterviewType;
 import com.kalix.enrolment.question.api.model.QuestionType;
@@ -10,13 +10,17 @@ import com.kalix.enrolment.question.entities.InterviewIssueBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by zangyanming at 2018-09-13
  */
 public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl<IInterviewIssueBeanDao, InterviewIssueBean>
-        implements IInterviewIssueBeanService, IQuestionAuditService, IDownloadService, IFreemarkerService {
+        implements IInterviewIssueBeanService, IQuestionAuditService, IDownloadService, ITestPaperService {
+
+    private static String TEMP_NAME = "subject.ftl";
+
     @Override
     public String getQuestionType() {
         return QuestionType.INTERVIEW;
@@ -76,7 +80,17 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
         tempMap.put("question", dataMap);
         String[] str = new String[2];
         str[0] = "123";
-        str[1] = this.createDoc("choice.ftl", tempMap);
+        str[1] = this.createSinglePreview(tempMap, interviewIssueBean.getInterviewType());
         return str;
+    }
+
+    @Override
+    public String getTempName(String subType) {
+        return TEMP_NAME;
+    }
+
+    @Override
+    public Map<String, Object> createSingleTestPaper(String subType) {
+        return null;
     }
 }

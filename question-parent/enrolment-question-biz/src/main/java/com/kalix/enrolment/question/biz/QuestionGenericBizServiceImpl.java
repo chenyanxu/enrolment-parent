@@ -2,17 +2,16 @@ package com.kalix.enrolment.question.biz;
 
 import com.kalix.admin.core.api.biz.IRoleBeanService;
 import com.kalix.admin.core.entities.RoleBean;
-import com.kalix.enrolment.question.api.biz.IFreemarkerService;
 import com.kalix.enrolment.question.api.biz.IQuestionAuditService;
+import com.kalix.enrolment.question.api.biz.ITestPaperService;
 import com.kalix.enrolment.question.api.model.QuestionType;
 import com.kalix.enrolment.question.entities.BaseQuestionBean;
-import com.kalix.enrolment.question.entities.SubjectBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 import com.kalix.framework.core.api.dao.IGenericDao;
 import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
 import com.kalix.framework.core.util.ConfigUtil;
-import com.kalix.framework.core.util.DateUtil;
+import com.kalix.framework.core.util.JNDIHelper;
 import com.kalix.framework.core.util.StringUtils;
 import com.kalix.framework.extend.impl.biz.LogicDeleteGenericBizServiceImpl;
 import freemarker.template.Configuration;
@@ -21,19 +20,17 @@ import freemarker.template.Template;
 import javax.transaction.Transactional;
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by zangyanming at 2018-09-13
  */
 public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP extends BaseQuestionBean>
         extends LogicDeleteGenericBizServiceImpl<T, TP>
-        implements IQuestionAuditService, IDownloadService, IFreemarkerService {
+        implements IQuestionAuditService, IDownloadService, ITestPaperService {
 
     private IRoleBeanService roleBeanService;
+    private ITestPaperService testPaperService;
 
     @Override
     public JsonData getAllEntityByQuery(Integer page, Integer limit, String jsonStr, String sort) {
@@ -208,6 +205,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     @Override
     @Transactional
     public JsonStatus batchAudit(String entityIds, String checkFlag, String reason) {
+
         JsonStatus jsonStatus = new JsonStatus();
 
         if (entityIds.isEmpty()) {
@@ -234,7 +232,8 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     }
 
     @Override
-    public String createDoc(String fileName, Map tempMap) {
+    public String createSinglePreview(Map tempMap, String subType) {
+
         String htmlStr = "";
 
         Configuration configuration = new Configuration();
@@ -243,7 +242,6 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         //设置模本装置方法和路径,
         Template t = null;
         try {
-
             String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
             if (realPath.charAt(realPath.length() - 1) != '/') {
                 realPath += "/";
@@ -251,6 +249,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             String reviewBaseDir = realPath + "questionfiles";
             configuration.setDirectoryForTemplateLoading(new File(reviewBaseDir));
             //test.ftl为要装载的模板
+            String fileName = this.getTempName(subType);
             t = configuration.getTemplate(fileName, "utf-8");
             //输出文档路径及名称
 //            File outFile = new File("d:\\ddd.doc");
@@ -281,9 +280,72 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         return htmlStr;
     }
 
+    @Override
+    public void createTestPaper() {
+        try {
+            Map tempMap = new HashMap<>();
+            List<Map> test = new ArrayList<Map>();
+            int questionTypeCount = 3;
+            List<String> list = new ArrayList<String>();
+            list.add("Choice");
+            list.add("Completion");
+            list.add("Verse");
+            for (int i = 0; i < questionTypeCount; i++) {
+                String beanName = list.get(i);
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("beanName", beanName);
+                testPaperService = JNDIHelper.getJNDIServiceForName(ITestPaperService.class.getName(), map);
+                Map singleTestPaper = testPaperService.createSingleTestPaper("");
+                test.add(singleTestPaper);
+            }
+            tempMap.put("quesList", test);
+            aaa("testPaper.ftl", tempMap);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private JsonStatus aaa(String fileName, Map tempMap) {
+        JsonStatus jsonStatus = new JsonStatus();
+
+        Configuration configuration = new Configuration();
+
+        //dataMap 要填入模本的数据文件
+        //设置模本装置方法和路径,
+        Template t = null;
+        try {
+            String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
+            if (realPath.charAt(realPath.length() - 1) != '/') {
+                realPath += "/";
+            }
+            String reviewBaseDir = realPath + "questionfiles";
+            configuration.setDirectoryForTemplateLoading(new File(reviewBaseDir));
+            //test.ftl为要装载的模板
+            t = configuration.getTemplate(fileName, "utf-8");
+            //输出文档路径及名称
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String testPaperName = sdf.format(new Date());
+
+            File outFile = new File("d:\\" + testPaperName + ".doc");
+            Writer out = null;
+            FileOutputStream fos = null;
+            fos = new FileOutputStream(outFile);
+            OutputStreamWriter oWriter = new OutputStreamWriter(fos, "UTF-8");
+            //这个地方对流的编码不可或缺，使用main（）单独调用时，应该可以，但是如果是web请求导出时导出后word文档就会打不开，并且包XML文件错误。主要是编码格式不正确，无法解析。
+            //out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile)));
+            out = new BufferedWriter(oWriter);
+            t.process(tempMap, out);
+            out.close();
+            fos.close();
+        } catch (Exception e) {
+            //logger.error("导出出错", e);
+            e.printStackTrace();
+            // throw new BusinessException(CommonResultEnum.COMMON_ERROR_637);
+        }
+        return jsonStatus;
+    }
+
     public void setRoleBeanService(IRoleBeanService roleBeanService) {
         this.roleBeanService = roleBeanService;
     }
-
-
 }
