@@ -155,4 +155,14 @@
     </bean>
     <service id="repeatedDtoService" ref="repeatedDtoServiceImpl"
         interface="com.kalix.enrolment.question.api.biz.IRepeatedBeanService"/>
+
+    <!-- 成卷服务 -->
+    <bean id="testPaperServiceImpl" class="com.kalix.enrolment.question.biz.TestPaperServiceImpl">
+        <property name="verseBeanDao" ref="verseBeanDao"/>
+        <property name="choiceBeanDao" ref="choiceBeanDao"/>
+        <property name="completionBeanDao" ref="completionBeanDao"/>
+        <property name="shiroService" ref="shiroService"/>
+    </bean>
+    <service id="testPaperService" ref="testPaperServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.ITestPaperService"/>
 </blueprint>

@@ -1,6 +1,7 @@
 package com.kalix.enrolment.question.api.biz;
 
 import com.kalix.framework.core.api.IService;
+import com.kalix.framework.core.api.persistence.JsonStatus;
 
 import java.util.Map;
 
@@ -10,4 +11,5 @@ import java.util.Map;
 public interface IFreemarkerService extends IService {
 
     String createDoc(String fileName, Map tempMap);
+
 }
