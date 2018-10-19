@@ -8,10 +8,7 @@ import com.kalix.enrolment.question.api.model.QuestionType;
 import com.kalix.enrolment.question.biz.util.Constants;
 import com.kalix.enrolment.question.entities.CompletionBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
-import com.kalix.framework.core.api.dto.AuditDTOBean;
 import com.kalix.framework.core.api.persistence.JsonStatus;
-import com.kalix.framework.core.util.Assert;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,6 +50,8 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         }
         entity.setSpaceNum(count);
 
+        // 解决create_by 未写入的问题
+        super.beforeSaveEntity(entity, status);
     }
 
 
