@@ -8,5 +8,5 @@ Import-Package: com.kalix.framework.core.api.biz,\
                 com.kalix.enrolment.question.dto.model,\
                 com.kalix.framework.extend.api.entities,\
                 com.kalix.enrolment.question.entities,*
-Include-Resource: target/classes,src/main/folder
+Include-Resource: target/classes
 Bundle-Category: Kalix Enrolment Question
