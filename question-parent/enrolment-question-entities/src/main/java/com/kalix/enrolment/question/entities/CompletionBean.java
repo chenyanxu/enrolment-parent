@@ -20,6 +20,16 @@ public class CompletionBean extends BaseQuestionBean {
     private String answerE;            // 答案E
     private String answerF;            // 答案F
     private String answerG;            // 答案G
+    private int spaceNum;              // 填空个数
+
+
+    public int getSpaceNum() {
+        return spaceNum;
+    }
+
+    public void setSpaceNum(int spaceNum) {
+        this.spaceNum = spaceNum;
+    }
 
     public String getType() {
         return type;

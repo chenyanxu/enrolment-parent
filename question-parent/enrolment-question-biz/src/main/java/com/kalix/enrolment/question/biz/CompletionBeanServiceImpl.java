@@ -8,11 +8,17 @@ import com.kalix.enrolment.question.api.model.QuestionType;
 import com.kalix.enrolment.question.biz.util.Constants;
 import com.kalix.enrolment.question.entities.CompletionBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
+import com.kalix.framework.core.api.dto.AuditDTOBean;
+import com.kalix.framework.core.api.persistence.JsonStatus;
+import com.kalix.framework.core.util.Assert;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Administrator_ on 2018/9/6.
@@ -32,6 +38,24 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
     public String getAuditRoleName(String subType) {
         return AUDIT_ROLE_NAME;
     }
+
+    @Override
+    public void beforeSaveEntity(CompletionBean entity, JsonStatus status) {
+        String pattern = "(?<=\\[#).*?(?=\\])";
+        //	编译正则
+        Pattern p1 = Pattern.compile(pattern);
+        //	指定要匹配的内容
+        Matcher m = p1.matcher(entity.getStem());
+//	计算次数
+        int count = 0;
+        while(m.find()){
+            count++;
+        }
+        entity.setSpaceNum(count);
+
+    }
+
+
 
     @Override
     public String[] createDownloadFile(Long entityId, String fileType) {
