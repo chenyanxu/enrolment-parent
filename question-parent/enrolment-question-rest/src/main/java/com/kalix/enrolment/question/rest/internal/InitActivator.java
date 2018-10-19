@@ -1,15 +1,12 @@
 package com.kalix.enrolment.question.rest.internal;
 
 import com.kalix.framework.core.api.osgi.KalixBundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.http.HttpService;
 
 /**
  * Created by sunlf on 14-3-23.
  */
 public class InitActivator extends KalixBundleActivator {
-    private ServiceReference reference;
+    /*private ServiceReference reference;
     private HttpService httpService;
 
 
@@ -31,5 +28,5 @@ public class InitActivator extends KalixBundleActivator {
         if (httpService != null) {
             httpService.unregister(contextPath + "/enrolment/question/excel");
         }
-    }
+    }*/
 }
