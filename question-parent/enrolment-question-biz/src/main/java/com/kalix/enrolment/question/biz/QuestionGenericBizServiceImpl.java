@@ -238,31 +238,21 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
 
         Configuration configuration = new Configuration();
 
-        //dataMap 要填入模本的数据文件
-        //设置模本装置方法和路径,
+        // dataMap 要填入模本的数据文件
+        // 设置模本装置方法和路径,
         Template t = null;
         try {
             String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
             if (realPath.charAt(realPath.length() - 1) != '/') {
                 realPath += "/";
             }
-            String reviewBaseDir = realPath + "questionfiles";
-            configuration.setDirectoryForTemplateLoading(new File(reviewBaseDir));
-            //test.ftl为要装载的模板
+            String reviewBaseDir = realPath + "reviewfiles";
+            String ftlPath = reviewBaseDir + "/ftl";
+            initReviewDir(reviewBaseDir, "ftl", "");
+            configuration.setDirectoryForTemplateLoading(new File(ftlPath));
+            // 获取要装载的模板
             String fileName = this.getTempName(subType);
             t = configuration.getTemplate(fileName, "utf-8");
-            //输出文档路径及名称
-//            File outFile = new File("d:\\ddd.doc");
-//            Writer out = null;
-//            FileOutputStream fos=null;
-//            fos = new FileOutputStream(outFile);
-//            OutputStreamWriter oWriter = new OutputStreamWriter(fos,"UTF-8");
-//            //这个地方对流的编码不可或缺，使用main（）单独调用时，应该可以，但是如果是web请求导出时导出后word文档就会打不开，并且包XML文件错误。主要是编码格式不正确，无法解析。
-//            //out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile)));
-//            out = new BufferedWriter(oWriter);
-//            t.process(tempMap, out);
-//            out.close();
-//            fos.close();
             StringWriter stringWriter = new StringWriter();
             BufferedWriter writer = new BufferedWriter(stringWriter);
             t.setEncoding("UTF-8");
@@ -343,6 +333,37 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             // throw new BusinessException(CommonResultEnum.COMMON_ERROR_637);
         }
         return jsonStatus;
+    }
+
+    /**
+     * 初始化预览文件夹
+     * 不存在则创建文件夹
+     *
+     * @param reviewBaseDir
+     * @param fileTypeFolder
+     * @param folderName
+     * @return
+     */
+    private void initReviewDir(String reviewBaseDir, String fileTypeFolder, String folderName) {
+        String fileTypePath = reviewBaseDir + "/" + fileTypeFolder;
+        String filePath = "";
+        if (folderName.equals("")) {
+            filePath = fileTypePath;
+        } else {
+            filePath = fileTypePath + "/" + folderName;
+        }
+        File fileBaseDir = new File(reviewBaseDir);
+        if (!fileBaseDir.exists()) {
+            fileBaseDir.mkdir();
+        }
+        File fileTypeDir = new File(fileTypePath);
+        if (!fileTypeDir.exists()) {
+            fileTypeDir.mkdir();
+        }
+        File file = new File(filePath);
+        if (!file.exists()) {
+            file.mkdir();
+        }
     }
 
     public void setRoleBeanService(IRoleBeanService roleBeanService) {
