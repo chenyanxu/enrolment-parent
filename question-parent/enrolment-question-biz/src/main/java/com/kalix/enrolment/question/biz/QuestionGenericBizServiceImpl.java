@@ -87,6 +87,10 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             userIdList = roleBeanService.getUserIdsByRoleId(roleBean.getId());
             persons = userIdList.size();
         }
+        // 判断当前登录人是否是审核人;
+        if (!userIdList.contains(currentUserId)) {
+            return new JsonData();
+        }
 
         // 3.平均分给每个人的试题数
         int perCnt = 0;
