@@ -81,7 +81,7 @@
             <put id="route-batch-SubjectCheck" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8"
                  outType="com.kalix.framework.core.api.persistence.JsonStatus">
                 <description>Batch check Subject</description>
-                <to uri="bean:subjectAuditService?method=batchAudit(${header.entityIds},${header.checkFlag}},${header.reason})"/>
+                <to uri="bean:subjectAuditService?method=batchAudit(${header.entityIds},${header.checkFlag},${header.reason})"/>
             </put>
         </rest>
 

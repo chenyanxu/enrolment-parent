@@ -222,7 +222,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         for (int i = 0; i < ids.length; i++) {
             TP entity = (TP) this.dao.get(Long.parseLong(ids[i]));
             entity.setCheckFlag(checkFlag);
-            entity.setReason(reason);
+            entity.setCheckReason(reason);
             entity.setCheckerId(this.shiroService.getCurrentUserId());
             entity.setChecker(this.shiroService.getCurrentUserRealName());
             entity.setCheckDate(new Date());
