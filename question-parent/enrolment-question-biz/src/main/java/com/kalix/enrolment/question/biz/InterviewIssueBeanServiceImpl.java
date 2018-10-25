@@ -39,9 +39,9 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
             case InterviewType.PROPOSITIONAL_STORY:
                 roleName = InterviewType.PROPOSITIONAL_STORY_ROLENAME;
                 break;
-            case InterviewType.PROPOSITION_TWO_PERSON_ESSAY:
-                roleName = InterviewType.PROPOSITION_TWO_PERSON_ESSAY_ROLENAME;
-                break;
+//            case InterviewType.PROPOSITION_TWO_PERSON_ESSAY:
+//                roleName = InterviewType.PROPOSITION_TWO_PERSON_ESSAY_ROLENAME;
+//                break;
             case InterviewType.ENGLISH_STUDY:
                 roleName = InterviewType.ENGLISH_STUDY_ROLENAME;
                 break;
