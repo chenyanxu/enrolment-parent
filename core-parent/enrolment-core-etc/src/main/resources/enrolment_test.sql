@@ -33,8 +33,8 @@ INSERT INTO public.sys_role (id, createby, createbyid, creationdate, updateby, u
   VALUES (815, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.812000', '招生管理', '话题讨论出题人', '话题讨论出题人', 1);
 INSERT INTO public.sys_role (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, app, name, remark, version_)
   VALUES (816, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.812000', '招生管理', '命题故事出题人', '命题故事出题人', 1);
-INSERT INTO public.sys_role (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, app, name, remark, version_)
-  VALUES (817, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.812000', '招生管理', '命题双人小品出题人', '命题双人小品出题人', 1);
+-- INSERT INTO public.sys_role (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, app, name, remark, version_)
+--   VALUES (817, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.812000', '招生管理', '命题双人小品出题人', '命题双人小品出题人', 1);
 INSERT INTO public.sys_role (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, app, name, remark, version_)
   VALUES (818, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.812000', '招生管理', '英语考察出题人', '英语考察出题人', 1);
 INSERT INTO public.sys_role (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, app, name, remark, version_)
@@ -79,8 +79,8 @@ INSERT INTO public.sys_role (id, createby, createbyid, creationdate, updateby, u
   VALUES (838, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.812000', '招生管理', '话题讨论审核人', '话题讨论审核人', 1);
 INSERT INTO public.sys_role (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, app, name, remark, version_)
   VALUES (839, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.812000', '招生管理', '命题故事审核人', '命题故事审核人', 1);
-INSERT INTO public.sys_role (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, app, name, remark, version_)
-  VALUES (840, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.812000', '招生管理', '命题双人小品审核人', '命题双人小品审核人', 1);
+-- INSERT INTO public.sys_role (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, app, name, remark, version_)
+--   VALUES (840, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.812000', '招生管理', '命题双人小品审核人', '命题双人小品审核人', 1);
 INSERT INTO public.sys_role (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, app, name, remark, version_)
   VALUES (841, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.812000', '招生管理', '英语考察审核人', '英语考察审核人', 1);
 INSERT INTO public.sys_role (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, app, name, remark, version_)
@@ -164,10 +164,10 @@ INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, update
   VALUES (830, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.916000', 816, 65, 1);
 INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, roleid, userid, version_)
   VALUES (831, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.916000', 816, 75, 1);
-INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, roleid, userid, version_)
-  VALUES (832, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.916000', 817, 65, 1);
-INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, roleid, userid, version_)
-  VALUES (833, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.916000', 817, 75, 1);
+-- INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, roleid, userid, version_)
+--   VALUES (832, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.916000', 817, 65, 1);
+-- INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, roleid, userid, version_)
+--   VALUES (833, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.916000', 817, 75, 1);
 INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, roleid, userid, version_)
   VALUES (834, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.916000', 818, 65, 1);
 INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, roleid, userid, version_)
@@ -256,10 +256,10 @@ INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, update
   VALUES (876, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.916000', 839, 65, 1);
 INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, roleid, userid, version_)
   VALUES (877, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.916000', 839, 75, 1);
-INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, roleid, userid, version_)
-  VALUES (878, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.916000', 840, 65, 1);
-INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, roleid, userid, version_)
-  VALUES (879, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.916000', 840, 75, 1);
+-- INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, roleid, userid, version_)
+--   VALUES (878, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.916000', 840, 65, 1);
+-- INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, roleid, userid, version_)
+--   VALUES (879, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.916000', 840, 75, 1);
 INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, roleid, userid, version_)
   VALUES (880, '管理员', -1, '2018-10-15 08:11:01.916000', '管理员', -1, '2018-10-15 08:11:01.916000', 841, 65, 1);
 INSERT INTO public.sys_role_user (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, roleid, userid, version_)
