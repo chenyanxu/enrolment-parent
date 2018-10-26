@@ -46,4 +46,28 @@ public class QuestionSettingBean extends PersistentEntity {
     public void setQuestionCloseTime(Date questionCloseTime) {
         this.questionCloseTime = questionCloseTime;
     }
+
+    public Double getCilinSimilarity() {
+        return cilinSimilarity;
+    }
+
+    public void setCilinSimilarity(Double cilinSimilarity) {
+        this.cilinSimilarity = cilinSimilarity;
+    }
+
+    public Double getPhraseSimilarity() {
+        return phraseSimilarity;
+    }
+
+    public void setPhraseSimilarity(Double phraseSimilarity) {
+        this.phraseSimilarity = phraseSimilarity;
+    }
+
+    public Double getMorphoSimilarity() {
+        return morphoSimilarity;
+    }
+
+    public void setMorphoSimilarity(Double morphoSimilarity) {
+        this.morphoSimilarity = morphoSimilarity;
+    }
 }
