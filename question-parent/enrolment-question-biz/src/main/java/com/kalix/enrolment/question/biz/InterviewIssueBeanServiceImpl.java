@@ -60,6 +60,12 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
             case InterviewType.EXTEMPORE_REVIEW:
                 roleName = InterviewType.EXTEMPORE_REVIEW_ROLENAME;
                 break;
+            case InterviewType.ACT_SHORTSKETCH:
+                roleName = InterviewType.ACT_SHORTSKETCH_ROLENAME;
+                break;
+            case InterviewType.DIRECT_SHORTSKETCH:
+                roleName = InterviewType.DIRECT_SHORTSKETCH_ROLENAME;
+                break;
         }
         return roleName;
     }
