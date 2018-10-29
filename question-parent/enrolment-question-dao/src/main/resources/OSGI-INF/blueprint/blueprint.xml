@@ -48,4 +48,16 @@
         <tx:transaction method="*" value="Required"/>
     </bean>
     <service id="questionSettingBeanDao" ref="questionSettingBeanDaoImpl" interface="com.kalix.enrolment.question.api.dao.IQuestionSettingBeanDao"/>
+
+    <!--试卷dao-->
+    <bean id="paperBeanDaoImpl" class="com.kalix.enrolment.question.dao.PaperBeanDaoImpl"> <!--init-method="init">-->
+        <tx:transaction method="*" value="Required"/>
+    </bean>
+    <service id="paperBeanDao" ref="paperBeanDaoImpl" interface="com.kalix.enrolment.question.api.dao.IPaperBeanDao"/>
+
+    <!--参数dao-->
+    <bean id="ruleBeanDaoImpl" class="com.kalix.enrolment.question.dao.RuleBeanDaoImpl"> <!--init-method="init">-->
+        <tx:transaction method="*" value="Required"/>
+    </bean>
+    <service id="ruleBeanDao" ref="ruleBeanDaoImpl" interface="com.kalix.enrolment.question.api.dao.IRuleBeanDao"/>
 </blueprint>

@@ -14,6 +14,8 @@
     <reference id="shiroService" interface="com.kalix.framework.core.api.security.IShiroService"/>
     <reference id="roleBeanService" interface="com.kalix.admin.core.api.biz.IRoleBeanService"/>
     <reference id="questionSettingBeanDao" interface="com.kalix.enrolment.question.api.dao.IQuestionSettingBeanDao"/>
+    <reference id="paperBeanDao" interface="com.kalix.enrolment.question.api.dao.IPaperBeanDao"/>
+    <reference id="ruleBeanDao" interface="com.kalix.enrolment.question.api.dao.IRuleBeanDao"/>
 
     <!-- 填空题服务 -->
     <bean id="completionBeanServiceImpl" class="com.kalix.enrolment.question.biz.CompletionBeanServiceImpl">
@@ -205,4 +207,18 @@
     </bean>
     <service id="questionSettingBeanService" ref="questionSettingBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IQuestionSettingBeanService"/>
+
+    <!-- 试卷服务 -->
+    <bean id="paperBeanServiceImpl" class="com.kalix.enrolment.question.biz.PaperBeanServiceImpl">
+        <property name="dao" ref="paperBeanDao"/>
+    </bean>
+    <service id="paperBeanService" ref="paperBeanServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.IPaperBeanService"/>
+
+    <!-- 参数服务 -->
+    <bean id="ruleBeanServiceImpl" class="com.kalix.enrolment.question.biz.RuleBeanServiceImpl">
+        <property name="dao" ref="ruleBeanDao"/>
+    </bean>
+    <service id="ruleBeanService" ref="ruleBeanServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.IRuleBeanService"/>
 </blueprint>
