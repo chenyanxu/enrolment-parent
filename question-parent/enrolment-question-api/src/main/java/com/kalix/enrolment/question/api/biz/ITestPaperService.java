@@ -1,8 +1,7 @@
 package com.kalix.enrolment.question.api.biz;
 
 import com.kalix.framework.core.api.IService;
-import com.kalix.framework.core.api.persistence.JsonData;
-import org.apache.openjpa.json.JSON;
+import com.kalix.framework.core.api.persistence.JsonStatus;
 
 import java.util.Map;
 
@@ -34,5 +33,5 @@ public interface ITestPaperService extends IService {
      */
     Map<String, Object> createSingleTestPaper(String subType);
 
-    JsonData createTestPaper(Long id);
+    JsonStatus createTestPaper(Long paperId);
 }

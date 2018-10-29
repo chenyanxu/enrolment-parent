@@ -23,6 +23,4 @@ import java.util.Map;
  */
 public class PaperBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<IPaperBeanDao, PaperBean>
         implements IPaperBeanService {
-
-
 }

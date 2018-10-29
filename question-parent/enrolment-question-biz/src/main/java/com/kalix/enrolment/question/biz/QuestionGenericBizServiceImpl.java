@@ -6,6 +6,7 @@ import com.kalix.enrolment.question.api.biz.IQuestionAuditService;
 import com.kalix.enrolment.question.api.biz.ITestPaperService;
 import com.kalix.enrolment.question.api.model.QuestionType;
 import com.kalix.enrolment.question.entities.BaseQuestionBean;
+import com.kalix.enrolment.question.entities.RuleBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 import com.kalix.framework.core.api.dao.IGenericDao;
 import com.kalix.framework.core.api.persistence.JsonData;
@@ -275,17 +276,19 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     }
 
     @Override
-    public void createTestPaper() {
+    public JsonStatus createTestPaper(Long paperId) {
+        JsonStatus jsonStatus = new JsonStatus();
         try {
             Map tempMap = new HashMap<>();
             List<Map> test = new ArrayList<Map>();
+            RuleBean ruleBean = new RuleBean();
             int questionTypeCount = 3;
             List<String> list = new ArrayList<String>();
-            list.add("Choice");
-            list.add("Completion");
-            list.add("Verse");
+            list.add("1");
+            list.add("2");
+            list.add("3");
             for (int i = 0; i < questionTypeCount; i++) {
-                String beanName = list.get(i);
+                String beanName = this.getBeanName(ruleBean.getQuesType());
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("beanName", beanName);
                 testPaperService = JNDIHelper.getJNDIServiceForName(ITestPaperService.class.getName(), map);
@@ -297,6 +300,23 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return jsonStatus;
+    }
+
+    private String getBeanName(String quesType) {
+        String beanName = "";
+        switch (quesType) {
+            case QuestionType.COMPLETION:
+                beanName = "Completion";
+                break;
+            case QuestionType.CHOICE:
+                beanName = "Choice";
+                break;
+            case QuestionType.VERSE:
+                beanName = "";
+                break;
+        }
+        return beanName;
     }
 
     private JsonStatus aaa(String fileName, Map tempMap) {
