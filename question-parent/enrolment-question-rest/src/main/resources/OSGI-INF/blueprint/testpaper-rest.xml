@@ -28,7 +28,16 @@
                 <to uri="bean:choiceService?method=saveEntity"/>
             </post>
         </rest>
+        <rest path="/PaperDatas" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>testPaper rest service</description>
 
+            <!-- this is a rest GET to find all choices -->
+            <get id="route-getPaperData">
+                <description>create PaperData</description>
+                <to uri="bean:testPaperService?method=getPaperData(${header.id})"/>
+            </get>
+
+        </rest>
 
     </camelContext>
 </blueprint>

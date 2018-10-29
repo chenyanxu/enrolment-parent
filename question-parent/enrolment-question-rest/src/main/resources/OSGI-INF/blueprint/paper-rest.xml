@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+       http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+
+    <reference id="paperService" interface="com.kalix.enrolment.question.api.biz.IPaperBeanService"/>
+
+    <camelContext id="paperCamel" xmlns="http://camel.apache.org/schema/blueprint">
+
+        <restConfiguration component="servlet" bindingMode="json">
+            <dataFormatProperty key="prettyPrint" value="${rest.pretty}"/>
+        </restConfiguration>
+
+        <rest path="/papers" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>Paper rest service</description>
+            <!-- this is a rest GET to find all choices -->
+            <get id="route-getAllPaper">
+                <description>create Paper</description>
+                <to uri="bean:paperService?method=getAllEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+            </get>
+            <!-- this is a rest POST to create an choice -->
+            <post id="route-addPaper" type="com.kalix.enrolment.question.entities.PaperBean"
+                  outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Create a paper</description>
+                <to uri="bean:paperService?method=saveEntity"/>
+            </post>
+        </rest>
+
+        <rest path="/papers/{id}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <!-- this is a rest GET to view an choice by the given id -->
+            <get id="route-getPaper">
+                <description>Find paper by id</description>
+                <to uri="bean:paperService?method=getEntity(${header.id})"/>
+            </get>
+            <put id="route-update-Paper" type="com.kalix.enrolment.question.entities.PaperBean"
+                 outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Updates a Choice</description>
+                <to uri="bean:paperService?method=updateEntity"/>
+            </put>
+            <!-- this is a rest DELETE to delete an choice -->
+            <!--<delete id="route-deleteChoice" outType="com.kalix.framework.core.api.persistence.JsonStatus">-->
+            <!--<description>Delete a choice</description>-->
+            <!--<to uri="bean:choiceService?method=deleteEntity(${header.id})"/>-->
+            <!--</delete>-->
+        </rest>
+
+        <rest path="/papers/{paperId}/rules" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>Paper rest service</description>
+            <!-- this is a rest GET to find all choices -->
+            <get id="route-getAllPaperRlue">
+                <description>create Paper</description>
+                <to uri="bean:ruleService?method=getEntitiesByFK(${header.paperId},${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+            </get>
+            <!-- this is a rest POST to create an choice -->
+            <post id="route-addPaperRlue" type="com.kalix.enrolment.question.entities.RuleBean"
+                  outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Create a paper</description>
+                <to uri="bean:ruleService?method=saveEntity"/>
+            </post>
+        </rest>
+
+        <rest path="/papers/{paperId}/rules/{id}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <!-- this is a rest GET to view an choice by the given id -->
+            <get id="route-getPaperRlue">
+                <description>Find paper by id</description>
+                <to uri="bean:ruleService?method=getEntity(${header.id})"/>
+            </get>
+            <put id="route-update-Paper-Rlue" type="com.kalix.enrolment.question.entities.RuleBean"
+                 outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Updates a Choice</description>
+                <to uri="bean:ruleService?method=updateEntity"/>
+            </put>
+            <!-- this is a rest DELETE to delete an choice -->
+            <!--<delete id="route-deleteChoice" outType="com.kalix.framework.core.api.persistence.JsonStatus">-->
+            <!--<description>Delete a choice</description>-->
+            <!--<to uri="bean:choiceService?method=deleteEntity(${header.id})"/>-->
+            <!--</delete>-->
+        </rest>
+
+        <rest path="/papers/delete/logicDelete" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <delete id="route-logicDeletePaper" type="com.kalix.enrolment.question.entities.PaperBean"
+                    outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Logic Delete a choice</description>
+                <to uri="bean:paperService?method=logicDeleteEntity(${body})"/>
+            </delete>
+        </rest>
+
+
+    </camelContext>
+</blueprint>

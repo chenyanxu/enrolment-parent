@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+       http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+
+    <reference id="ruleService" interface="com.kalix.enrolment.question.api.biz.IRuleBeanService"/>
+
+    <camelContext id="ruleCamel" xmlns="http://camel.apache.org/schema/blueprint">
+
+        <restConfiguration component="servlet" bindingMode="json">
+            <dataFormatProperty key="prettyPrint" value="${rest.pretty}"/>
+        </restConfiguration>
+
+        <rest path="/rules" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>Paper rest service</description>
+            <get id="route-getAllRule">
+                <description>create Rule</description>
+                <to uri="bean:ruleService?method=getAllEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+            </get>
+            <!-- this is a rest POST to create an choice -->
+            <post id="route-addRule" type="com.kalix.enrolment.question.entities.RuleBean"
+                  outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Create a Rule</description>
+                <to uri="bean:ruleService?method=saveEntity"/>
+            </post>
+
+        </rest>
+        <rest path="/rules/{id}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <!-- this is a rest GET to view an choice by the given id -->
+            <get id="route-getRule">
+                <description>Find rule by id</description>
+                <to uri="bean:ruleService?method=getEntity(${header.id})"/>
+            </get>
+            <put id="route-update-Rule" type="com.kalix.enrolment.question.entities.RuleBean"
+                 outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Updates a Choice</description>
+                <to uri="bean:ruleService?method=updateEntity"/>
+            </put>
+        </rest>
+
+
+        <rest path="/rules/delete/logicDelete" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <delete id="route-logicDeleteRule" type="com.kalix.enrolment.question.entities.RuleBean"
+                    outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Logic Delete a choice</description>
+                <to uri="bean:ruleService?method=logicDeleteEntity(${body})"/>
+            </delete>
+        </rest>
+    </camelContext>
+</blueprint>
