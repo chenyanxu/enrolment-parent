@@ -39,9 +39,9 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
             case InterviewType.PROPOSITIONAL_STORY:
                 roleName = InterviewType.PROPOSITIONAL_STORY_ROLENAME;
                 break;
-            case InterviewType.PROPOSITION_TWO_PERSON_ESSAY:
-                roleName = InterviewType.PROPOSITION_TWO_PERSON_ESSAY_ROLENAME;
-                break;
+//            case InterviewType.PROPOSITION_TWO_PERSON_ESSAY:
+//                roleName = InterviewType.PROPOSITION_TWO_PERSON_ESSAY_ROLENAME;
+//                break;
             case InterviewType.ENGLISH_STUDY:
                 roleName = InterviewType.ENGLISH_STUDY_ROLENAME;
                 break;
@@ -59,6 +59,12 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
                 break;
             case InterviewType.EXTEMPORE_REVIEW:
                 roleName = InterviewType.EXTEMPORE_REVIEW_ROLENAME;
+                break;
+            case InterviewType.ACT_SHORTSKETCH:
+                roleName = InterviewType.ACT_SHORTSKETCH_ROLENAME;
+                break;
+            case InterviewType.DIRECT_SHORTSKETCH:
+                roleName = InterviewType.DIRECT_SHORTSKETCH_ROLENAME;
                 break;
         }
         return roleName;

@@ -42,4 +42,10 @@
         <tx:transaction method="*" value="Required"/>
     </bean>
     <service id="interviewIssueBeanDao" ref="interviewIssueBeanDaoImpl" interface="com.kalix.enrolment.question.api.dao.IInterviewIssueBeanDao"/>
+
+    <!--题库功能参数设置dao-->
+    <bean id="questionSettingBeanDaoImpl" class="com.kalix.enrolment.question.dao.QuestionSettingBeanDaoImpl"> <!--init-method="init">-->
+        <tx:transaction method="*" value="Required"/>
+    </bean>
+    <service id="questionSettingBeanDao" ref="questionSettingBeanDaoImpl" interface="com.kalix.enrolment.question.api.dao.IQuestionSettingBeanDao"/>
 </blueprint>

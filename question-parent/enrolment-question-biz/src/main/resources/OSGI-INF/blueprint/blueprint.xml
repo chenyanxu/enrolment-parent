@@ -13,6 +13,7 @@
     <reference id="interviewIssueBeanDao" interface="com.kalix.enrolment.question.api.dao.IInterviewIssueBeanDao"/>
     <reference id="shiroService" interface="com.kalix.framework.core.api.security.IShiroService"/>
     <reference id="roleBeanService" interface="com.kalix.admin.core.api.biz.IRoleBeanService"/>
+    <reference id="questionSettingBeanDao" interface="com.kalix.enrolment.question.api.dao.IQuestionSettingBeanDao"/>
 
     <!-- 填空题服务 -->
     <bean id="completionBeanServiceImpl" class="com.kalix.enrolment.question.biz.CompletionBeanServiceImpl">
@@ -197,4 +198,11 @@
     </bean>
     <service id="repeatedDtoService" ref="repeatedDtoServiceImpl"
         interface="com.kalix.enrolment.question.api.biz.IRepeatedBeanService"/>
+
+    <!-- 题库功能参数设置服务 -->
+    <bean id="questionSettingBeanServiceImpl" class="com.kalix.enrolment.question.biz.QuestionSettingBeanServiceImpl">
+        <property name="dao" ref="questionSettingBeanDao"/>
+    </bean>
+    <service id="questionSettingBeanService" ref="questionSettingBeanServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.IQuestionSettingBeanService"/>
 </blueprint>

@@ -87,6 +87,10 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             userIdList = roleBeanService.getUserIdsByRoleId(roleBean.getId());
             persons = userIdList.size();
         }
+        // 判断当前登录人是否是审核人;
+        if (!userIdList.contains(currentUserId)) {
+            return new JsonData();
+        }
 
         // 3.平均分给每个人的试题数
         int perCnt = 0;
@@ -218,7 +222,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         for (int i = 0; i < ids.length; i++) {
             TP entity = (TP) this.dao.get(Long.parseLong(ids[i]));
             entity.setCheckFlag(checkFlag);
-            entity.setReason(reason);
+            entity.setCheckReason(reason);
             entity.setCheckerId(this.shiroService.getCurrentUserId());
             entity.setChecker(this.shiroService.getCurrentUserRealName());
             entity.setCheckDate(new Date());
