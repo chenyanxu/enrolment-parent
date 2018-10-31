@@ -12,21 +12,21 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "enrolment_question_subject")
-public class SubjectBean extends BaseQuestionBean {
+public class SubjectBean extends BaseQuestionEntity {
     @Column(nullable = false)
-    private String subjectType;               // 主观题类型,字典（主观题类型）
+    private String subType;            // 主观题类型,字典（主观题类型）
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy", timezone = "GMT+8")
     private Date year;                 // 年份
     private String answerConstraint;   // 答题要求
     private String scoreStandard;      // 评分标准
 
-    public String getSubjectType() {
-        return subjectType;
+    public String getSubType() {
+        return subType;
     }
 
-    public void setSubjectType(String subjectType) {
-        this.subjectType = subjectType;
+    public void setSubType(String subType) {
+        this.subType = subType;
     }
 
     public Date getYear() {

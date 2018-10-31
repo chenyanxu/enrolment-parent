@@ -2,13 +2,13 @@ package com.kalix.enrolment.question.biz;
 
 import com.kalix.admin.core.api.biz.IRoleBeanService;
 import com.kalix.admin.core.entities.RoleBean;
+import com.kalix.enrolment.question.api.biz.*;
 import com.kalix.enrolment.question.api.biz.IPaperBeanService;
 import com.kalix.enrolment.question.api.biz.IQuestionAuditService;
 import com.kalix.enrolment.question.api.biz.IRuleBeanService;
 import com.kalix.enrolment.question.api.biz.ITestPaperService;
 import com.kalix.enrolment.question.api.model.QuestionType;
 import com.kalix.enrolment.question.entities.BaseQuestionBean;
-import com.kalix.enrolment.question.entities.PaperBean;
 import com.kalix.enrolment.question.entities.RuleBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 import com.kalix.framework.core.api.dao.IGenericDao;
@@ -35,36 +35,6 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
 
     private IRoleBeanService roleBeanService;
     private ITestPaperService testPaperService;
-    private IPaperBeanService paperBeanService;
-    private IRuleBeanService  ruleBeanService;
-
-    public IRoleBeanService getRoleBeanService() {
-        return roleBeanService;
-    }
-
-    public ITestPaperService getTestPaperService() {
-        return testPaperService;
-    }
-
-    public void setTestPaperService(ITestPaperService testPaperService) {
-        this.testPaperService = testPaperService;
-    }
-
-    public IPaperBeanService getPaperBeanService() {
-        return paperBeanService;
-    }
-
-    public void setPaperBeanService(IPaperBeanService paperBeanService) {
-        this.paperBeanService = paperBeanService;
-    }
-
-    public IRuleBeanService getRuleBeanService() {
-        return ruleBeanService;
-    }
-
-    public void setRuleBeanService(IRuleBeanService ruleBeanService) {
-        this.ruleBeanService = ruleBeanService;
-    }
 
     @Override
     public JsonData getAllEntityByQuery(Integer page, Integer limit, String jsonStr, String sort) {
@@ -94,19 +64,11 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                     + " and checkFlag = '0'"
                     + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))";
         } else {
-            if (questionType.equals(QuestionType.SUBJECT)) {
-                countSql = "select count(1) from " + dao.getTableName()
-                        + " where delFlag = '0'"
-                        + " and checkFlag = '0'"
-                        + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
-                        + " and subjectType = '" + subType + "'";
-            } else if (questionType.equals(QuestionType.INTERVIEW)) {
-                countSql = "select count(1) from " + dao.getTableName()
-                        + " where delFlag = '0'"
-                        + " and checkFlag = '0'"
-                        + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
-                        + " and interviewType = '" + subType + "'";
-            }
+            countSql = "select count(1) from " + dao.getTableName()
+                    + " where delFlag = '0'"
+                    + " and checkFlag = '0'"
+                    + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
+                    + " and subType = '" + subType + "'";
         }
         List list = dao.findByNativeSql(countSql, Integer.class);
         if (list != null && list.get(0) != null) {
@@ -147,26 +109,18 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
 //        // 5.该类型试题当前人已经审核总数
 //        int checkedTotal = 0;
 //        String checkCountSql = "";
-//        if (questionType.equals(QuestionType.COMPLETION) || questionType.equals(QuestionType.CHOICE) ||
-//                questionType.equals(QuestionType.VERSE) || questionType.equals(QuestionType.MUSIC))
+//        if (StringUtils.isEmpty(subType)) {
 //            checkCountSql = "select count(1) from " + dao.getTableName()
 //                    + " where delFlag = '0' "
 //                    + " and checkFlag != '0'"
 //                    + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
 //                    + " and checkerId = " + currentUserId;
-//        else if (questionType.equals(QuestionType.SUBJECT)) {
+//        } else {
 //            checkCountSql = "select count(1) from " + dao.getTableName()
 //                    + " where delFlag = '0' "
 //                    + " and checkFlag != '0'"
 //                    + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
-//                    + " and subjectType = '" + questionSubType
-//                    + "' and checkerId = " + currentUserId;
-//        } else if (questionType.equals(QuestionType.INTERVIEW)) {
-//            checkCountSql = "select count(1) from " + dao.getTableName()
-//                    + " where delFlag = '0' "
-//                    + " and checkFlag != '0'"
-//                    + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
-//                    + " and interviewType = '" + questionSubType
+//                    + " and subType = '" + subType
 //                    + "' and checkerId = " + currentUserId;
 //        }
 //        List checkList = dao.findByNativeSql(checkCountSql, Integer.class);
@@ -201,34 +155,18 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                     + " and checkerId = " + currentUserId
                     + " order by updateDate desc)";
         } else {
-            if (questionType.equals(QuestionType.SUBJECT)) {
-                sql = "(select * from " + dao.getTableName()
-                        + " where delFlag = '0' and checkFlag = '0'"
-                        + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
-                        + " and subjectType = '" + subType + "'"
-                        + " order by updateDate desc limit " + perCnt + " offset " + offset
-                        + ") union all ("
-                        + "select * from " + dao.getTableName()
-                        + " where delFlag = '0' and checkFlag != '0'"
-                        + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
-                        + " and subjectType = '" + subType + "'"
-                        + " and checkerId = " + currentUserId
-                        + " order by updateDate desc)";
-
-            } else if (questionType.equals(QuestionType.INTERVIEW)) {
-                sql = "(select * from " + dao.getTableName()
-                        + " where delFlag = '0' and checkFlag = '0'"
-                        + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
-                        + " and interviewType = '" + subType + "'"
-                        + " order by updateDate desc limit " + perCnt + " offset " + offset
-                        + ") union all ("
-                        + "select * from " + dao.getTableName()
-                        + " where delFlag = '0' and checkFlag != '0'"
-                        + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
-                        + " and interviewType = '" + subType + "'"
-                        + " and checkerId = " + currentUserId
-                        + " order by updateDate desc)";
-            }
+            sql = "(select * from " + dao.getTableName()
+                    + " where delFlag = '0' and checkFlag = '0'"
+                    + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
+                    + " and subType = '" + subType + "'"
+                    + " order by updateDate desc limit " + perCnt + " offset " + offset
+                    + ") union all ("
+                    + "select * from " + dao.getTableName()
+                    + " where delFlag = '0' and checkFlag != '0'"
+                    + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
+                    + " and subType = '" + subType + "'"
+                    + " and checkerId = " + currentUserId
+                    + " order by updateDate desc)";
         }
 
         Class cls = null;
@@ -266,6 +204,131 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         jsonStatus.setSuccess(true);
         jsonStatus.setMsg("试题审核成功");
 
+        return jsonStatus;
+    }
+
+    @Override
+    public JsonData getSingleRepeates(String subType) {
+        JsonData jsonData = new JsonData();
+        List<RepeatedCountDTO> repeateList = new ArrayList<RepeatedCountDTO>();
+        List<Object> referenceList = new ArrayList<Object>();
+        String sql = "";
+        if (StringUtils.isEmpty(subType)) {
+            sql = "select t.* from " + dao.getTableName() + " t "
+                    + " where t.delFlag = '0'"
+                    + " and t.repeatedFlag = '0'";
+        } else {
+            sql = "select t.* from " + dao.getTableName() + " t "
+                    + " where t.delFlag = '0'"
+                    + " and t.repeatedFlag = '0'"
+                    + " and t.subType = '" + subType + "'";
+        }
+        /*Class cls = null;
+        try {
+            cls = Class.forName(this.entityClassName);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }*/
+        List<BaseQuestionEntity> list = dao.findByNativeSql(sql, BaseQuestionEntity.class);
+        referenceList.addAll(list);
+        double defaultCilinSimilarity = 0.5d;
+        QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
+        if (questionSettingBean != null) {
+            defaultCilinSimilarity = questionSettingBean.getCilinSimilarity().doubleValue();
+        }
+        String firstStem = "";
+        String ids = "";
+        int count = 1;
+        for (int i = 0; i < referenceList.size(); i++) {
+            String repeaFlag = "";
+            RepeatedCountDTO repeatedCountDTO = new RepeatedCountDTO();
+            BaseQuestionEntity firstEntity = (BaseQuestionEntity) referenceList.get(i);
+            List<RepeatedDTO> dtoList = new ArrayList<RepeatedDTO>();
+            firstStem = firstEntity.getStem();
+            for (int j = 0; j < referenceList.size(); j++) {
+                BaseQuestionEntity secondEntity = (BaseQuestionEntity) referenceList.get(j);
+                if (secondEntity.getId() != firstEntity.getId()) {
+                    String secondStem = secondEntity.getStem();
+                    //短语相似度
+                    // double result1 = Similarity.phraseSimilarity(firstStem, secondStem);
+                    //词形词序句子相似度值
+                    // double morphoSimilarityResult = Similarity.morphoSimilarity(firstStem, secondStem);
+                    //词林相似度
+                    double result = Similarity.cilinSimilarity(firstStem, secondStem);
+                    if (result > defaultCilinSimilarity) {
+                        repeaFlag = "0";
+                        if (StringUtils.isNotEmpty(ids)) {
+                            if (ids.indexOf(String.valueOf(firstEntity.getId())) < 0) {
+                                RepeatedDTO repeatedDTO = new RepeatedDTO();
+                                repeatedDTO.setQuestionId(firstEntity.getId());
+                                repeatedDTO.setStem(firstEntity.getStem());
+                                // repeatedDTO.setSimilarity("短语相似度-->" + new DecimalFormat("0.00").format(result1) + "；词林相似度" + new DecimalFormat("0.00").format(result));
+                                repeatedDTO.setSimilarity("词林相似度" + new DecimalFormat("0.00").format(result));
+//                                repeatedDTO.setQuestionType("CompletionBean");
+                                dtoList.add(repeatedDTO);
+                                ids += firstEntity.getId() + ",";
+                            }
+                        } else {
+                            RepeatedDTO repeatedDTO = new RepeatedDTO();
+                            repeatedDTO.setQuestionId(firstEntity.getId());
+                            repeatedDTO.setStem(firstEntity.getStem());
+                            repeatedDTO.setSimilarity("词林相似度" + new DecimalFormat("0.00").format(result));
+//                            repeatedDTO.setQuestionType("CompletionBean");
+                            dtoList.add(repeatedDTO);
+                            ids += firstEntity.getId() + ",";
+                        }
+
+                        RepeatedDTO repeatedDTO = new RepeatedDTO();
+                        repeatedDTO.setQuestionId(secondEntity.getId());
+                        repeatedDTO.setStem(secondEntity.getStem());
+                        repeatedDTO.setSimilarity("词林相似度" + new DecimalFormat("0.00").format(result));
+//                        repeatedDTO.setQuestionType("CompletionBean");
+                        dtoList.add(repeatedDTO);
+
+                        referenceList.remove(secondEntity);
+                    }
+                }
+            }
+            if (dtoList != null && dtoList.size() > 0) {
+                repeatedCountDTO.setName("题目" + (count++));
+                repeatedCountDTO.setRepeateList(dtoList);
+                repeateList.add(repeatedCountDTO);
+            }
+
+            if (StringUtils.isEmpty(repeaFlag)) {
+                firstEntity.setRepeatedFlag("1");
+                this.dao.save(firstEntity);
+            }
+            referenceList.remove(firstEntity);
+        }
+        jsonData.setData(repeateList);
+        return jsonData;
+    }
+
+    @Override
+    @Transactional
+    public JsonStatus doSaveRepeate(Long questionId) {
+        JsonStatus jsonStatus = new JsonStatus();
+        TP entity = (TP) this.dao.get(questionId);
+        entity.setRepeatedFlag("1");
+        this.dao.save(entity);
+        jsonStatus.setSuccess(true);
+        jsonStatus.setMsg("试题保留成功！");
+        return jsonStatus;
+    }
+
+    @Override
+    @Transactional
+    public JsonStatus doDeleteRepeate(Long questionId) {
+        JsonStatus jsonStatus = new JsonStatus();
+        TP entity = (TP) this.dao.get(questionId);
+        entity.setDelFlag("1");
+        entity.setRepeatedFlag("1");
+        entity.setUpdateBy(shiroService.getCurrentUserLoginName());
+        entity.setUpdateById(shiroService.getCurrentUserId());
+        this.dao.save(entity);
+        jsonStatus.setSuccess(true);
+        jsonStatus.setMsg("试题删除成功！");
         return jsonStatus;
     }
 
@@ -337,6 +400,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("beanName", beanName);
                 testPaperService = JNDIHelper.getJNDIServiceForName(ITestPaperService.class.getName(), map);
+                Map singleTestPaper = testPaperService.createSingleTestPaper(null);
                 Map singleTestPaper = testPaperService.createSingleTestPaper(paper_map);
                 test.add(singleTestPaper);
             }
@@ -437,5 +501,9 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
 
     public void setRoleBeanService(IRoleBeanService roleBeanService) {
         this.roleBeanService = roleBeanService;
+    }
+
+    public void setQuestionSettingBeanService(IQuestionSettingBeanService questionSettingBeanService) {
+        this.questionSettingBeanService = questionSettingBeanService;
     }
 }

@@ -21,14 +21,15 @@ import java.util.regex.Pattern;
  * Created by Administrator_ on 2018/9/6.
  */
 public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICompletionBeanDao, CompletionBean>
-        implements ICompletionBeanService, IQuestionAuditService, IDownloadService, ITestPaperService {
+        implements ICompletionBeanService, IDownloadService {
 
+    private static String QUESTION_BEAN_NAME = "Completion";
     private static String AUDIT_ROLE_NAME = "填空题审核人";
     private static String TEMP_NAME = "completion.ftl";
 
     @Override
-    public String getQuestionType() {
-        return QuestionType.COMPLETION;
+    public String getQuestionBeanName() {
+        return QUESTION_BEAN_NAME;
     }
 
     @Override
@@ -53,8 +54,6 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         // 解决create_by 未写入的问题
         super.beforeSaveEntity(entity, status);
     }
-
-
 
     @Override
     public String[] createDownloadFile(Long entityId, String fileType) {

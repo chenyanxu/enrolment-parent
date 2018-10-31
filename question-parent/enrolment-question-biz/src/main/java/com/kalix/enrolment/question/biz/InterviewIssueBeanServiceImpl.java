@@ -19,11 +19,12 @@ import java.util.Map;
 public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl<IInterviewIssueBeanDao, InterviewIssueBean>
         implements IInterviewIssueBeanService, IQuestionAuditService, IDownloadService, ITestPaperService {
 
+    private static String QUESTION_BEAN_NAME = "InterviewIssue";
     private static String TEMP_NAME = "subject.ftl";
 
     @Override
-    public String getQuestionType() {
-        return QuestionType.INTERVIEW;
+    public String getQuestionBeanName() {
+        return QUESTION_BEAN_NAME;
     }
 
     @Override
@@ -86,7 +87,7 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
         tempMap.put("question", dataMap);
         String[] str = new String[2];
         str[0] = "123";
-        str[1] = this.createSinglePreview(tempMap, interviewIssueBean.getInterviewType());
+        str[1] = this.createSinglePreview(tempMap, interviewIssueBean.getSubType());
         return str;
     }
 

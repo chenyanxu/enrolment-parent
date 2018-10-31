@@ -20,12 +20,13 @@ import java.util.Map;
 public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBeanDao, VerseBean>
         implements IVerseBeanService, IQuestionAuditService, IDownloadService, ITestPaperService {
 
+    private static String QUESTION_BEAN_NAME = "Verse";
     private static String AUDIT_ROLE_NAME = "补全诗句审核人";
     private static String TEMP_NAME = "verse.ftl";
 
     @Override
-    public String getQuestionType() {
-        return QuestionType.VERSE;
+    public String getQuestionBeanName() {
+        return QUESTION_BEAN_NAME;
     }
 
     @Override

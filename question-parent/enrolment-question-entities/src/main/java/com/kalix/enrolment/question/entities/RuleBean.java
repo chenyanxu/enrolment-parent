@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * ×é¾í¹æÔòBean
+ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Bean
  *
  * @author: fwb
  * @CreateDate: 2018-10-22
@@ -22,28 +22,28 @@ import java.util.List;
 public class RuleBean extends BaseLogicDeleteEntity {
 
     /**
-     * ¹æÔò¶ÔÓ¦µÄ¿¼ÊÔid
+     * ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½Ä¿ï¿½ï¿½ï¿½id
      */
     private Long paperId;
     /**
-     * ÌâÐÍË³Ðò
+     * ï¿½ï¿½ï¿½ï¿½Ë³ï¿½ï¿½
      */
     private int  titleNum;
 
     /**
-     * ÌâÐÍ
+     * ï¿½ï¿½ï¿½ï¿½
      */
     private String quesType;
     /**
-     * Ã¿Ìâ·ÖÊý
+     * Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½
      */
     private Long quesScore;
     /**
-     * ÌâÐÍ×Ü·Ö
+     * ï¿½ï¿½ï¿½ï¿½ï¿½Ü·ï¿½
      */
     private Long quesTotalscore;
     /**
-     * ÌâÐÍÃèÊö
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      */
     private Long quesDesc;
 
@@ -54,8 +54,6 @@ public class RuleBean extends BaseLogicDeleteEntity {
     public void setTitleNum(int titleNum) {
         this.titleNum = titleNum;
     }
-
-
 
     public String getQuesType() {
         return quesType;

@@ -14,7 +14,7 @@ import java.util.Date;
 @Access(AccessType.FIELD)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class BaseQuestionBean extends BaseLogicDeleteEntity {
+public abstract class BaseQuestionEntity extends BaseLogicDeleteEntity {
     @Lob
     @Column(nullable = false)
     private String stem;               // 题干

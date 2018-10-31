@@ -10,6 +10,8 @@ import java.util.List;
  * Created by zangyanming at 2018-09-13.
  */
 public interface IRuleBeanService extends ILogicDeleteService<RuleBean> {
+
     JsonData getEntitiesByFK(long paperId, Integer page, Integer limit, String jsonStr, String sort);
+
     List findByPaperId(Long paperId);
 }

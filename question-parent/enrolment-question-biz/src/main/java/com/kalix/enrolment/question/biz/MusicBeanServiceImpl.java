@@ -16,15 +16,15 @@ import java.util.Map;
  * Created by zangyanming at 2018-09-13
  */
 public class MusicBeanServiceImpl extends QuestionGenericBizServiceImpl<IMusicBeanDao, MusicBean>
-        implements IMusicBeanService, IQuestionAuditService, IDownloadService, ITestPaperService {
+        implements IMusicBeanService, IDownloadService {
 
+    private static String QUESTION_BEAN_NAME = "Music";
+    private static String AUDIT_ROLE_NAME = "音乐基础审核人";
     private static String TEMP_NAME = "";
 
-    private static String AUDIT_ROLE_NAME = "音乐基础审核人";
-
     @Override
-    public String getQuestionType() {
-        return QuestionType.MUSIC;
+    public String getQuestionBeanName() {
+        return QUESTION_BEAN_NAME;
     }
 
     @Override

@@ -19,11 +19,12 @@ import java.util.Map;
 public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubjectBeanDao, SubjectBean>
         implements ISubjectBeanService, IQuestionAuditService, IDownloadService, ITestPaperService {
 
+    private static String QUESTION_BEAN_NAME = "Subject";
     private static String TEMP_NAME = "subject.ftl";
 
     @Override
-    public String getQuestionType() {
-        return QuestionType.SUBJECT;
+    public String getQuestionBeanName() {
+        return QUESTION_BEAN_NAME;
     }
 
     @Override
@@ -78,7 +79,7 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
         tempMap.put("question", dataMap);
         String[] str = new String[2];
         str[0] = "123";
-        str[1] = this.createSinglePreview(tempMap, subjectBean.getSubjectType());
+        str[1] = this.createSinglePreview(tempMap, subjectBean.getSubType());
         return str;
     }
 

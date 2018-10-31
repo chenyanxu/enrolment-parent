@@ -11,6 +11,8 @@ import java.util.List;
  * Created by zangyanming at 2018-09-13.
  */
 public interface IRuleBeanDao extends IGenericDao<RuleBean, Long> {
+
     JsonData findByPaperId(Long paperId, Integer page, Integer limit, String jsonStr, String sort);
+
     List findByPaperId(Long paperId);
 }

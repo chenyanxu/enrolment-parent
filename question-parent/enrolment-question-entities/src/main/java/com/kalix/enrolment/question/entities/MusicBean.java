@@ -12,7 +12,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "enrolment_question_music")
-public class MusicBean extends BaseQuestionBean {
+public class MusicBean extends BaseQuestionEntity {
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy", timezone = "GMT+8")
     private Date year;                 // 年份

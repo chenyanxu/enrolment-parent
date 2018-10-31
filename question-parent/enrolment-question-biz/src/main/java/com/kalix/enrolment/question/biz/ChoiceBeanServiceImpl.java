@@ -1,10 +1,7 @@
 package com.kalix.enrolment.question.biz;
 
-import com.kalix.enrolment.question.api.biz.IChoiceBeanService;
-import com.kalix.enrolment.question.api.biz.IQuestionAuditService;
-import com.kalix.enrolment.question.api.biz.ITestPaperService;
+import com.kalix.enrolment.question.api.biz.*;
 import com.kalix.enrolment.question.api.dao.IChoiceBeanDao;
-import com.kalix.enrolment.question.api.model.QuestionType;
 import com.kalix.enrolment.question.biz.util.Constants;
 import com.kalix.enrolment.question.entities.ChoiceBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
@@ -18,14 +15,15 @@ import java.util.Map;
  * Created by zangyanming at 2018-09-13
  */
 public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoiceBeanDao, ChoiceBean>
-        implements IChoiceBeanService, IQuestionAuditService, IDownloadService, ITestPaperService {
+        implements IChoiceBeanService, IDownloadService {
 
+    private static String QUESTION_BEAN_NAME = "Choice";
     private static String AUDIT_ROLE_NAME = "选择题审核人";
     private static String TEMP_NAME = "choice.ftl";
 
     @Override
-    public String getQuestionType() {
-        return QuestionType.CHOICE;
+    public String getQuestionBeanName() {
+        return QUESTION_BEAN_NAME;
     }
 
     @Override
