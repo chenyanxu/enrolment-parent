@@ -9,7 +9,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "enrolment_question_verse")
-public class VerseBean extends BaseQuestionBean {
+public class VerseBean extends BaseQuestionEntity {
     @Column(nullable = false)
     private String type;               // 类别,字典（类别）
     @Column(nullable = false)

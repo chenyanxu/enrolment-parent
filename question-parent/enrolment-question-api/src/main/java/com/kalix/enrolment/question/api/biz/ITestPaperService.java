@@ -31,7 +31,7 @@ public interface ITestPaperService extends IService {
      *
      * @return
      */
-    Map<String, Object> createSingleTestPaper(String subType);
+    Map<String, Object> createSingleTestPaper(Map paperMap);
 
     JsonStatus createTestPaper(Long paperId);
 }

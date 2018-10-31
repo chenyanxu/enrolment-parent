@@ -11,6 +11,7 @@ import java.io.Serializable;
  * Created by sunlf on 2015/10/26.
  */
 public abstract class BaseBeanDao<T extends PersistentEntity, PK extends Serializable> extends GenericDao<T, PK> {
+
     @Override
     @PersistenceContext(unitName = "enrolment-question-unit")
     public void setEntityManager(EntityManager em) {

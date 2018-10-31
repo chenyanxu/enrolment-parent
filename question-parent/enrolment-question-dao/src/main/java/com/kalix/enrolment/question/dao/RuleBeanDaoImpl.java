@@ -12,9 +12,6 @@ public class RuleBeanDaoImpl extends BaseBeanDao<RuleBean, Long> implements IRul
     @Override
     public JsonData findByPaperId(Long paperId, Integer page, Integer limit, String jsonStr, String sort) {
         JsonData jsonData = new JsonData();
-        /*String hql = "select t from MajorCourseBean t where t.orgid = ?1";
-        //hql += CommonMethod.createWhereCondition(jsonStr, sort);
-        List list = this.findbyPage(hql, page-1, limit, orgId);*/
         String sql = "select t.* from (select a.* from " + super.getTableName() + " a where a.delflag='0' and a.paperid = ?1) t";
         sql += CommonMethod.createWhereCondition(jsonStr, sort);
         jsonData = this.findByNativeSql(sql, page, limit, RuleBean.class, paperId);
@@ -24,7 +21,6 @@ public class RuleBeanDaoImpl extends BaseBeanDao<RuleBean, Long> implements IRul
     @Override
     public List findByPaperId(Long paperId) {
         String sql = "select t.* from (select a.* from " + super.getTableName() + " a where a.delflag='0' and a.paperid = ?1) t";
-        return this.findByNativeSql(sql,RuleBean.class, paperId);
-
+        return this.findByNativeSql(sql, RuleBean.class, paperId);
     }
 }

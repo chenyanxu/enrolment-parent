@@ -9,5 +9,4 @@ import com.kalix.framework.core.api.persistence.JsonData;
  * Created by zangyanming at 2018-09-13.
  */
 public interface IPaperBeanDao extends IGenericDao<PaperBean, Long> {
-
 }

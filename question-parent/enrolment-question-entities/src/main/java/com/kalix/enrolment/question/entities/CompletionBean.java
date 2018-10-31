@@ -9,7 +9,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "enrolment_question_completion")
-public class CompletionBean extends BaseQuestionBean {
+public class CompletionBean extends BaseQuestionEntity {
     @Column(nullable = false)
     private String type;               // 类别，字典[类别]
     @Column(nullable = false)
@@ -21,7 +21,6 @@ public class CompletionBean extends BaseQuestionBean {
     private String answerF;            // 答案F
     private String answerG;            // 答案G
     private int spaceNum;              // 填空个数
-
 
     public int getSpaceNum() {
         return spaceNum;

@@ -27,7 +27,7 @@
             <artifactId>enrolment-question-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.xml.similarity</groupId>
+            <groupId>org.xm.similarity</groupId>
             <artifactId>similarity</artifactId>
             <version>1.1</version>
             <scope>system</scope>

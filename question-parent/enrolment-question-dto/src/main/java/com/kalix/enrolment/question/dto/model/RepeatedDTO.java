@@ -12,7 +12,6 @@ public class RepeatedDTO extends BaseDTO {
     private String similarity ; //相似度
     private String questionType; //题型
 
-
     public String getQuestionType() {
         return questionType;
     }
