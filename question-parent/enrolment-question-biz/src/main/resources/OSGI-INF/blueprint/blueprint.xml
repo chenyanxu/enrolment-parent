@@ -21,6 +21,9 @@
     <bean id="completionBeanServiceImpl" class="com.kalix.enrolment.question.biz.CompletionBeanServiceImpl">
         <property name="dao" ref="completionBeanDao"/>
         <property name="roleBeanService" ref="roleBeanService"/>
+        <property name="questionSettingBeanService" ref="questionSettingBeanServiceImpl"/>
+        <property name="paperBeanService" ref="paperBeanServiceImpl"/>
+        <property name="ruleBeanService" ref="ruleBeanServiceImpl"/>
     </bean>
     <service id="completionBeanService" ref="completionBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.ICompletionBeanService"/>

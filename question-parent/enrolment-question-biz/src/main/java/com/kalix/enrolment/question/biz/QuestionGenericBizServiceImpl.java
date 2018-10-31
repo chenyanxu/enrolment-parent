@@ -3,14 +3,13 @@ package com.kalix.enrolment.question.biz;
 import com.kalix.admin.core.api.biz.IRoleBeanService;
 import com.kalix.admin.core.entities.RoleBean;
 import com.kalix.enrolment.question.api.biz.*;
-import com.kalix.enrolment.question.api.biz.IPaperBeanService;
-import com.kalix.enrolment.question.api.biz.IQuestionAuditService;
-import com.kalix.enrolment.question.api.biz.IRuleBeanService;
-import com.kalix.enrolment.question.api.biz.ITestPaperService;
 import com.kalix.enrolment.question.api.model.QuestionType;
-import com.kalix.enrolment.question.entities.BaseQuestionBean;
+import com.kalix.enrolment.question.dto.model.RepeatedCountDTO;
+import com.kalix.enrolment.question.dto.model.RepeatedDTO;
+import com.kalix.enrolment.question.entities.BaseQuestionEntity;
+import com.kalix.enrolment.question.entities.PaperBean;
+import com.kalix.enrolment.question.entities.QuestionSettingBean;
 import com.kalix.enrolment.question.entities.RuleBean;
-import com.kalix.framework.core.api.biz.IDownloadService;
 import com.kalix.framework.core.api.dao.IGenericDao;
 import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
@@ -20,20 +19,27 @@ import com.kalix.framework.core.util.StringUtils;
 import com.kalix.framework.extend.impl.biz.LogicDeleteGenericBizServiceImpl;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import org.xm.Similarity;
 
 import javax.transaction.Transactional;
 import java.io.*;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * Created by zangyanming at 2018-09-13
  */
-public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP extends BaseQuestionBean>
+public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP extends BaseQuestionEntity>
         extends LogicDeleteGenericBizServiceImpl<T, TP>
-        implements IQuestionAuditService, IDownloadService, ITestPaperService {
+        implements IQuestionService<TP>, IQuestionAuditService, IRepeatedService, ITestPaperService {
 
     private IRoleBeanService roleBeanService;
+    private IQuestionSettingBeanService questionSettingBeanService;
+    private IPaperBeanService paperBeanService;
+    private IRuleBeanService ruleBeanService;
+
+    private IQuestionService questionService;
     private ITestPaperService testPaperService;
 
     @Override
@@ -49,11 +55,8 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
 
         // 获取当前登录人ID
         Long currentUserId = this.shiroService.getCurrentUserId();
-        // 获取试题分类
-        String questionType = this.getQuestionType();
         // 获取审核人角色名称
         String roleName = this.getAuditRoleName(subType);
-        // 获取试题子类 subType
 
         // 1.该类型试题未审核总数
         int total = 0;
@@ -378,29 +381,28 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             Map tempMap = new HashMap<>();
             paperBeanService = JNDIHelper.getJNDIServiceForName(IPaperBeanService.class.getName());
             ruleBeanService = JNDIHelper.getJNDIServiceForName(IRuleBeanService.class.getName());
-            PaperBean paperBean=paperBeanService.getEntity(paperId);
-            List list_rule=ruleBeanService.findByPaperId(paperId);
+            PaperBean paperBean = paperBeanService.getEntity(paperId);
+            List list_rule = ruleBeanService.findByPaperId(paperId);
             List<Map> test = new ArrayList<Map>();
 
-          //  RuleBean ruleBean = new RuleBean();
+            //  RuleBean ruleBean = new RuleBean();
             int questionTypeCount = 0;
 //            List<String> list = new ArrayList<String>();
 //            list.add("1");
 //            list.add("2");
 //            list.add("3");
             for (int i = 0; i < list_rule.size(); i++) {
-                RuleBean ruleBean=(RuleBean)list_rule.get(i);
+                RuleBean ruleBean = (RuleBean) list_rule.get(i);
                 String beanName = this.getBeanName(ruleBean.getQuesType());
-                Map paper_map =new HashMap();
-                paper_map.put("score",ruleBean.getQuesScore());
-                paper_map.put("totalscore",ruleBean.getQuesTotalscore());
-                paper_map.put("desc",ruleBean.getQuesDesc());
-                paper_map.put("titlenum",ruleBean.getTitleNum());
-                paper_map.put("paperid",ruleBean.getPaperId());
+                Map paper_map = new HashMap();
+                paper_map.put("score", ruleBean.getQuesScore());
+                paper_map.put("totalscore", ruleBean.getQuesTotalscore());
+                paper_map.put("desc", ruleBean.getQuesDesc());
+                paper_map.put("titlenum", ruleBean.getTitleNum());
+                paper_map.put("paperid", ruleBean.getPaperId());
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("beanName", beanName);
                 testPaperService = JNDIHelper.getJNDIServiceForName(ITestPaperService.class.getName(), map);
-                Map singleTestPaper = testPaperService.createSingleTestPaper(null);
                 Map singleTestPaper = testPaperService.createSingleTestPaper(paper_map);
                 test.add(singleTestPaper);
             }
@@ -505,5 +507,13 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
 
     public void setQuestionSettingBeanService(IQuestionSettingBeanService questionSettingBeanService) {
         this.questionSettingBeanService = questionSettingBeanService;
+    }
+
+    public void setPaperBeanService(IPaperBeanService paperBeanService) {
+        this.paperBeanService = paperBeanService;
+    }
+
+    public void setRuleBeanService(IRuleBeanService ruleBeanService) {
+        this.ruleBeanService = ruleBeanService;
     }
 }
