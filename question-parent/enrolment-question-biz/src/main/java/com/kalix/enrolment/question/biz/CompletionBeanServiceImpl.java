@@ -82,24 +82,25 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
     }
 
     @Override
-    public Map<String, Object> createSingleTestPaper(String subType) {
+    public Map<String, Object> createSingleTestPaper(Map paperMap) {
 
         Map<String, Object> singleTestPaper = new HashMap<String, Object>();
 
         // 创建试题标题
         String title = "";
         // 以下需要通过参数动态获取
-        int titleNum = 2;
+        int titleNum =(int)paperMap.get("titlenum");
         String titleName = "填空题";
-        String perScore = "1";
-        String total = "30";
+        int perScore =(int)paperMap.get("score");
+        int total = (int)paperMap.get("totalscore");
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每空" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
-
+        int quesNum=total/perScore;
+        String sql="select * from CompletionBean order by random() limit "+quesNum;
         // 创建试题内容
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
         // 以下需要通过算法动态获取（抽取试题）
-        List<CompletionBean> list = this.dao.getAll();
+        List<CompletionBean> list = this.dao.findByNativeSql(sql,CompletionBean.class);
         for (int i = 0; i < list.size(); i++) {
             Map<String, Object> map = new HashMap<String, Object>();
             CompletionBean completionBean = list.get(i);

@@ -60,24 +60,25 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
     }
 
     @Override
-    public Map<String, Object> createSingleTestPaper(String subType) {
+    public Map<String, Object> createSingleTestPaper(Map paperMap) {
 
         Map<String, Object> singleTestPaper = new HashMap<String, Object>();
 
         // 创建试题标题
         String title = "";
         // 以下需要通过参数动态获取
-        int titleNum = 2;
+        int titleNum =(int)paperMap.get("titlenum");
         String titleName = "单项选择题";
-        String perScore = "2";
-        String total = "20";
+        int perScore =(int)paperMap.get("score");
+        int total = (int)paperMap.get("totalscore");
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
-
+        int quesNum=total/perScore;
+        String sql="select * from ChoiceBean order by random() limit "+quesNum;
         // 创建试题内容
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
         // 以下需要通过算法动态获取（抽取试题）
-        List<ChoiceBean> list = this.dao.getAll();
+        List<ChoiceBean> list = this.dao.findByNativeSql(sql,ChoiceBean.class);
         for (int i = 0; i < list.size(); i++) {
             Map<String, Object> map = new HashMap<String, Object>();
             ChoiceBean choiceBean = list.get(i);

@@ -88,7 +88,7 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
     }
 
     @Override
-    public Map<String, Object> createSingleTestPaper(String subType) {
+    public Map<String, Object> createSingleTestPaper(Map paperMap) {
         return null;
     }
 }

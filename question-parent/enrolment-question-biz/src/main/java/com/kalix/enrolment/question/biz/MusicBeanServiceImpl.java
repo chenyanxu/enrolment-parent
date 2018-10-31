@@ -56,7 +56,7 @@ public class MusicBeanServiceImpl extends QuestionGenericBizServiceImpl<IMusicBe
     }
 
     @Override
-    public Map<String, Object> createSingleTestPaper(String subType) {
+    public Map<String, Object> createSingleTestPaper(Map paperMap) {
         return null;
     }
 }

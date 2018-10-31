@@ -57,24 +57,25 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
     }
 
     @Override
-    public Map<String, Object> createSingleTestPaper(String subType) {
+    public Map<String, Object> createSingleTestPaper(Map paperMap) {
 
         Map<String, Object> singleTestPaper = new HashMap<String, Object>();
 
         // 创建试题标题
         String title = "";
         // 以下需要通过参数动态获取
-        int titleNum = 3;
+        int titleNum =(int)paperMap.get("titlenum");
         String titleName = "补全诗句";
-        String perScore = "5";
-        String total = "25";
+        int perScore =(int)paperMap.get("score");
+        int total = (int)paperMap.get("totalscore");
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
-
+        int quesNum=total/perScore;
+        String sql="select * from VerseBean order by random() limit "+quesNum;
         // 创建试题内容
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
         // 以下需要通过算法动态获取（抽取试题）
-        List<VerseBean> list = this.dao.getAll();
+        List<VerseBean> list = this.dao.findByNativeSql(sql,VerseBean.class);
         for (int i = 0; i < list.size(); i++) {
             Map<String, Object> map = new HashMap<String, Object>();
             VerseBean verseBean = list.get(i);

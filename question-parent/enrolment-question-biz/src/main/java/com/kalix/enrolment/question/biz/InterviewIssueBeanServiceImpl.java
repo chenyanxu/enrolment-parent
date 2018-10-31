@@ -96,7 +96,7 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
     }
 
     @Override
-    public Map<String, Object> createSingleTestPaper(String subType) {
+    public Map<String, Object> createSingleTestPaper(Map paperMap) {
         return null;
     }
 }

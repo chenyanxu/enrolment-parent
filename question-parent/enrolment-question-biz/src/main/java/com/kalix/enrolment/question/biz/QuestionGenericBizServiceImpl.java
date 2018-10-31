@@ -2,10 +2,13 @@ package com.kalix.enrolment.question.biz;
 
 import com.kalix.admin.core.api.biz.IRoleBeanService;
 import com.kalix.admin.core.entities.RoleBean;
+import com.kalix.enrolment.question.api.biz.IPaperBeanService;
 import com.kalix.enrolment.question.api.biz.IQuestionAuditService;
+import com.kalix.enrolment.question.api.biz.IRuleBeanService;
 import com.kalix.enrolment.question.api.biz.ITestPaperService;
 import com.kalix.enrolment.question.api.model.QuestionType;
 import com.kalix.enrolment.question.entities.BaseQuestionBean;
+import com.kalix.enrolment.question.entities.PaperBean;
 import com.kalix.enrolment.question.entities.RuleBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 import com.kalix.framework.core.api.dao.IGenericDao;
@@ -32,6 +35,36 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
 
     private IRoleBeanService roleBeanService;
     private ITestPaperService testPaperService;
+    private IPaperBeanService paperBeanService;
+    private IRuleBeanService  ruleBeanService;
+
+    public IRoleBeanService getRoleBeanService() {
+        return roleBeanService;
+    }
+
+    public ITestPaperService getTestPaperService() {
+        return testPaperService;
+    }
+
+    public void setTestPaperService(ITestPaperService testPaperService) {
+        this.testPaperService = testPaperService;
+    }
+
+    public IPaperBeanService getPaperBeanService() {
+        return paperBeanService;
+    }
+
+    public void setPaperBeanService(IPaperBeanService paperBeanService) {
+        this.paperBeanService = paperBeanService;
+    }
+
+    public IRuleBeanService getRuleBeanService() {
+        return ruleBeanService;
+    }
+
+    public void setRuleBeanService(IRuleBeanService ruleBeanService) {
+        this.ruleBeanService = ruleBeanService;
+    }
 
     @Override
     public JsonData getAllEntityByQuery(Integer page, Integer limit, String jsonStr, String sort) {
@@ -280,19 +313,31 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         JsonStatus jsonStatus = new JsonStatus();
         try {
             Map tempMap = new HashMap<>();
+            paperBeanService = JNDIHelper.getJNDIServiceForName(IPaperBeanService.class.getName());
+            ruleBeanService = JNDIHelper.getJNDIServiceForName(IRuleBeanService.class.getName());
+            PaperBean paperBean=paperBeanService.getEntity(paperId);
+            List list_rule=ruleBeanService.findByPaperId(paperId);
             List<Map> test = new ArrayList<Map>();
-            RuleBean ruleBean = new RuleBean();
-            int questionTypeCount = 3;
-            List<String> list = new ArrayList<String>();
-            list.add("1");
-            list.add("2");
-            list.add("3");
-            for (int i = 0; i < questionTypeCount; i++) {
+
+          //  RuleBean ruleBean = new RuleBean();
+            int questionTypeCount = 0;
+//            List<String> list = new ArrayList<String>();
+//            list.add("1");
+//            list.add("2");
+//            list.add("3");
+            for (int i = 0; i < list_rule.size(); i++) {
+                RuleBean ruleBean=(RuleBean)list_rule.get(i);
                 String beanName = this.getBeanName(ruleBean.getQuesType());
+                Map paper_map =new HashMap();
+                paper_map.put("score",ruleBean.getQuesScore());
+                paper_map.put("totalscore",ruleBean.getQuesTotalscore());
+                paper_map.put("desc",ruleBean.getQuesDesc());
+                paper_map.put("titlenum",ruleBean.getTitleNum());
+                paper_map.put("paperid",ruleBean.getPaperId());
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("beanName", beanName);
                 testPaperService = JNDIHelper.getJNDIServiceForName(ITestPaperService.class.getName(), map);
-                Map singleTestPaper = testPaperService.createSingleTestPaper("");
+                Map singleTestPaper = testPaperService.createSingleTestPaper(paper_map);
                 test.add(singleTestPaper);
             }
             tempMap.put("quesList", test);
