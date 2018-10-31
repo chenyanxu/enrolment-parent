@@ -31,5 +31,6 @@ Import-Package: com.kalix.framework.core.util,\
                 com.kalix.enrolment.question.api.model,\
                 com.kalix.enrolment.question.entities,\
                 com.kalix.enrolment.question.dto.model,\
+                com.kalix.enrolment.system.dict.api.biz,\
                 org.apache.commons.lang,\
                 org.osgi.service.http

@@ -1,31 +1,21 @@
 package com.kalix.enrolment.question.biz;
 
 import com.kalix.enrolment.question.api.biz.IInterviewIssueBeanService;
-import com.kalix.enrolment.question.api.biz.IQuestionAuditService;
-import com.kalix.enrolment.question.api.biz.ITestPaperService;
 import com.kalix.enrolment.question.api.dao.IInterviewIssueBeanDao;
 import com.kalix.enrolment.question.api.model.InterviewType;
-import com.kalix.enrolment.question.api.model.QuestionType;
 import com.kalix.enrolment.question.entities.InterviewIssueBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * Created by zangyanming at 2018-09-13
  */
 public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl<IInterviewIssueBeanDao, InterviewIssueBean>
-        implements IInterviewIssueBeanService, IQuestionAuditService, IDownloadService, ITestPaperService {
+        implements IInterviewIssueBeanService, IDownloadService {
 
-    private static String QUESTION_BEAN_NAME = "InterviewIssue";
     private static String TEMP_NAME = "subject.ftl";
-
-    @Override
-    public String getQuestionBeanName() {
-        return QUESTION_BEAN_NAME;
-    }
 
     @Override
     public String getAuditRoleName(String subType) {
@@ -72,6 +62,16 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
     }
 
     @Override
+    public String getTempName(String subType) {
+        return TEMP_NAME;
+    }
+
+    @Override
+    public Map<String, Object> createSingleTestPaper(Map paperMap) {
+        return null;
+    }
+
+    @Override
     public String[] createDownloadFile(Long entityId, String fileType) {
 
         InterviewIssueBean interviewIssueBean = this.getEntity(entityId);
@@ -89,15 +89,5 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
         str[0] = "123";
         str[1] = this.createSinglePreview(tempMap, interviewIssueBean.getSubType());
         return str;
-    }
-
-    @Override
-    public String getTempName(String subType) {
-        return TEMP_NAME;
-    }
-
-    @Override
-    public Map<String, Object> createSingleTestPaper(Map paperMap) {
-        return null;
     }
 }

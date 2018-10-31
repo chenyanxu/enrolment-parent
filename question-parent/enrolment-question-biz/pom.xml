@@ -38,5 +38,9 @@
             <artifactId>freemarker</artifactId>
             <version>2.3.8</version>
         </dependency>
+        <dependency>
+            <groupId>com.kalix.enrolment.system.dict</groupId>
+            <artifactId>enrolment-system-dict-api</artifactId>
+        </dependency>
     </dependencies>
 </project>

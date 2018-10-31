@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import java.util.Date;
 
 /**
- * 组卷规则Bean
+ * 璇曞嵎閰嶇疆鍙傛暟瀹炰綋
  *
  * @author: fwb
  * @CreateDate: 2018-10-22
@@ -18,24 +18,23 @@ import java.util.Date;
 @Table(name = "enrolment_question_paper")
 public class PaperBean extends BaseLogicDeleteEntity {
     /**
-     * 年份
+     * 骞翠唤
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy", timezone = "GMT+8")
     private Date year;
     /**
-     * title
+     * 鏍囬
      */
     private String title;
 
     /**
-     * 试卷总分
+     * 鎬诲垎
      */
     private int totalMark;
     /**
-     * 自动成卷份数
+     * 鑷姩鎴愬嵎浠芥暟
      */
     private Long copies;
-
 
     public Long getCopies() {
         return copies;
