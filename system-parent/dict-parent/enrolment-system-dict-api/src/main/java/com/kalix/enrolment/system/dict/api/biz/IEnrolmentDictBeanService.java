@@ -3,6 +3,8 @@ package com.kalix.enrolment.system.dict.api.biz;
 import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
 import com.kalix.framework.core.api.system.IDictBeanService;
 
+import java.util.List;
+
 /**
  * @类描述：字典服务接口类
  * @创建人：hqj
@@ -13,4 +15,8 @@ import com.kalix.framework.core.api.system.IDictBeanService;
  */
 
 public interface IEnrolmentDictBeanService extends IDictBeanService<EnrolmentDictBean> {
+
+    EnrolmentDictBean getDictBeanByTypeAndValue(String type, String value);
+
+    List<EnrolmentDictBean> getDictBeanByType(String type);
 }

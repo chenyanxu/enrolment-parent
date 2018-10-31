@@ -4,13 +4,11 @@ import com.kalix.enrolment.question.api.biz.IQuestionAuditService;
 import com.kalix.enrolment.question.api.biz.ISubjectBeanService;
 import com.kalix.enrolment.question.api.biz.ITestPaperService;
 import com.kalix.enrolment.question.api.dao.ISubjectBeanDao;
-import com.kalix.enrolment.question.api.model.QuestionType;
 import com.kalix.enrolment.question.api.model.SubjectType;
 import com.kalix.enrolment.question.entities.SubjectBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,13 +17,7 @@ import java.util.Map;
 public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubjectBeanDao, SubjectBean>
         implements ISubjectBeanService, IQuestionAuditService, IDownloadService, ITestPaperService {
 
-    private static String QUESTION_BEAN_NAME = "Subject";
     private static String TEMP_NAME = "subject.ftl";
-
-    @Override
-    public String getQuestionBeanName() {
-        return QUESTION_BEAN_NAME;
-    }
 
     @Override
     public String getAuditRoleName(String subType) {
@@ -66,6 +58,16 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
     }
 
     @Override
+    public String getTempName(String subType) {
+        return TEMP_NAME;
+    }
+
+    @Override
+    public Map<String, Object> createSingleTestPaper(Map paperMap) {
+        return null;
+    }
+
+    @Override
     public String[] createDownloadFile(Long entityId, String fileType) {
 
         SubjectBean subjectBean = this.getEntity(entityId);
@@ -81,15 +83,5 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
         str[0] = "123";
         str[1] = this.createSinglePreview(tempMap, subjectBean.getSubType());
         return str;
-    }
-
-    @Override
-    public String getTempName(String subType) {
-        return TEMP_NAME;
-    }
-
-    @Override
-    public Map<String, Object> createSingleTestPaper(Map paperMap) {
-        return null;
     }
 }

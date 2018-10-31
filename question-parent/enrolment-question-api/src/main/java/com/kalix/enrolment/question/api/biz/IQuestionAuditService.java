@@ -9,8 +9,6 @@ import com.kalix.framework.core.api.persistence.JsonStatus;
  */
 public interface IQuestionAuditService extends IService {
 
-    String getAuditRoleName(String subType);
-
     JsonData getAllAuditEntityByQuery(Integer page, Integer limit, String subType);
 
     JsonStatus batchAudit(String entityIds, String checkFlag, String reason);

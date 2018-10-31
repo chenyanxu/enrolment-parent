@@ -9,17 +9,15 @@ import com.kalix.framework.core.api.persistence.JsonStatus;
  */
 public interface IRepeatedService {
 
-    // 去重函数
-    //JsonData doRepeate(String type);
-
-    //填空题去重
-    //JsonData doRepeate(RepeatedDTO c_repeatedDTO);
-
+    // 单一题型全库排重
     JsonData getSingleRepeates(String subType);
 
-    //保留重复
+    // 保留重复
     JsonStatus doSaveRepeate(Long questionId);
 
-    //删除重复
+    // 删除重复
     JsonStatus doDeleteRepeate(Long questionId);
+
+    // 新增或编辑题型数据时验证排重
+    JsonData validateRepeates(RepeatedDTO repeatedDTO);
 }

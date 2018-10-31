@@ -3,38 +3,39 @@ package com.kalix.enrolment.question.biz;
 import com.kalix.admin.core.api.biz.IRoleBeanService;
 import com.kalix.admin.core.entities.RoleBean;
 import com.kalix.enrolment.question.api.biz.*;
-import com.kalix.enrolment.question.api.biz.IPaperBeanService;
-import com.kalix.enrolment.question.api.biz.IQuestionAuditService;
-import com.kalix.enrolment.question.api.biz.IRuleBeanService;
-import com.kalix.enrolment.question.api.biz.ITestPaperService;
-import com.kalix.enrolment.question.api.model.QuestionType;
-import com.kalix.enrolment.question.entities.BaseQuestionBean;
-import com.kalix.enrolment.question.entities.RuleBean;
-import com.kalix.framework.core.api.biz.IDownloadService;
+import com.kalix.enrolment.question.dto.model.RepeatedCountDTO;
+import com.kalix.enrolment.question.dto.model.RepeatedDTO;
+import com.kalix.enrolment.question.entities.BaseQuestionEntity;
+import com.kalix.enrolment.question.entities.QuestionSettingBean;
 import com.kalix.framework.core.api.dao.IGenericDao;
 import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
 import com.kalix.framework.core.util.ConfigUtil;
-import com.kalix.framework.core.util.JNDIHelper;
 import com.kalix.framework.core.util.StringUtils;
 import com.kalix.framework.extend.impl.biz.LogicDeleteGenericBizServiceImpl;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import org.xm.Similarity;
 
 import javax.transaction.Transactional;
-import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.StringWriter;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Created by zangyanming at 2018-09-13
+ * Created by hqj at 2018-10-31
  */
-public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP extends BaseQuestionBean>
+public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP extends BaseQuestionEntity>
         extends LogicDeleteGenericBizServiceImpl<T, TP>
-        implements IQuestionAuditService, IDownloadService, ITestPaperService {
+        implements IQuestionService<TP>, IQuestionAuditService, IRepeatedService, ITestPaperService {
 
     private IRoleBeanService roleBeanService;
-    private ITestPaperService testPaperService;
+    private IQuestionSettingBeanService questionSettingBeanService;
 
     @Override
     public JsonData getAllEntityByQuery(Integer page, Integer limit, String jsonStr, String sort) {
@@ -49,11 +50,8 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
 
         // 获取当前登录人ID
         Long currentUserId = this.shiroService.getCurrentUserId();
-        // 获取试题分类
-        String questionType = this.getQuestionType();
         // 获取审核人角色名称
         String roleName = this.getAuditRoleName(subType);
-        // 获取试题子类 subType
 
         // 1.该类型试题未审核总数
         int total = 0;
@@ -333,6 +331,77 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     }
 
     @Override
+    public JsonData validateRepeates(RepeatedDTO repeatedDTO) {
+        JsonData jsonData = new JsonData();
+        String stem = repeatedDTO.getStem();
+        String subType = repeatedDTO.getQuestionType();
+        Long questionid = repeatedDTO.getQuestionId();
+        List<RepeatedCountDTO> repeateList = new ArrayList<RepeatedCountDTO>();
+        List<Object> referenceList = new ArrayList<Object>();
+        String sql = "";
+        if (StringUtils.isEmpty(subType)) {
+            if (questionid != null && questionid > 0) {
+                sql = "select t.* from " + dao.getTableName() + " t "
+                        + " where t.delFlag = '0' and t.id <> " + questionid;
+            } else {
+                sql = "select t.* from " + dao.getTableName() + " t "
+                        + " where t.delFlag = '0'";
+            }
+        } else {
+            if (questionid != null && questionid > 0) {
+                sql = "select t.* from " + dao.getTableName() + " t "
+                        + " where t.delFlag = '0' and t.subType = '" + subType + "' and t.id <> " + questionid;
+            } else {
+                sql = "select t.* from " + dao.getTableName() + " t "
+                        + " where t.delFlag = '0' and t.subType = '" + subType + "'";
+            }
+        }
+        /*Class cls = null;
+        try {
+            cls = Class.forName(this.entityClassName);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }*/
+        List<BaseQuestionEntity> list = dao.findByNativeSql(sql, BaseQuestionEntity.class);
+        referenceList.addAll(list);
+        double defaultCilinSimilarity = 0.5d;
+        QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
+        if (questionSettingBean != null) {
+            defaultCilinSimilarity = questionSettingBean.getCilinSimilarity().doubleValue();
+        }
+        int count = 1;
+        RepeatedCountDTO repeatedCountDTO = new RepeatedCountDTO();
+        List<RepeatedDTO> dtoList = new ArrayList<RepeatedDTO>();
+        String str_stem = "";
+        for (int j = 0; j < referenceList.size(); j++) {
+            BaseQuestionEntity questionEntity = (BaseQuestionEntity) referenceList.get(j);
+            str_stem = questionEntity.getStem();
+            //短语相似度
+            // double result1 = Similarity.phraseSimilarity(stem, str_stem);
+            //词形词序句子相似度值
+            // double morphoSimilarityResult = Similarity.morphoSimilarity(stem, str_stem);
+            //词林相似度
+            double result = Similarity.cilinSimilarity(stem, str_stem);
+            if (result > defaultCilinSimilarity) {
+                RepeatedDTO obj = new RepeatedDTO();
+                obj.setQuestionId(questionEntity.getId());
+                obj.setStem(str_stem);
+                //obj.setSimilarity("短语相似度-->" + new DecimalFormat("0.00").format(result1) + "；词林相似度" + new DecimalFormat("0.00").format(result));
+                obj.setSimilarity("词林相似度" + new DecimalFormat("0.00").format(result));
+//                obj.setQuestionType(type);
+                dtoList.add(repeatedDTO);
+            }
+        }
+        if (dtoList != null && dtoList.size() > 0) {
+            repeatedCountDTO.setName("题目" + (count++));
+            repeatedCountDTO.setRepeateList(dtoList);
+            repeateList.add(repeatedCountDTO);
+        }
+        jsonData.setData(repeateList);
+        return jsonData;
+    }
+
+    @Override
     public String createSinglePreview(Map tempMap, String subType) {
 
         String htmlStr = "";
@@ -369,103 +438,6 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             // throw new BusinessException(CommonResultEnum.COMMON_ERROR_637);
         }
         return htmlStr;
-    }
-
-    @Override
-    public JsonStatus createTestPaper(Long paperId) {
-        JsonStatus jsonStatus = new JsonStatus();
-        try {
-            Map tempMap = new HashMap<>();
-            paperBeanService = JNDIHelper.getJNDIServiceForName(IPaperBeanService.class.getName());
-            ruleBeanService = JNDIHelper.getJNDIServiceForName(IRuleBeanService.class.getName());
-            PaperBean paperBean=paperBeanService.getEntity(paperId);
-            List list_rule=ruleBeanService.findByPaperId(paperId);
-            List<Map> test = new ArrayList<Map>();
-
-          //  RuleBean ruleBean = new RuleBean();
-            int questionTypeCount = 0;
-//            List<String> list = new ArrayList<String>();
-//            list.add("1");
-//            list.add("2");
-//            list.add("3");
-            for (int i = 0; i < list_rule.size(); i++) {
-                RuleBean ruleBean=(RuleBean)list_rule.get(i);
-                String beanName = this.getBeanName(ruleBean.getQuesType());
-                Map paper_map =new HashMap();
-                paper_map.put("score",ruleBean.getQuesScore());
-                paper_map.put("totalscore",ruleBean.getQuesTotalscore());
-                paper_map.put("desc",ruleBean.getQuesDesc());
-                paper_map.put("titlenum",ruleBean.getTitleNum());
-                paper_map.put("paperid",ruleBean.getPaperId());
-                Map<String, String> map = new HashMap<String, String>();
-                map.put("beanName", beanName);
-                testPaperService = JNDIHelper.getJNDIServiceForName(ITestPaperService.class.getName(), map);
-                Map singleTestPaper = testPaperService.createSingleTestPaper(null);
-                Map singleTestPaper = testPaperService.createSingleTestPaper(paper_map);
-                test.add(singleTestPaper);
-            }
-            tempMap.put("quesList", test);
-            aaa("testPaper.ftl", tempMap);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return jsonStatus;
-    }
-
-    private String getBeanName(String quesType) {
-        String beanName = "";
-        switch (quesType) {
-            case QuestionType.COMPLETION:
-                beanName = "Completion";
-                break;
-            case QuestionType.CHOICE:
-                beanName = "Choice";
-                break;
-            case QuestionType.VERSE:
-                beanName = "";
-                break;
-        }
-        return beanName;
-    }
-
-    private JsonStatus aaa(String fileName, Map tempMap) {
-        JsonStatus jsonStatus = new JsonStatus();
-
-        Configuration configuration = new Configuration();
-
-        //dataMap 要填入模本的数据文件
-        //设置模本装置方法和路径,
-        Template t = null;
-        try {
-            String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
-            if (realPath.charAt(realPath.length() - 1) != '/') {
-                realPath += "/";
-            }
-            String reviewBaseDir = realPath + "questionfiles";
-            configuration.setDirectoryForTemplateLoading(new File(reviewBaseDir));
-            //test.ftl为要装载的模板
-            t = configuration.getTemplate(fileName, "utf-8");
-            //输出文档路径及名称
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String testPaperName = sdf.format(new Date());
-
-            File outFile = new File("d:\\" + testPaperName + ".doc");
-            Writer out = null;
-            FileOutputStream fos = null;
-            fos = new FileOutputStream(outFile);
-            OutputStreamWriter oWriter = new OutputStreamWriter(fos, "UTF-8");
-            //这个地方对流的编码不可或缺，使用main（）单独调用时，应该可以，但是如果是web请求导出时导出后word文档就会打不开，并且包XML文件错误。主要是编码格式不正确，无法解析。
-            //out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile)));
-            out = new BufferedWriter(oWriter);
-            t.process(tempMap, out);
-            out.close();
-            fos.close();
-        } catch (Exception e) {
-            //logger.error("导出出错", e);
-            e.printStackTrace();
-            // throw new BusinessException(CommonResultEnum.COMMON_ERROR_637);
-        }
-        return jsonStatus;
     }
 
     /**
