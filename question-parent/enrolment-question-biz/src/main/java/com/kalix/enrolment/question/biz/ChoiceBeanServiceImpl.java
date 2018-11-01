@@ -45,7 +45,7 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
         int quesNum = total / perScore;
-        String sql = "select * from ChoiceBean order by random() limit " + quesNum;
+        String sql = "select * from enrolment_question_Choice order by random() limit " + quesNum;
         // 创建试题内容
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
         // 以下需要通过算法动态获取（抽取试题）
