@@ -334,7 +334,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     public JsonData validateRepeates(RepeatedDTO repeatedDTO) {
         JsonData jsonData = new JsonData();
         String stem = repeatedDTO.getStem();
-        String subType = repeatedDTO.getQuestionType();
+        String subType = repeatedDTO.getSubType();
         Long questionid = repeatedDTO.getQuestionId();
         List<RepeatedCountDTO> repeateList = new ArrayList<RepeatedCountDTO>();
         List<Object> referenceList = new ArrayList<Object>();
@@ -356,13 +356,13 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                         + " where t.delFlag = '0' and t.subType = '" + subType + "'";
             }
         }
-        /*Class cls = null;
+        Class cls = null;
         try {
             cls = Class.forName(this.entityClassName);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-        }*/
-        List<BaseQuestionEntity> list = dao.findByNativeSql(sql, BaseQuestionEntity.class);
+        }
+        List list = dao.findByNativeSql(sql, cls);
         referenceList.addAll(list);
         double defaultCilinSimilarity = 0.5d;
         QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
@@ -376,20 +376,32 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         for (int j = 0; j < referenceList.size(); j++) {
             BaseQuestionEntity questionEntity = (BaseQuestionEntity) referenceList.get(j);
             str_stem = questionEntity.getStem();
-            //短语相似度
-            // double result1 = Similarity.phraseSimilarity(stem, str_stem);
-            //词形词序句子相似度值
-            // double morphoSimilarityResult = Similarity.morphoSimilarity(stem, str_stem);
-            //词林相似度
-            double result = Similarity.cilinSimilarity(stem, str_stem);
+            // 词林相似度
+            // double result = Similarity.cilinSimilarity(stem, str_stem);
+            // 短语相似度
+            // double result = Similarity.phraseSimilarity(stem, str_stem);
+            // 词形词序句子相似度
+            double result = Similarity.morphoSimilarity(stem, str_stem);
+            // 优化的编辑距离句子相似度
+            // double result = Similarity.editDistanceSimilarity(stem, str_stem);
+            // 标准编辑距离句子相似度
+            // double result = Similarity.standardEditDistanceSimilarity(stem, str_stem);
+            // gregor编辑距离句子相似度
+            // double result = Similarity.gregorEditDistanceSimilarity(stem, str_stem);
+            // 拼音相似度
+            // double result = Similarity.pinyinSimilarity(stem, str_stem);
+            // 概念相似度
+            // double result = Similarity.conceptSimilarity(stem, str_stem);
+            // 字面相似度
+            // double result = Similarity.charBasedSimilarity(stem, str_stem);
             if (result > defaultCilinSimilarity) {
                 RepeatedDTO obj = new RepeatedDTO();
                 obj.setQuestionId(questionEntity.getId());
                 obj.setStem(str_stem);
                 //obj.setSimilarity("短语相似度-->" + new DecimalFormat("0.00").format(result1) + "；词林相似度" + new DecimalFormat("0.00").format(result));
-                obj.setSimilarity("词林相似度" + new DecimalFormat("0.00").format(result));
+                obj.setSimilarity("词形词序句子相似度" + new DecimalFormat("0.00").format(result));
 //                obj.setQuestionType(type);
-                dtoList.add(repeatedDTO);
+                dtoList.add(obj);
             }
         }
         if (dtoList != null && dtoList.size() > 0) {
