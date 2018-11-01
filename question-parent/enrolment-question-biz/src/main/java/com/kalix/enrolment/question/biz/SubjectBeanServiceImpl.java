@@ -1,8 +1,6 @@
 package com.kalix.enrolment.question.biz;
 
-import com.kalix.enrolment.question.api.biz.IQuestionAuditService;
 import com.kalix.enrolment.question.api.biz.ISubjectBeanService;
-import com.kalix.enrolment.question.api.biz.ITestPaperService;
 import com.kalix.enrolment.question.api.dao.ISubjectBeanDao;
 import com.kalix.enrolment.question.api.model.SubjectType;
 import com.kalix.enrolment.question.entities.SubjectBean;
@@ -15,7 +13,7 @@ import java.util.Map;
  * Created by zangyanming at 2018-09-13
  */
 public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubjectBeanDao, SubjectBean>
-        implements ISubjectBeanService, IQuestionAuditService, IDownloadService, ITestPaperService {
+        implements ISubjectBeanService, IDownloadService {
 
     private static String TEMP_NAME = "subject.ftl";
 

@@ -3,7 +3,7 @@
            xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
            xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
        http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
-    <reference id="subjectService" interface="com.kalix.enrolment.question.api.biz.ISubjectBeanService"/>
+    <reference id="subjectService" interface="com.kalix.enrolment.question.api.biz.IQuestionService" filter="(beanName=Subject)"/>
     <reference id="subjectRepeatedService" interface="com.kalix.enrolment.question.api.biz.IRepeatedService" filter="(beanName=Subject)"/>
     <reference id="subjectAuditService" interface="com.kalix.enrolment.question.api.biz.IQuestionAuditService" filter="(beanName=Subject)"/>
 

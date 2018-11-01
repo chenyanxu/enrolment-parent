@@ -1,6 +1,7 @@
 package com.kalix.enrolment.question.biz;
 
 import com.kalix.enrolment.question.api.biz.*;
+import com.kalix.enrolment.question.dto.model.RuleDto;
 import com.kalix.enrolment.question.entities.PaperBean;
 import com.kalix.enrolment.question.entities.RuleBean;
 import com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService;
@@ -64,7 +65,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             List list_rule = ruleBeanService.findByPaperId(paperId);
             List<Map> test = new ArrayList<Map>();
             for (int i = 0; i < list_rule.size(); i++) {
-                RuleBean ruleBean = (RuleBean) list_rule.get(i);
+                RuleDto ruleBean = (RuleDto) list_rule.get(i);
                 Map paper_map = new HashMap();
                 paper_map.put("score", ruleBean.getQuesScore());
                 paper_map.put("totalscore", ruleBean.getQuesTotalscore());
@@ -86,6 +87,11 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             jsonStatus.setMsg(e.getMessage());
         }
         return jsonStatus;
+    }
+
+    @Override
+    public JsonStatus autoCreateTestPaper() {
+        return null;
     }
 
     private JsonStatus produceTestPaper(String fileName, Map tempMap) {
@@ -139,4 +145,5 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
     public void setRuleBeanService(IRuleBeanService ruleBeanService) {
         this.ruleBeanService = ruleBeanService;
     }
+
 }

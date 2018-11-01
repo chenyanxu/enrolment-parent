@@ -23,4 +23,6 @@ public interface IQuestionCommonBizService extends IService {
      * @return
      */
     JsonStatus autoCreateTestPaper(Long paperId);
+
+    JsonStatus autoCreateTestPaper();
 }

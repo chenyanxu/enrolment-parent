@@ -2,7 +2,10 @@ package com.kalix.enrolment.question.biz;
 
 import com.kalix.admin.core.api.biz.IRoleBeanService;
 import com.kalix.admin.core.entities.RoleBean;
-import com.kalix.enrolment.question.api.biz.*;
+import com.kalix.enrolment.question.api.biz.IQuestionAuditService;
+import com.kalix.enrolment.question.api.biz.IQuestionService;
+import com.kalix.enrolment.question.api.biz.IQuestionSettingBeanService;
+import com.kalix.enrolment.question.api.biz.IRepeatedService;
 import com.kalix.enrolment.question.dto.model.RepeatedCountDTO;
 import com.kalix.enrolment.question.dto.model.RepeatedDTO;
 import com.kalix.enrolment.question.entities.BaseQuestionEntity;
@@ -32,7 +35,7 @@ import java.util.Map;
  */
 public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP extends BaseQuestionEntity>
         extends LogicDeleteGenericBizServiceImpl<T, TP>
-        implements IQuestionService<TP>, IQuestionAuditService, IRepeatedService, ITestPaperService {
+        implements IQuestionService<TP>, IQuestionAuditService, IRepeatedService {
 
     private IRoleBeanService roleBeanService;
     private IQuestionSettingBeanService questionSettingBeanService;
@@ -413,8 +416,14 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         return jsonData;
     }
 
-    @Override
-    public String createSinglePreview(Map tempMap, String subType) {
+    /**
+     * 生成题库单项题型预览结果
+     *
+     * @param tempMap
+     * @param subType
+     * @return
+     */
+    protected String createSinglePreview(Map tempMap, String subType) {
 
         String htmlStr = "";
 

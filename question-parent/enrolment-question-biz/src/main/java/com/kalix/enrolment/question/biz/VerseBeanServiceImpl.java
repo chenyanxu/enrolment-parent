@@ -1,7 +1,5 @@
 package com.kalix.enrolment.question.biz;
 
-import com.kalix.enrolment.question.api.biz.IQuestionAuditService;
-import com.kalix.enrolment.question.api.biz.ITestPaperService;
 import com.kalix.enrolment.question.api.biz.IVerseBeanService;
 import com.kalix.enrolment.question.api.dao.IVerseBeanDao;
 import com.kalix.enrolment.question.biz.util.Constants;
@@ -17,7 +15,7 @@ import java.util.Map;
  * Created by zangyanming at 2018-09-13
  */
 public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBeanDao, VerseBean>
-        implements IVerseBeanService, IQuestionAuditService, IDownloadService, ITestPaperService {
+        implements IVerseBeanService, IDownloadService {
 
     private static String AUDIT_ROLE_NAME = "补全诗句审核人";
     private static String TEMP_NAME = "verse.ftl";
@@ -47,7 +45,7 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
         int quesNum = total / perScore;
-        String sql = "select * from VerseBean order by random() limit " + quesNum;
+        String sql = "select * from enrolment_question_verse order by random() limit " + quesNum;
         // 创建试题内容
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
         // 以下需要通过算法动态获取（抽取试题）
@@ -55,7 +53,7 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
         for (int i = 0; i < list.size(); i++) {
             Map<String, Object> map = new HashMap<String, Object>();
             VerseBean verseBean = list.get(i);
-            map.put("type", "填空题");
+            map.put("type", "补全诗句");
             map.put("stem", verseBean.getStem());
             question.add(map);
         }

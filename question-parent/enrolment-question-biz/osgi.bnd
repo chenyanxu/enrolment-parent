@@ -10,6 +10,7 @@ Import-Package: com.kalix.framework.core.util,\
                 com.kalix.framework.core.api.security,\
                 com.kalix.framework.core.api.system,\
                 com.kalix.framework.core.api.persistence,\
+                com.kalix.framework.core.api.web.model,\
                 com.kalix.framework.core.api.dao,\
                 com.kalix.framework.core.api.biz,\
                 com.kalix.framework.core.impl.biz,\
