@@ -334,7 +334,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     public JsonData validateRepeates(RepeatedDTO repeatedDTO) {
         JsonData jsonData = new JsonData();
         String stem = repeatedDTO.getStem();
-        String subType = repeatedDTO.getQuestionType();
+        String subType = repeatedDTO.getSubType();
         Long questionid = repeatedDTO.getQuestionId();
         List<RepeatedCountDTO> repeateList = new ArrayList<RepeatedCountDTO>();
         List<Object> referenceList = new ArrayList<Object>();

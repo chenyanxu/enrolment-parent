@@ -74,9 +74,10 @@
 
         <rest path="/choices/repeated/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <description>choice rest service</description>
-            <get id="route-getRepeatedChoices">
+            <get id="route-getRepeatedChoices" type="com.kalix.enrolment.question.dto.model.RepeatedDTO"
+                 outType="com.kalix.framework.core.api.persistence.JsonData">
                 <description>Find all repeated choices</description>
-                <to uri="bean:choiceRepeatedService?method=getSingleRepeates(${header.subType})"/>
+                <to uri="bean:choiceRepeatedService?method=validateRepeates(${body})"/>
             </get>
         </rest>
 
