@@ -74,11 +74,11 @@
 
         <rest path="/interviewissues/repeated/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <description>interviewIssue rest service</description>
-            <get id="route-getRepeatedInterviewIssues" type="com.kalix.enrolment.question.dto.model.RepeatedDTO"
+            <post id="route-getRepeatedInterviewIssues" type="com.kalix.enrolment.question.dto.model.RepeatedDTO"
                  outType="com.kalix.framework.core.api.persistence.JsonData">
                 <description>Find all repeated interviewIssues</description>
                 <to uri="bean:interviewIssueRepeatedService?method=validateRepeates(${body})"/>
-            </get>
+            </post>
         </rest>
 
         <rest path="/interviewissues/repeated/list/{questionId}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">

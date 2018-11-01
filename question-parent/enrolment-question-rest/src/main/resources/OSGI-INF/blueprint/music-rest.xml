@@ -74,11 +74,11 @@
 
         <rest path="/musics/repeated/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <description>music rest service</description>
-            <get id="route-getRepeatedMusics" type="com.kalix.enrolment.question.dto.model.RepeatedDTO"
+            <post id="route-getRepeatedMusics" type="com.kalix.enrolment.question.dto.model.RepeatedDTO"
                  outType="com.kalix.framework.core.api.persistence.JsonData">
                 <description>Find all repeated musics</description>
                 <to uri="bean:musicRepeatedService?method=validateRepeates(${body})"/>
-            </get>
+            </post>
         </rest>
 
         <rest path="/musics/repeated/list/{questionId}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
