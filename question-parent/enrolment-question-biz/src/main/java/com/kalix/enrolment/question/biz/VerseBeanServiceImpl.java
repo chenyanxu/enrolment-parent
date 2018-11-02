@@ -38,10 +38,10 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
         // 创建试题标题
         String title = "";
         // 以下需要通过参数动态获取
-        int titleNum = (int) paperMap.get("titlenum");
+        int titleNum =  Integer.parseInt(paperMap.get("titlenum").toString());
         String titleName = "补全诗句";
-        int perScore = (int) paperMap.get("score");
-        int total = (int) paperMap.get("totalscore");
+        int perScore =  Integer.parseInt(paperMap.get("score").toString());
+        int total =  Integer.parseInt(paperMap.get("totalscore").toString());
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
         int quesNum = total / perScore;
