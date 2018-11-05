@@ -42,9 +42,5 @@
             <groupId>com.kalix.enrolment.system.dict</groupId>
             <artifactId>enrolment-system-dict-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.kalix.enrolment.system.dict</groupId>
-            <artifactId>enrolment-system-dict-api</artifactId>
-        </dependency>
     </dependencies>
 </project>
