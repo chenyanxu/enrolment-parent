@@ -10,9 +10,10 @@
     <reference id="verseBeanDao" interface="com.kalix.enrolment.question.api.dao.IVerseBeanDao"/>
     <reference id="musicBeanDao" interface="com.kalix.enrolment.question.api.dao.IMusicBeanDao"/>
     <reference id="subjectBeanDao" interface="com.kalix.enrolment.question.api.dao.ISubjectBeanDao"/>
+    <reference id="paperQuesBeanDao" interface="com.kalix.enrolment.question.api.dao.IPaperQuesBeanDao"/>
     <reference id="interviewIssueBeanDao" interface="com.kalix.enrolment.question.api.dao.IInterviewIssueBeanDao"/>
     <reference id="roleBeanService" interface="com.kalix.admin.core.api.biz.IRoleBeanService"/>
-    <reference id="couchdbService" interface="com.kalix.middleware.couchdb.api.biz.ICouchdbService"/>
+    <!--<reference id="couchdbService" interface="com.kalix.middleware.couchdb.api.biz.ICouchdbService"/>-->
     <reference id="questionSettingBeanDao" interface="com.kalix.enrolment.question.api.dao.IQuestionSettingBeanDao"/>
     <reference id="paperBeanDao" interface="com.kalix.enrolment.question.api.dao.IPaperBeanDao"/>
     <reference id="ruleBeanDao" interface="com.kalix.enrolment.question.api.dao.IRuleBeanDao"/>
@@ -56,6 +57,7 @@
     <bean id="choiceBeanServiceImpl" class="com.kalix.enrolment.question.biz.ChoiceBeanServiceImpl">
         <property name="dao" ref="choiceBeanDao"/>
         <property name="roleBeanService" ref="roleBeanService"/>
+        <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
         <property name="questionSettingBeanService" ref="questionSettingBeanServiceImpl"/>
     </bean>
     <service ref="choiceBeanServiceImpl"
@@ -225,7 +227,7 @@
     <!-- 题库试题公共服务(全库排重、自动成卷等) -->
     <bean id="questionCommonBizServiceImpl" class="com.kalix.enrolment.question.biz.QuestionCommonBizServiceImpl">
         <property name="enrolmentDictBeanService" ref="enrolmentDictBeanService"/>
-        <property name="couchdbService" ref="couchdbService"/>
+        <!--<property name="couchdbService" ref="couchdbService"/>-->
         <property name="paperBeanService" ref="paperBeanServiceImpl"/>
         <property name="ruleBeanService" ref="ruleBeanServiceImpl"/>
     </bean>
@@ -252,4 +254,11 @@
     </bean>
     <service id="ruleBeanService" ref="ruleBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IRuleBeanService"/>
+
+    <!-- 试卷试题服务 -->
+    <bean id="paperQuesBeanServiceImpl" class="com.kalix.enrolment.question.biz.PaperQuesBeanServiceImpl">
+        <property name="dao" ref="paperQuesBeanDao"/>
+    </bean>
+    <service id="paperQuesBeanService" ref="paperQuesBeanServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.IPaperQuesBeanService"/>
 </blueprint>

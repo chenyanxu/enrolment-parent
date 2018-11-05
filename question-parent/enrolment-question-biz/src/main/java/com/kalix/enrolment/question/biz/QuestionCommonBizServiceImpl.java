@@ -15,6 +15,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 
 import java.io.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -24,7 +25,7 @@ import java.util.*;
 public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
 
     private static String ENROLMENT_DICT_TYPE = "题型";
-    private ICouchdbService couchdbService;
+//    private ICouchdbService couchdbService;
     private IEnrolmentDictBeanService enrolmentDictBeanService;
     private IPaperBeanService paperBeanService;
     private IRuleBeanService ruleBeanService;
@@ -59,20 +60,25 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
 
     @Override
     public JsonStatus autoCreateTestPaper(Long paperId) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
         JsonStatus jsonStatus = new JsonStatus();
         try {
             Map tempMap = new HashMap<>();
             PaperBean paperBean = paperBeanService.getEntity(paperId);
+            Date year=paperBean.getYear();
             List list_rule = ruleBeanService.findByPaperId(paperId);
             List<Map> quesList = new ArrayList<Map>();
             for (int i = 0; i < list_rule.size(); i++) {
                 RuleDto ruleBean = (RuleDto) list_rule.get(i);
                 Map paper_map = new HashMap();
+                paper_map.put("year",year);
                 paper_map.put("score", ruleBean.getQuesScore());
                 paper_map.put("totalscore", ruleBean.getQuesTotalscore());
                 paper_map.put("desc", ruleBean.getQuesDesc());
                 paper_map.put("titlenum", ruleBean.getTitleNum());
                 paper_map.put("paperid", ruleBean.getPaperId());
+                paper_map.put("questype", ruleBean.getQuesType());
+                paper_map.put("subtype", ruleBean.getSubType());
                 String beanName = ruleBean.getQuesTypeDesc();
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("beanName", beanName);
@@ -86,6 +92,8 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             e.printStackTrace();
             jsonStatus.setSuccess(false);
             jsonStatus.setMsg(e.getMessage());
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
         return jsonStatus;
     }
@@ -130,12 +138,12 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             t.process(tempMap, out);
             out.close();
             fos.close();
-            if(outFile.exists())
-            {
-                InputStream input = new FileInputStream(outFile);
-                couchdbService.addAttachment(input,
-                        testPaperName + ".doc", "application/vnd.ms-word");
-            }
+//            if(outFile.exists())
+//            {
+//                InputStream input = new FileInputStream(outFile);
+//                couchdbService.addAttachment(input,
+//                        testPaperName + ".doc", "application/vnd.ms-word");
+//            }
 
 
         } catch (Exception e) {
@@ -152,9 +160,9 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
         this.enrolmentDictBeanService = enrolmentDictBeanService;
     }
 
-    public void setCouchdbService(ICouchdbService couchdbService) {
-        this.couchdbService = couchdbService;
-    }
+//    public void setCouchdbService(ICouchdbService couchdbService) {
+//        this.couchdbService = couchdbService;
+//    }
 
     public void setPaperBeanService(IPaperBeanService paperBeanService) {
         this.paperBeanService = paperBeanService;

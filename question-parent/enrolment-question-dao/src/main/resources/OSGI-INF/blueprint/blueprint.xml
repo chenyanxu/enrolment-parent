@@ -60,4 +60,11 @@
         <tx:transaction method="*" value="Required"/>
     </bean>
     <service id="ruleBeanDao" ref="ruleBeanDaoImpl" interface="com.kalix.enrolment.question.api.dao.IRuleBeanDao"/>
+
+    <!--试卷试题dao-->
+    <bean id="paperQuesBeanDaoImpl" class="com.kalix.enrolment.question.dao.PaperQuesBeanDaoImpl">
+        <tx:transaction method="*" value="Required"/>
+    </bean>
+    <service id="paperQuesBeanDao" ref="paperQuesBeanDaoImpl" interface="com.kalix.enrolment.question.api.dao.IPaperQuesBeanDao"/>
+
 </blueprint>

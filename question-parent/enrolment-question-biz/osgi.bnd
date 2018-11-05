@@ -19,6 +19,7 @@ Import-Package: com.kalix.framework.core.util,\
                 com.kalix.admin.core.entities,\
                 com.kalix.admin.core.api.biz,\
                 org.lightcouch,\
+                org.apache.tools.*,\
                 org.osgi.framework,\
                 org.osgi.service.blueprint,\
                 org.apache.commons.codec.binary,\

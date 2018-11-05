@@ -3,6 +3,7 @@ package com.kalix.enrolment.question.api.biz;
 import com.kalix.enrolment.question.entities.BaseQuestionEntity;
 import com.kalix.framework.extend.api.biz.ILogicDeleteService;
 
+import java.text.ParseException;
 import java.util.Map;
 
 /**
@@ -25,5 +26,5 @@ public interface IQuestionService<T extends BaseQuestionEntity> extends ILogicDe
      *
      * @return
      */
-    Map<String, Object> createSingleTestPaper(Map paperMap);
+    Map<String, Object> createSingleTestPaper(Map paperMap) throws ParseException;
 }
