@@ -44,6 +44,11 @@
                 <artifactId>middleware-excel-api</artifactId>
                 <version>${project.middleware.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.kalix.middleware.couchdb</groupId>
+                <artifactId>middleware-couchdb-api</artifactId>
+                <version>${project.middleware.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

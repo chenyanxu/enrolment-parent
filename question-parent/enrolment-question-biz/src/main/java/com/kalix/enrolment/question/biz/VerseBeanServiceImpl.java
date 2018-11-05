@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by zangyanming at 2018-09-13
@@ -32,16 +34,19 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
 
     @Override
     public Map<String, Object> createSingleTestPaper(Map paperMap) {
-
+        String pattern = "(?<=\\[#).*?(?=\\])";
+        // 编译正则
+        Pattern p1 = Pattern.compile(pattern);
+        // 指定要匹配的内容
         Map<String, Object> singleTestPaper = new HashMap<String, Object>();
 
         // 创建试题标题
         String title = "";
         // 以下需要通过参数动态获取
-        int titleNum = (int) paperMap.get("titlenum");
+        int titleNum =  Integer.parseInt(paperMap.get("titlenum").toString());
         String titleName = "补全诗句";
-        int perScore = (int) paperMap.get("score");
-        int total = (int) paperMap.get("totalscore");
+        int perScore =  Integer.parseInt(paperMap.get("score").toString());
+        int total =  Integer.parseInt(paperMap.get("totalscore").toString());
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
         int quesNum = total / perScore;
@@ -54,7 +59,9 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
             Map<String, Object> map = new HashMap<String, Object>();
             VerseBean verseBean = list.get(i);
             map.put("type", "补全诗句");
-            map.put("stem", verseBean.getStem());
+            Matcher m = p1.matcher(verseBean.getStem());
+            String stem=m.replaceAll("________").replaceAll("\\[#","").replaceAll("\\]","");
+            map.put("stem", stem);
             question.add(map);
         }
         singleTestPaper.put("question", question);

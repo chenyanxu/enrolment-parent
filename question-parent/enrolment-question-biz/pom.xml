@@ -42,5 +42,9 @@
             <groupId>com.kalix.enrolment.system.dict</groupId>
             <artifactId>enrolment-system-dict-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.kalix.middleware.couchdb</groupId>
+            <artifactId>middleware-couchdb-api</artifactId>
+        </dependency>
     </dependencies>
 </project>

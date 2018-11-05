@@ -10,6 +10,7 @@ import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
 import com.kalix.framework.core.util.ConfigUtil;
 import com.kalix.framework.core.util.JNDIHelper;
+import com.kalix.middleware.couchdb.api.biz.ICouchdbService;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
@@ -23,7 +24,7 @@ import java.util.*;
 public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
 
     private static String ENROLMENT_DICT_TYPE = "题型";
-
+    private ICouchdbService couchdbService;
     private IEnrolmentDictBeanService enrolmentDictBeanService;
     private IPaperBeanService paperBeanService;
     private IRuleBeanService ruleBeanService;
@@ -63,7 +64,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             Map tempMap = new HashMap<>();
             PaperBean paperBean = paperBeanService.getEntity(paperId);
             List list_rule = ruleBeanService.findByPaperId(paperId);
-            List<Map> test = new ArrayList<Map>();
+            List<Map> quesList = new ArrayList<Map>();
             for (int i = 0; i < list_rule.size(); i++) {
                 RuleDto ruleBean = (RuleDto) list_rule.get(i);
                 Map paper_map = new HashMap();
@@ -77,9 +78,9 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
                 map.put("beanName", beanName);
                 questionService = JNDIHelper.getJNDIServiceForName(IQuestionService.class.getName(), map);
                 Map singleTestPaper = questionService.createSingleTestPaper(paper_map);
-                test.add(singleTestPaper);
+                quesList.add(singleTestPaper);
             }
-            tempMap.put("quesList", test);
+            tempMap.put("quesList", quesList);
             jsonStatus = produceTestPaper("testPaper.ftl", tempMap);
         } catch (IOException e) {
             e.printStackTrace();
@@ -98,7 +99,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
         JsonStatus jsonStatus = new JsonStatus();
 
         Configuration configuration = new Configuration();
-
+        File outFile=null;
         //dataMap 要填入模本的数据文件
         //设置模本装置方法和路径,
         Template t = null;
@@ -112,10 +113,13 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             //test.ftl为要装载的模板
             t = configuration.getTemplate(fileName, "utf-8");
             //输出文档路径及名称
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
             String testPaperName = sdf.format(new Date());
 
-            File outFile = new File("d:\\" + testPaperName + ".doc");
+
+
+             outFile = new File("d:\\" + testPaperName + ".doc");
+
             Writer out = null;
             FileOutputStream fos = null;
             fos = new FileOutputStream(outFile);
@@ -126,16 +130,30 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             t.process(tempMap, out);
             out.close();
             fos.close();
+            if(outFile.exists())
+            {
+                InputStream input = new FileInputStream(outFile);
+                couchdbService.addAttachment(input,
+                        testPaperName + ".doc", "application/vnd.ms-word");
+            }
+
+
         } catch (Exception e) {
             //logger.error("导出出错", e);
             e.printStackTrace();
             // throw new BusinessException(CommonResultEnum.COMMON_ERROR_637);
+        }finally {
+            outFile.delete();
         }
         return jsonStatus;
     }
 
     public void setEnrolmentDictBeanService(IEnrolmentDictBeanService enrolmentDictBeanService) {
         this.enrolmentDictBeanService = enrolmentDictBeanService;
+    }
+
+    public void setCouchdbService(ICouchdbService couchdbService) {
+        this.couchdbService = couchdbService;
     }
 
     public void setPaperBeanService(IPaperBeanService paperBeanService) {
