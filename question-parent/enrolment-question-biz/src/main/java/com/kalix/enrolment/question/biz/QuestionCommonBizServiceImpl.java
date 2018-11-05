@@ -10,6 +10,7 @@ import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
 import com.kalix.framework.core.util.ConfigUtil;
 import com.kalix.framework.core.util.JNDIHelper;
+import com.kalix.middleware.couchdb.api.biz.ICouchdbService;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
@@ -23,7 +24,7 @@ import java.util.*;
 public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
 
     private static String ENROLMENT_DICT_TYPE = "题型";
-
+    private ICouchdbService couchdbService;
     private IEnrolmentDictBeanService enrolmentDictBeanService;
     private IPaperBeanService paperBeanService;
     private IRuleBeanService ruleBeanService;
@@ -98,7 +99,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
         JsonStatus jsonStatus = new JsonStatus();
 
         Configuration configuration = new Configuration();
-
+        File outFile=null;
         //dataMap 要填入模本的数据文件
         //设置模本装置方法和路径,
         Template t = null;
@@ -115,7 +116,10 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
             String testPaperName = sdf.format(new Date());
 
-            File outFile = new File("d:\\" + testPaperName + ".doc");
+
+
+             outFile = new File("d:\\" + testPaperName + ".doc");
+
             Writer out = null;
             FileOutputStream fos = null;
             fos = new FileOutputStream(outFile);
@@ -126,16 +130,30 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             t.process(tempMap, out);
             out.close();
             fos.close();
+            if(outFile.exists())
+            {
+                InputStream input = new FileInputStream(outFile);
+                couchdbService.addAttachment(input,
+                        testPaperName + ".doc", "application/vnd.ms-word");
+            }
+
+
         } catch (Exception e) {
             //logger.error("导出出错", e);
             e.printStackTrace();
             // throw new BusinessException(CommonResultEnum.COMMON_ERROR_637);
+        }finally {
+            outFile.delete();
         }
         return jsonStatus;
     }
 
     public void setEnrolmentDictBeanService(IEnrolmentDictBeanService enrolmentDictBeanService) {
         this.enrolmentDictBeanService = enrolmentDictBeanService;
+    }
+
+    public void setCouchdbService(ICouchdbService couchdbService) {
+        this.couchdbService = couchdbService;
     }
 
     public void setPaperBeanService(IPaperBeanService paperBeanService) {

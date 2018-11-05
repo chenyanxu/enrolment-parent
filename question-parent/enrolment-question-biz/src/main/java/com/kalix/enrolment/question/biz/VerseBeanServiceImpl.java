@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by zangyanming at 2018-09-13
@@ -32,7 +34,10 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
 
     @Override
     public Map<String, Object> createSingleTestPaper(Map paperMap) {
-
+        String pattern = "(?<=\\[#).*?(?=\\])";
+        // 编译正则
+        Pattern p1 = Pattern.compile(pattern);
+        // 指定要匹配的内容
         Map<String, Object> singleTestPaper = new HashMap<String, Object>();
 
         // 创建试题标题
@@ -54,7 +59,9 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
             Map<String, Object> map = new HashMap<String, Object>();
             VerseBean verseBean = list.get(i);
             map.put("type", "补全诗句");
-            map.put("stem", verseBean.getStem());
+            Matcher m = p1.matcher(verseBean.getStem());
+            String stem=m.replaceAll("________").replaceAll("\\[#","").replaceAll("\\]","");
+            map.put("stem", stem);
             question.add(map);
         }
         singleTestPaper.put("question", question);

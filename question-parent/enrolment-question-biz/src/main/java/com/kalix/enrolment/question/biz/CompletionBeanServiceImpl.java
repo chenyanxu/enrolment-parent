@@ -30,6 +30,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         Pattern p1 = Pattern.compile(pattern);
         // 指定要匹配的内容
         Matcher m = p1.matcher(entity.getStem());
+        m.replaceAll("_");
         // 计算次数
         int count = 0;
         while (m.find()) {
@@ -58,6 +59,11 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
 
     @Override
     public Map<String, Object> createSingleTestPaper(Map paperMap) {
+
+        String pattern = "(?<=\\[#).*?(?=\\])";
+        // 编译正则
+        Pattern p1 = Pattern.compile(pattern);
+        // 指定要匹配的内容
 
         Map<String, Object> singleTestPaper = new HashMap<String, Object>();
         List<CompletionBean> list_completion = new ArrayList<CompletionBean>();
@@ -95,7 +101,9 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
             Map<String, Object> map = new HashMap<String, Object>();
             CompletionBean completionBean = list_completion.get(i);
             map.put("type", "填空题");
-            map.put("stem", completionBean.getStem());
+            Matcher m = p1.matcher(completionBean.getStem());
+            String stem=m.replaceAll("________").replaceAll("\\[#","").replaceAll("\\]","");
+            map.put("stem",stem);
             question.add(map);
         }
         singleTestPaper.put("question", question);
