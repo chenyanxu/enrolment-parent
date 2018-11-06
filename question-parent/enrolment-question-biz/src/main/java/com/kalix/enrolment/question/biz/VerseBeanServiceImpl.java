@@ -6,10 +6,8 @@ import com.kalix.enrolment.question.biz.util.Constants;
 import com.kalix.enrolment.question.entities.VerseBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,12 +32,13 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
 
     @Override
     public Map<String, Object> createSingleTestPaper(Map paperMap) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
         String pattern = "(?<=\\[#).*?(?=\\])";
         // 编译正则
         Pattern p1 = Pattern.compile(pattern);
         // 指定要匹配的内容
         Map<String, Object> singleTestPaper = new HashMap<String, Object>();
-
+        String sql="";
         // 创建试题标题
         String title = "";
         // 以下需要通过参数动态获取
@@ -50,7 +49,13 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
         int quesNum = total / perScore;
-        String sql = "select * from enrolment_question_verse order by random() limit " + quesNum;
+
+        Date year=(Date)paperMap.get("year");
+        String year_str=simpleDateFormat.format(year);
+        String questype =  paperMap.get("questype").toString();
+        String subtype = paperMap.get("subtype")==null?"":paperMap.get("subtype").toString();
+        sql = "select * from enrolment_question_verse where id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='"+year_str+"' and questype='"+questype+"' and subtype='"+subtype+"') order by random() limit " + quesNum;
+       // String sql = "select * from enrolment_question_verse order by random() limit " + quesNum;
         // 创建试题内容
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
         // 以下需要通过算法动态获取（抽取试题）
