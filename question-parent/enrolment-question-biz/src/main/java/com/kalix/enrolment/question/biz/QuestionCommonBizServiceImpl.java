@@ -151,7 +151,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             e.printStackTrace();
             // throw new BusinessException(CommonResultEnum.COMMON_ERROR_637);
         }finally {
-            outFile.delete();
+            //outFile.delete();
         }
         return jsonStatus;
     }

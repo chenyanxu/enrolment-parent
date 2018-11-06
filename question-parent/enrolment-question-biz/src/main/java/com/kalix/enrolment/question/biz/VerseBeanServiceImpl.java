@@ -1,8 +1,10 @@
 package com.kalix.enrolment.question.biz;
 
+import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
 import com.kalix.enrolment.question.api.biz.IVerseBeanService;
 import com.kalix.enrolment.question.api.dao.IVerseBeanDao;
 import com.kalix.enrolment.question.biz.util.Constants;
+import com.kalix.enrolment.question.entities.PaperQuesBean;
 import com.kalix.enrolment.question.entities.VerseBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 
@@ -19,6 +21,11 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
 
     private static String AUDIT_ROLE_NAME = "补全诗句审核人";
     private static String TEMP_NAME = "verse.ftl";
+    private IPaperQuesBeanService paperQuesBeanService;
+
+    public void setPaperQuesBeanService(IPaperQuesBeanService paperQuesBeanService) {
+        this.paperQuesBeanService = paperQuesBeanService;
+    }
 
     @Override
     public String getAuditRoleName(String subType) {
@@ -67,6 +74,12 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
             Matcher m = p1.matcher(verseBean.getStem());
             String stem=m.replaceAll("________").replaceAll("\\[#","").replaceAll("\\]","");
             map.put("stem", stem);
+            PaperQuesBean paperQuesBean = new PaperQuesBean();
+            paperQuesBean.setQuesid(verseBean.getId());
+            paperQuesBean.setYear(year);
+            paperQuesBean.setQuesType(questype);
+            paperQuesBean.setSubType(subtype);
+            paperQuesBeanService.saveEntity(paperQuesBean);
             question.add(map);
         }
         singleTestPaper.put("question", question);

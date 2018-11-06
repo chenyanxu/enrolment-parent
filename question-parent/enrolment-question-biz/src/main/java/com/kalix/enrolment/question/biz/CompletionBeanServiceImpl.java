@@ -1,16 +1,16 @@
 package com.kalix.enrolment.question.biz;
 
 import com.kalix.enrolment.question.api.biz.ICompletionBeanService;
+import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
 import com.kalix.enrolment.question.api.dao.ICompletionBeanDao;
 import com.kalix.enrolment.question.biz.util.Constants;
 import com.kalix.enrolment.question.entities.CompletionBean;
+import com.kalix.enrolment.question.entities.PaperQuesBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 import com.kalix.framework.core.api.persistence.JsonStatus;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +22,11 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
 
     private static String AUDIT_ROLE_NAME = "填空题审核人";
     private static String TEMP_NAME = "completion.ftl";
+    private IPaperQuesBeanService paperQuesBeanService;
+
+    public void setPaperQuesBeanService(IPaperQuesBeanService paperQuesBeanService) {
+        this.paperQuesBeanService = paperQuesBeanService;
+    }
 
     @Override
     public void beforeSaveEntity(CompletionBean entity, JsonStatus status) {
@@ -59,7 +64,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
 
     @Override
     public Map<String, Object> createSingleTestPaper(Map paperMap) {
-
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
         String pattern = "(?<=\\[#).*?(?=\\])";
         // 编译正则
         Pattern p1 = Pattern.compile(pattern);
@@ -83,16 +88,12 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         singleTestPaper.put("title", title);
         int quesNum = total / perScore;
 
-        getComletionList(quesNum, list_completion);
-//        int num=0;
-//        for(CompletionBean completionBean:list_completion){
-//            System.out.println("------>"+completionBean.getSpaceNum());
-//
-//            num=num+ completionBean.getSpaceNum()*1;
-//
-//        }
-//        System.out.println(num);
-        // sql="select * from CompletionBean order by random() limit "+quesNum;
+
+        Date year=(Date)paperMap.get("year");
+        String year_str=simpleDateFormat.format(year);
+        String questype =  paperMap.get("questype").toString();
+        String subtype = paperMap.get("subtype")==null?"":paperMap.get("subtype").toString();
+        getComletionList(quesNum, list_completion,year_str,questype,subtype);
         // 创建试题内容
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
         // 以下需要通过算法动态获取（抽取试题）
@@ -105,6 +106,12 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
             String stem=m.replaceAll("________").replaceAll("\\[#","").replaceAll("\\]","");
             map.put("stem",stem);
             question.add(map);
+            PaperQuesBean paperQuesBean = new PaperQuesBean();
+            paperQuesBean.setQuesid(completionBean.getId());
+            paperQuesBean.setYear(year);
+            paperQuesBean.setQuesType(questype);
+            paperQuesBean.setSubType(subtype);
+            paperQuesBeanService.saveEntity(paperQuesBean);
         }
         singleTestPaper.put("question", question);
 
@@ -127,8 +134,8 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         return str;
     }
 
-    public void getComletionList(int spacenum, List<CompletionBean> list_completion) {
-        String sql = "select * from enrolment_question_completion order by random() limit 1";
+    public void getComletionList(int spacenum, List<CompletionBean> list_completion,String year_str,String questype,String subtype) {
+        String sql = "select * from enrolment_question_completion where id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='"+year_str+"' and questype='"+questype+"' and subtype='"+subtype+"') order by random() limit 1";
         List<CompletionBean> list = this.dao.findByNativeSql(sql, CompletionBean.class);
         if (list != null && list.size() > 0) {
             CompletionBean completionBean = list.get(0);
@@ -136,10 +143,10 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
             spacenum = spacenum - completionSpaceNum;
             if (spacenum > 0) {
                 list_completion.add(completionBean);
-                getComletionList(spacenum, list_completion);
+                getComletionList(spacenum, list_completion,year_str,questype,subtype);
             } else if (spacenum < 0) {
                 spacenum = spacenum + completionSpaceNum;
-                String sql_1 = "select * from enrolment_question_completion where spacenum='" + spacenum + "' order by random() limit 1";
+                String sql_1 = "select * from enrolment_question_completion where  id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='"+year_str+"' and questype='"+questype+"' and subtype='"+subtype+"') and spacenum='" + spacenum + "' order by random() limit 1";
                 List<CompletionBean> list_1 = this.dao.findByNativeSql(sql_1, CompletionBean.class);
                 if (list_1 != null && list_1.size() > 0) {
                     CompletionBean completionBean_1 = list_1.get(0);
@@ -148,7 +155,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
                     CompletionBean completionBean_last = list_completion.get(list_completion.size() - 1);
                     spacenum = completionBean_last.getSpaceNum() + spacenum;
                     list_completion.remove(list_completion.size() - 1);
-                    getComletionList(spacenum, list_completion);
+                    getComletionList(spacenum, list_completion,year_str,questype,subtype);
                 }
 
             } else {
