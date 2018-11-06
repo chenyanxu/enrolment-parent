@@ -3,14 +3,12 @@ package com.kalix.enrolment.question.biz;
 import com.kalix.enrolment.question.api.biz.*;
 import com.kalix.enrolment.question.dto.model.RuleDto;
 import com.kalix.enrolment.question.entities.PaperBean;
-import com.kalix.enrolment.question.entities.RuleBean;
 import com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService;
 import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
 import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
 import com.kalix.framework.core.util.ConfigUtil;
 import com.kalix.framework.core.util.JNDIHelper;
-import com.kalix.middleware.couchdb.api.biz.ICouchdbService;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
@@ -25,7 +23,7 @@ import java.util.*;
 public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
 
     private static String ENROLMENT_DICT_TYPE = "题型";
-//    private ICouchdbService couchdbService;
+    //    private ICouchdbService couchdbService;
     private IEnrolmentDictBeanService enrolmentDictBeanService;
     private IPaperBeanService paperBeanService;
     private IRuleBeanService ruleBeanService;
@@ -65,13 +63,13 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
         try {
             Map tempMap = new HashMap<>();
             PaperBean paperBean = paperBeanService.getEntity(paperId);
-            Date year=paperBean.getYear();
+            Date year = paperBean.getYear();
             List list_rule = ruleBeanService.findByPaperId(paperId);
             List<Map> quesList = new ArrayList<Map>();
             for (int i = 0; i < list_rule.size(); i++) {
                 RuleDto ruleBean = (RuleDto) list_rule.get(i);
                 Map paper_map = new HashMap();
-                paper_map.put("year",year);
+                paper_map.put("year", year);
                 paper_map.put("score", ruleBean.getQuesScore());
                 paper_map.put("totalscore", ruleBean.getQuesTotalscore());
                 paper_map.put("desc", ruleBean.getQuesDesc());
@@ -107,7 +105,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
         JsonStatus jsonStatus = new JsonStatus();
 
         Configuration configuration = new Configuration();
-        File outFile=null;
+        File outFile = null;
         //dataMap 要填入模本的数据文件
         //设置模本装置方法和路径,
         Template t = null;
@@ -125,8 +123,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             String testPaperName = sdf.format(new Date());
 
 
-
-             outFile = new File("d:\\" + testPaperName + ".doc");
+            outFile = new File("d:\\" + testPaperName + ".doc");
 
             Writer out = null;
             FileOutputStream fos = null;
@@ -150,8 +147,8 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             //logger.error("导出出错", e);
             e.printStackTrace();
             // throw new BusinessException(CommonResultEnum.COMMON_ERROR_637);
-        }finally {
-            outFile.delete();
+        } finally {
+            //outFile.delete();
         }
         return jsonStatus;
     }

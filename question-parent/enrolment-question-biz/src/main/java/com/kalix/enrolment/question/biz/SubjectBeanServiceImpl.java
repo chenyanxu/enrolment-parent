@@ -1,9 +1,11 @@
 package com.kalix.enrolment.question.biz;
 
+import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
 import com.kalix.enrolment.question.api.biz.ISubjectBeanService;
 import com.kalix.enrolment.question.api.dao.ISubjectBeanDao;
-import com.kalix.enrolment.question.api.model.SubjectType;
 import com.kalix.enrolment.question.entities.SubjectBean;
+import com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService;
+import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 
 import java.util.HashMap;
@@ -16,43 +18,16 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
         implements ISubjectBeanService, IDownloadService {
 
     private static String TEMP_NAME = "subject.ftl";
+    private static String DICT_TYPE = "主观题类型";
+    private IEnrolmentDictBeanService enrolmentDictBeanService;
+    private IPaperQuesBeanService paperQuesBeanService;
 
     @Override
     public String getAuditRoleName(String subType) {
-        String roleName = "";
-        switch (subType) {
-            case SubjectType.SHORT_ANSWER_QUESTIONS:
-                roleName = SubjectType.SHORT_ANSWER_QUESTIONS_ROLENAME;
-                break;
-            case SubjectType.TOPIC_DISCUSSION:
-                roleName = SubjectType.TOPIC_DISCUSSION_ROLENAME;
-                break;
-            case SubjectType.COMMENTARY:
-                roleName = SubjectType.COMMENTARY_ROLENAME;
-                break;
-            case SubjectType.STORY_WRITING:
-                roleName = SubjectType.STORY_WRITING_ROLENAME;
-                break;
-            case SubjectType.STORY_RENEW:
-                roleName = SubjectType.STORY_RENEW_ROLENAME;
-                break;
-            case SubjectType.MICRO_WRITING:
-                roleName = SubjectType.MICRO_WRITING_ROLENAME;
-                break;
-            case SubjectType.PHOTOGRAPHY_ANALYSIS:
-                roleName = SubjectType.PHOTOGRAPHY_ANALYSIS_ROLENAME;
-                break;
-            case SubjectType.FILM_SOUND_ANALYSIS:
-                roleName = SubjectType.FILM_SOUND_ANALYSIS_ROLENAME;
-                break;
-            case SubjectType.IMAGE_ANALYSIS:
-                roleName = SubjectType.IMAGE_ANALYSIS_ROLENAME;
-                break;
-            case SubjectType.PHOTOGRAPHY_WRITING:
-                roleName = SubjectType.PHOTOGRAPHY_WRITING_ROLENAME;
-                break;
-        }
-        return roleName;
+        EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_TYPE, subType);
+        String label = enrolmentDictBean.getLabel();
+        String auditRoleName = label.trim() + "审核人";
+        return auditRoleName;
     }
 
     @Override
@@ -79,5 +54,13 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
         str[0] = "主观题";
         str[1] = this.createSinglePreview(tempMap, subjectBean.getSubType());
         return str;
+    }
+
+    public void setEnrolmentDictBeanService(IEnrolmentDictBeanService enrolmentDictBeanService) {
+        this.enrolmentDictBeanService = enrolmentDictBeanService;
+    }
+
+    public void setPaperQuesBeanService(IPaperQuesBeanService paperQuesBeanService) {
+        this.paperQuesBeanService = paperQuesBeanService;
     }
 }
