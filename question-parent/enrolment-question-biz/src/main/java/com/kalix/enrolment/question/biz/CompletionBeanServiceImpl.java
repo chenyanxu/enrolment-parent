@@ -1,16 +1,16 @@
 package com.kalix.enrolment.question.biz;
 
 import com.kalix.enrolment.question.api.biz.ICompletionBeanService;
-import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
 import com.kalix.enrolment.question.api.dao.ICompletionBeanDao;
 import com.kalix.enrolment.question.biz.util.Constants;
 import com.kalix.enrolment.question.entities.CompletionBean;
-import com.kalix.enrolment.question.entities.PaperQuesBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 import com.kalix.framework.core.api.persistence.JsonStatus;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,13 +20,11 @@ import java.util.regex.Pattern;
 public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICompletionBeanDao, CompletionBean>
         implements ICompletionBeanService, IDownloadService {
 
-    private static String AUDIT_ROLE_NAME = "填空题审核人";
     private static String TEMP_NAME = "completion.ftl";
+    private static String DICT_TYPE = "题型";
+    private static String DICT_VALUE = "1";
+    private IEnrolmentDictBeanService enrolmentDictBeanService;
     private IPaperQuesBeanService paperQuesBeanService;
-
-    public void setPaperQuesBeanService(IPaperQuesBeanService paperQuesBeanService) {
-        this.paperQuesBeanService = paperQuesBeanService;
-    }
 
     @Override
     public void beforeSaveEntity(CompletionBean entity, JsonStatus status) {
@@ -49,7 +47,10 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
 
     @Override
     public String getAuditRoleName(String subType) {
-        return AUDIT_ROLE_NAME;
+        EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_TYPE, DICT_VALUE);
+        String label = enrolmentDictBean.getLabel();
+        String auditRoleName = label.trim() + "审核人";
+        return auditRoleName;
     }
 
     @Override
@@ -155,7 +156,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
                     CompletionBean completionBean_last = list_completion.get(list_completion.size() - 1);
                     spacenum = completionBean_last.getSpaceNum() + spacenum;
                     list_completion.remove(list_completion.size() - 1);
-                    getComletionList(spacenum, list_completion,year_str,questype,subtype);
+                    getComletionList(spacenum, list_completion);
                 }
 
             } else {
@@ -163,6 +164,13 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
             }
 
         }
+    }
 
+    public void setEnrolmentDictBeanService(IEnrolmentDictBeanService enrolmentDictBeanService) {
+        this.enrolmentDictBeanService = enrolmentDictBeanService;
+    }
+
+    public void setPaperQuesBeanService(IPaperQuesBeanService paperQuesBeanService) {
+        this.paperQuesBeanService = paperQuesBeanService;
     }
 }

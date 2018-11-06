@@ -1,10 +1,8 @@
 package com.kalix.enrolment.question.biz;
 
-import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
 import com.kalix.enrolment.question.api.biz.IVerseBeanService;
 import com.kalix.enrolment.question.api.dao.IVerseBeanDao;
 import com.kalix.enrolment.question.biz.util.Constants;
-import com.kalix.enrolment.question.entities.PaperQuesBean;
 import com.kalix.enrolment.question.entities.VerseBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 
@@ -19,17 +17,18 @@ import java.util.regex.Pattern;
 public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBeanDao, VerseBean>
         implements IVerseBeanService, IDownloadService {
 
-    private static String AUDIT_ROLE_NAME = "补全诗句审核人";
     private static String TEMP_NAME = "verse.ftl";
+    private static String DICT_TYPE = "题型";
+    private static String DICT_VALUE = "3";
+    private IEnrolmentDictBeanService enrolmentDictBeanService;
     private IPaperQuesBeanService paperQuesBeanService;
-
-    public void setPaperQuesBeanService(IPaperQuesBeanService paperQuesBeanService) {
-        this.paperQuesBeanService = paperQuesBeanService;
-    }
 
     @Override
     public String getAuditRoleName(String subType) {
-        return AUDIT_ROLE_NAME;
+        EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_TYPE, DICT_VALUE);
+        String label = enrolmentDictBean.getLabel();
+        String auditRoleName = label.trim() + "审核人";
+        return auditRoleName;
     }
 
     @Override
@@ -101,5 +100,13 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
         str[0] = "补全诗句";
         str[1] = this.createSinglePreview(tempMap, "");
         return str;
+    }
+
+    public void setEnrolmentDictBeanService(IEnrolmentDictBeanService enrolmentDictBeanService) {
+        this.enrolmentDictBeanService = enrolmentDictBeanService;
+    }
+
+    public void setPaperQuesBeanService(IPaperQuesBeanService paperQuesBeanService) {
+        this.paperQuesBeanService = paperQuesBeanService;
     }
 }

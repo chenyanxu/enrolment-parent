@@ -1,8 +1,11 @@
 package com.kalix.enrolment.question.biz;
 
 import com.kalix.enrolment.question.api.biz.IMusicBeanService;
+import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
 import com.kalix.enrolment.question.api.dao.IMusicBeanDao;
 import com.kalix.enrolment.question.entities.MusicBean;
+import com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService;
+import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 
 import java.util.HashMap;
@@ -14,12 +17,18 @@ import java.util.Map;
 public class MusicBeanServiceImpl extends QuestionGenericBizServiceImpl<IMusicBeanDao, MusicBean>
         implements IMusicBeanService, IDownloadService {
 
-    private static String AUDIT_ROLE_NAME = "音乐基础审核人";
     private static String TEMP_NAME = "";
+    private static String DICT_TYPE = "题型";
+    private static String DICT_VALUE = "4";
+    private IEnrolmentDictBeanService enrolmentDictBeanService;
+    private IPaperQuesBeanService paperQuesBeanService;
 
     @Override
     public String getAuditRoleName(String subType) {
-        return AUDIT_ROLE_NAME;
+        EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_TYPE, DICT_VALUE);
+        String label = enrolmentDictBean.getLabel();
+        String auditRoleName = label.trim() + "审核人";
+        return auditRoleName;
     }
 
     @Override
@@ -46,5 +55,13 @@ public class MusicBeanServiceImpl extends QuestionGenericBizServiceImpl<IMusicBe
         str[0] = "音乐基础";
         str[1] = this.createSinglePreview(tempMap, "");
         return str;
+    }
+
+    public void setEnrolmentDictBeanService(IEnrolmentDictBeanService enrolmentDictBeanService) {
+        this.enrolmentDictBeanService = enrolmentDictBeanService;
+    }
+
+    public void setPaperQuesBeanService(IPaperQuesBeanService paperQuesBeanService) {
+        this.paperQuesBeanService = paperQuesBeanService;
     }
 }
