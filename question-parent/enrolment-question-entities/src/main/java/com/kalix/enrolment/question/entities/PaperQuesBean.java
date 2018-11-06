@@ -3,7 +3,6 @@ package com.kalix.enrolment.question.entities;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kalix.framework.extend.api.entities.BaseLogicDeleteEntity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Date;

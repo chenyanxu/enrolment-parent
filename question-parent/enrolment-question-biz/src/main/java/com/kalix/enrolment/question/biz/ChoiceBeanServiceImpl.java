@@ -92,18 +92,17 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
         String[] str = new String[2];
         ChoiceBean choiceBean = this.getEntity(entityId);
         Map dataMap = new HashMap();
-        Map tempMap = new HashMap();
         dataMap.put("stem", choiceBean.getStem());
         dataMap.put("answerA", choiceBean.getAnswerA());
         dataMap.put("answerB", choiceBean.getAnswerB());
         dataMap.put("answerC", choiceBean.getAnswerC());
         dataMap.put("answerD", choiceBean.getAnswerD());
 
-        tempMap = new HashMap<>();
-        tempMap.put("title", "选择题");
+        Map tempMap = new HashMap();
+        // tempMap.put("title", "选择题");
         tempMap.put("question", dataMap);
 
-        str[0] = "123";
+        str[0] = "单项选择题";
         str[1] = this.createSinglePreview(tempMap, "");
         return str;
     }
