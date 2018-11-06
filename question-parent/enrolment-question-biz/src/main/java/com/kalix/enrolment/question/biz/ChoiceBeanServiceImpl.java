@@ -53,16 +53,16 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
         int perScore = Integer.parseInt(paperMap.get("score").toString());
         int total = Integer.parseInt(paperMap.get("totalscore").toString());
 
-        String questype =  paperMap.get("questype").toString();
-        String subtype = paperMap.get("subtype")==null?"":paperMap.get("subtype").toString();
+        String questype = paperMap.get("questype").toString();
+        String subtype = paperMap.get("subtype") == null ? "" : paperMap.get("subtype").toString();
 
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
         int quesNum = total / perScore;
 
-        Date year=(Date)paperMap.get("year");
-        String year_str=simpleDateFormat.format(year);
-        sql = "select * from enrolment_question_Choice where id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='"+year_str+"' and questype='"+questype+"' and subtype='"+subtype+"') order by random() limit " + quesNum;
+        Date year = (Date) paperMap.get("year");
+        String year_str = simpleDateFormat.format(year);
+        sql = "select * from enrolment_question_Choice where id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit " + quesNum;
 
         // 创建试题内容
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
