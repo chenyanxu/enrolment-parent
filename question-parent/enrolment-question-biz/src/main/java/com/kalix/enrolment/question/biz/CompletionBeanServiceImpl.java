@@ -1,16 +1,18 @@
 package com.kalix.enrolment.question.biz;
 
 import com.kalix.enrolment.question.api.biz.ICompletionBeanService;
+import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
 import com.kalix.enrolment.question.api.dao.ICompletionBeanDao;
 import com.kalix.enrolment.question.biz.util.Constants;
 import com.kalix.enrolment.question.entities.CompletionBean;
+import com.kalix.enrolment.question.entities.PaperQuesBean;
+import com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService;
+import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 import com.kalix.framework.core.api.persistence.JsonStatus;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -156,7 +158,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
                     CompletionBean completionBean_last = list_completion.get(list_completion.size() - 1);
                     spacenum = completionBean_last.getSpaceNum() + spacenum;
                     list_completion.remove(list_completion.size() - 1);
-                    getComletionList(spacenum, list_completion);
+                    getComletionList(spacenum, list_completion,year_str,questype,subtype);
                 }
 
             } else {
