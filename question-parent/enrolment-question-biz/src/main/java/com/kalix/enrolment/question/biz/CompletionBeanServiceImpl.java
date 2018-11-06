@@ -1,9 +1,12 @@
 package com.kalix.enrolment.question.biz;
 
 import com.kalix.enrolment.question.api.biz.ICompletionBeanService;
+import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
 import com.kalix.enrolment.question.api.dao.ICompletionBeanDao;
 import com.kalix.enrolment.question.biz.util.Constants;
 import com.kalix.enrolment.question.entities.CompletionBean;
+import com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService;
+import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 import com.kalix.framework.core.api.persistence.JsonStatus;
 
@@ -20,8 +23,11 @@ import java.util.regex.Pattern;
 public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICompletionBeanDao, CompletionBean>
         implements ICompletionBeanService, IDownloadService {
 
-    private static String AUDIT_ROLE_NAME = "填空题审核人";
     private static String TEMP_NAME = "completion.ftl";
+    private static String DICT_TYPE = "题型";
+    private static String DICT_VALUE = "1";
+    private IEnrolmentDictBeanService enrolmentDictBeanService;
+    private IPaperQuesBeanService paperQuesBeanService;
 
     @Override
     public void beforeSaveEntity(CompletionBean entity, JsonStatus status) {
@@ -44,7 +50,10 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
 
     @Override
     public String getAuditRoleName(String subType) {
-        return AUDIT_ROLE_NAME;
+        EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_TYPE, DICT_VALUE);
+        String label = enrolmentDictBean.getLabel();
+        String auditRoleName = label.trim() + "审核人";
+        return auditRoleName;
     }
 
     @Override
@@ -102,8 +111,8 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
             CompletionBean completionBean = list_completion.get(i);
             map.put("type", "填空题");
             Matcher m = p1.matcher(completionBean.getStem());
-            String stem=m.replaceAll("________").replaceAll("\\[#","").replaceAll("\\]","");
-            map.put("stem",stem);
+            String stem = m.replaceAll("________").replaceAll("\\[#", "").replaceAll("\\]", "");
+            map.put("stem", stem);
             question.add(map);
         }
         singleTestPaper.put("question", question);
@@ -156,6 +165,13 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
             }
 
         }
+    }
 
+    public void setEnrolmentDictBeanService(IEnrolmentDictBeanService enrolmentDictBeanService) {
+        this.enrolmentDictBeanService = enrolmentDictBeanService;
+    }
+
+    public void setPaperQuesBeanService(IPaperQuesBeanService paperQuesBeanService) {
+        this.paperQuesBeanService = paperQuesBeanService;
     }
 }

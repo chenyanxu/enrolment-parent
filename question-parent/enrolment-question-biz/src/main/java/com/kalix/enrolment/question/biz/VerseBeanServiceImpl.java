@@ -1,9 +1,12 @@
 package com.kalix.enrolment.question.biz;
 
+import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
 import com.kalix.enrolment.question.api.biz.IVerseBeanService;
 import com.kalix.enrolment.question.api.dao.IVerseBeanDao;
 import com.kalix.enrolment.question.biz.util.Constants;
 import com.kalix.enrolment.question.entities.VerseBean;
+import com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService;
+import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 
 import java.util.ArrayList;
@@ -19,12 +22,18 @@ import java.util.regex.Pattern;
 public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBeanDao, VerseBean>
         implements IVerseBeanService, IDownloadService {
 
-    private static String AUDIT_ROLE_NAME = "补全诗句审核人";
     private static String TEMP_NAME = "verse.ftl";
+    private static String DICT_TYPE = "题型";
+    private static String DICT_VALUE = "3";
+    private IEnrolmentDictBeanService enrolmentDictBeanService;
+    private IPaperQuesBeanService paperQuesBeanService;
 
     @Override
     public String getAuditRoleName(String subType) {
-        return AUDIT_ROLE_NAME;
+        EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_TYPE, DICT_VALUE);
+        String label = enrolmentDictBean.getLabel();
+        String auditRoleName = label.trim() + "审核人";
+        return auditRoleName;
     }
 
     @Override
@@ -43,10 +52,10 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
         // 创建试题标题
         String title = "";
         // 以下需要通过参数动态获取
-        int titleNum =  Integer.parseInt(paperMap.get("titlenum").toString());
+        int titleNum = Integer.parseInt(paperMap.get("titlenum").toString());
         String titleName = "补全诗句";
-        int perScore =  Integer.parseInt(paperMap.get("score").toString());
-        int total =  Integer.parseInt(paperMap.get("totalscore").toString());
+        int perScore = Integer.parseInt(paperMap.get("score").toString());
+        int total = Integer.parseInt(paperMap.get("totalscore").toString());
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
         int quesNum = total / perScore;
@@ -60,7 +69,7 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
             VerseBean verseBean = list.get(i);
             map.put("type", "补全诗句");
             Matcher m = p1.matcher(verseBean.getStem());
-            String stem=m.replaceAll("________").replaceAll("\\[#","").replaceAll("\\]","");
+            String stem = m.replaceAll("________").replaceAll("\\[#", "").replaceAll("\\]", "");
             map.put("stem", stem);
             question.add(map);
         }
@@ -83,5 +92,13 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
         str[0] = "补全诗句";
         str[1] = this.createSinglePreview(tempMap, "");
         return str;
+    }
+
+    public void setEnrolmentDictBeanService(IEnrolmentDictBeanService enrolmentDictBeanService) {
+        this.enrolmentDictBeanService = enrolmentDictBeanService;
+    }
+
+    public void setPaperQuesBeanService(IPaperQuesBeanService paperQuesBeanService) {
+        this.paperQuesBeanService = paperQuesBeanService;
     }
 }
