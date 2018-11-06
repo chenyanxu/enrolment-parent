@@ -58,7 +58,6 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
 
     @Override
     public JsonStatus autoCreateTestPaper(Long paperId) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
         JsonStatus jsonStatus = new JsonStatus();
         try {
             Map tempMap = new HashMap<>();
@@ -77,6 +76,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
                 paper_map.put("paperid", ruleBean.getPaperId());
                 paper_map.put("questype", ruleBean.getQuesType());
                 paper_map.put("subtype", ruleBean.getSubType());
+                paper_map.put("questypename", ruleBean.getQuesTypeName());
                 String beanName = ruleBean.getQuesTypeDesc();
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("beanName", beanName);
