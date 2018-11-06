@@ -23,7 +23,6 @@
     <bean id="completionBeanServiceImpl" class="com.kalix.enrolment.question.biz.CompletionBeanServiceImpl">
         <property name="dao" ref="completionBeanDao"/>
         <property name="roleBeanService" ref="roleBeanService"/>
-        <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
         <property name="questionSettingBeanService" ref="questionSettingBeanServiceImpl"/>
         <property name="enrolmentDictBeanService" ref="enrolmentDictBeanService"/>
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
@@ -96,7 +95,6 @@
     <bean id="verseBeanServiceImpl" class="com.kalix.enrolment.question.biz.VerseBeanServiceImpl">
         <property name="dao" ref="verseBeanDao"/>
         <property name="roleBeanService" ref="roleBeanService"/>
-        <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
         <property name="questionSettingBeanService" ref="questionSettingBeanServiceImpl"/>
         <property name="enrolmentDictBeanService" ref="enrolmentDictBeanService"/>
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>

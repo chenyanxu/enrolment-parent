@@ -48,24 +48,24 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
         Pattern p1 = Pattern.compile(pattern);
         // 指定要匹配的内容
         Map<String, Object> singleTestPaper = new HashMap<String, Object>();
-        String sql="";
+        String sql = "";
         // 创建试题标题
         String title = "";
         // 以下需要通过参数动态获取
-        int titleNum =  Integer.parseInt(paperMap.get("titlenum").toString());
+        int titleNum = Integer.parseInt(paperMap.get("titlenum").toString());
         String titleName = "补全诗句";
-        int perScore =  Integer.parseInt(paperMap.get("score").toString());
-        int total =  Integer.parseInt(paperMap.get("totalscore").toString());
+        int perScore = Integer.parseInt(paperMap.get("score").toString());
+        int total = Integer.parseInt(paperMap.get("totalscore").toString());
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
         int quesNum = total / perScore;
 
-        Date year=(Date)paperMap.get("year");
-        String year_str=simpleDateFormat.format(year);
-        String questype =  paperMap.get("questype").toString();
-        String subtype = paperMap.get("subtype")==null?"":paperMap.get("subtype").toString();
-        sql = "select * from enrolment_question_verse where id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='"+year_str+"' and questype='"+questype+"' and subtype='"+subtype+"') order by random() limit " + quesNum;
-       // String sql = "select * from enrolment_question_verse order by random() limit " + quesNum;
+        Date year = (Date) paperMap.get("year");
+        String year_str = simpleDateFormat.format(year);
+        String questype = paperMap.get("questype").toString();
+        String subtype = paperMap.get("subtype") == null ? "" : paperMap.get("subtype").toString();
+        sql = "select * from enrolment_question_verse where id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit " + quesNum;
+        // String sql = "select * from enrolment_question_verse order by random() limit " + quesNum;
         // 创建试题内容
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
         // 以下需要通过算法动态获取（抽取试题）
@@ -75,7 +75,7 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
             VerseBean verseBean = list.get(i);
             map.put("type", "补全诗句");
             Matcher m = p1.matcher(verseBean.getStem());
-            String stem=m.replaceAll("________").replaceAll("\\[#","").replaceAll("\\]","");
+            String stem = m.replaceAll("________").replaceAll("\\[#", "").replaceAll("\\]", "");
             map.put("stem", stem);
             PaperQuesBean paperQuesBean = new PaperQuesBean();
             paperQuesBean.setQuesid(verseBean.getId());
