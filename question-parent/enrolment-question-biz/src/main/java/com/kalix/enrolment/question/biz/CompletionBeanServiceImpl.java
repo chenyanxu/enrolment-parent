@@ -113,20 +113,16 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
 
     @Override
     public String[] createDownloadFile(Long entityId, String fileType) {
-
+        String[] str = new String[2];
         CompletionBean completionBean = this.getEntity(entityId);
-
         Map dataMap = new HashMap();
-        Map tempMap = new HashMap();
         dataMap.put("stem", completionBean.getStem());
 
-        // List question = new ArrayList();
-        //  question.add(dataMap);
-        tempMap = new HashMap<>();
-        tempMap.put("title", "填空题");
+        Map tempMap = new HashMap();
+        // tempMap.put("title", "填空题");
         tempMap.put("question", dataMap);
-        String[] str = new String[2];
-        str[0] = "123";
+
+        str[0] = "填空题";
         str[1] = this.createSinglePreview(tempMap, "");
         return str;
     }

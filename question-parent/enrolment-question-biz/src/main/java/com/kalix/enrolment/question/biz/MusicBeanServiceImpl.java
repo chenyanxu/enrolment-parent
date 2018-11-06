@@ -34,18 +34,16 @@ public class MusicBeanServiceImpl extends QuestionGenericBizServiceImpl<IMusicBe
 
     @Override
     public String[] createDownloadFile(Long entityId, String fileType) {
-
+        String[] str = new String[2];
         MusicBean musicBean = this.getEntity(entityId);
-
         Map dataMap = new HashMap();
-        Map tempMap = new HashMap();
         dataMap.put("stem", musicBean.getStem());
 
-        tempMap = new HashMap<>();
-        tempMap.put("title", "音乐基础");
+        Map tempMap = new HashMap();
+        // tempMap.put("title", "音乐基础");
         tempMap.put("question", dataMap);
-        String[] str = new String[2];
-        str[0] = "123";
+
+        str[0] = "音乐基础";
         str[1] = this.createSinglePreview(tempMap, "");
         return str;
     }

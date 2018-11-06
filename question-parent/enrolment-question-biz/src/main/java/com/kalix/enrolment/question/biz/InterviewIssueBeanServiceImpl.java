@@ -4,6 +4,7 @@ import com.kalix.enrolment.question.api.biz.IInterviewIssueBeanService;
 import com.kalix.enrolment.question.api.dao.IInterviewIssueBeanDao;
 import com.kalix.enrolment.question.api.model.InterviewType;
 import com.kalix.enrolment.question.entities.InterviewIssueBean;
+import com.kalix.enrolment.question.entities.MusicBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 
 import java.util.HashMap;
@@ -73,20 +74,16 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
 
     @Override
     public String[] createDownloadFile(Long entityId, String fileType) {
-
+        String[] str = new String[2];
         InterviewIssueBean interviewIssueBean = this.getEntity(entityId);
-
         Map dataMap = new HashMap();
-        Map tempMap = new HashMap();
         dataMap.put("stem", interviewIssueBean.getStem());
 
-        // List question = new ArrayList();
-        //  question.add(dataMap);
-        tempMap = new HashMap<>();
-        tempMap.put("title", "面试题");
+        Map tempMap = new HashMap();
+        // tempMap.put("title", "面试题");
         tempMap.put("question", dataMap);
-        String[] str = new String[2];
-        str[0] = "123";
+
+        str[0] = "面试题";
         str[1] = this.createSinglePreview(tempMap, interviewIssueBean.getSubType());
         return str;
     }

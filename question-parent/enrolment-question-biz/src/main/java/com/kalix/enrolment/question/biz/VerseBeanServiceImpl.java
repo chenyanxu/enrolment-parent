@@ -71,18 +71,16 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
 
     @Override
     public String[] createDownloadFile(Long entityId, String fileType) {
-
+        String[] str = new String[2];
         VerseBean verseBean = this.getEntity(entityId);
-
         Map dataMap = new HashMap();
-        Map tempMap = new HashMap();
         dataMap.put("stem", verseBean.getStem());
 
-        tempMap = new HashMap<>();
-        tempMap.put("title", "补全诗句");
+        Map tempMap = new HashMap();
+        // tempMap.put("title", "补全诗句");
         tempMap.put("question", dataMap);
-        String[] str = new String[2];
-        str[0] = "123";
+
+        str[0] = "补全诗句";
         str[1] = this.createSinglePreview(tempMap, "");
         return str;
     }

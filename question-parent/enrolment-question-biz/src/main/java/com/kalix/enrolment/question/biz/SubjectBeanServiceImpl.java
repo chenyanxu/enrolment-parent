@@ -67,18 +67,16 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
 
     @Override
     public String[] createDownloadFile(Long entityId, String fileType) {
-
+        String[] str = new String[2];
         SubjectBean subjectBean = this.getEntity(entityId);
-
         Map dataMap = new HashMap();
-        Map tempMap = new HashMap();
         dataMap.put("stem", subjectBean.getStem());
 
-        tempMap = new HashMap<>();
-        tempMap.put("title", "主观题");
+        Map tempMap = new HashMap();
+        // tempMap.put("title", "主观题");
         tempMap.put("question", dataMap);
-        String[] str = new String[2];
-        str[0] = "123";
+
+        str[0] = "主观题";
         str[1] = this.createSinglePreview(tempMap, subjectBean.getSubType());
         return str;
     }
