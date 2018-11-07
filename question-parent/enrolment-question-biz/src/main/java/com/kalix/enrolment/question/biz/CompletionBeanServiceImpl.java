@@ -82,7 +82,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         //paperMap.put("totalscore","20");
         // 以下需要通过参数动态获取
         int titleNum = Integer.parseInt(paperMap.get("titlenum").toString());
-        String titleName = "填空题";
+        String titleName = paperMap.get("questypename").toString();
         int perScore = Integer.parseInt(paperMap.get("score").toString());
         int total = Integer.parseInt(paperMap.get("totalscore").toString());
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每空" + perScore + "分，共" + total + "分)";

@@ -34,13 +34,13 @@ public class PaperBean extends BaseLogicDeleteEntity {
     /**
      * 自动成卷份数
      */
-    private Long copies;
+    private int copies;
 
-    public Long getCopies() {
+    public int getCopies() {
         return copies;
     }
 
-    public void setCopies(Long copies) {
+    public void setCopies(int copies) {
         this.copies = copies;
     }
 
