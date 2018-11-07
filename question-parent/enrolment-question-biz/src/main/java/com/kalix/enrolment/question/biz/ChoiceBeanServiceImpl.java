@@ -21,22 +21,25 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
         implements IChoiceBeanService, IDownloadService {
 
     private static String TEMP_NAME = "choice.ftl";
-    private static String DICT_TYPE = "题型";
-    private static String DICT_VALUE = "2";
-    private IEnrolmentDictBeanService enrolmentDictBeanService;
+    private static String DICT_QUESTIONVALUE = "2";
     private IPaperQuesBeanService paperQuesBeanService;
 
     @Override
     public String getAuditRoleName(String subType) {
-        EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_TYPE, DICT_VALUE);
+        EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_QUESTIONTYPE, DICT_QUESTIONVALUE);
         String label = enrolmentDictBean.getLabel();
-        String auditRoleName = label.trim() + "审核人";
+        String auditRoleName = label + "审核人";
         return auditRoleName;
     }
 
     @Override
     public String getTempName(String subType) {
         return TEMP_NAME;
+    }
+
+    @Override
+    public String getSubTypeName(String subType) {
+        return "";
     }
 
     @Override
@@ -108,10 +111,6 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
         str[0] = "单项选择题";
         str[1] = this.createSinglePreview(tempMap, "");
         return str;
-    }
-
-    public void setEnrolmentDictBeanService(IEnrolmentDictBeanService enrolmentDictBeanService) {
-        this.enrolmentDictBeanService = enrolmentDictBeanService;
     }
 
     public void setPaperQuesBeanService(IPaperQuesBeanService paperQuesBeanService) {

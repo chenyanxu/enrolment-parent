@@ -22,7 +22,7 @@ import java.util.*;
  */
 public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
 
-    private static String ENROLMENT_DICT_TYPE = "题型";
+    protected static String DICT_QUESTIONTYPE = "题型";
     //    private ICouchdbService couchdbService;
     private IEnrolmentDictBeanService enrolmentDictBeanService;
     private IPaperBeanService paperBeanService;
@@ -35,18 +35,31 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
     public JsonData getAllRepeates() {
         JsonData jsonData = new JsonData();
         List list = new ArrayList();
-        List<EnrolmentDictBean> dictBeans = enrolmentDictBeanService.getDictBeanByType(ENROLMENT_DICT_TYPE);
+        List<EnrolmentDictBean> dictBeans = enrolmentDictBeanService.getDictBeanByType(DICT_QUESTIONTYPE);
         for (int i = 0; i < dictBeans.size(); i++) {
             EnrolmentDictBean enrolmentDictBean = dictBeans.get(i);
+            String questionType = enrolmentDictBean.getValue();
+            String subTypeDictType = enrolmentDictBean.getSubType();
             String beanName = enrolmentDictBean.getDescription();
             Map<String, String> map = new HashMap<String, String>();
             map.put("beanName", beanName);
             try {
-                JsonData result = new JsonData();
+                List result = new ArrayList<>();
                 repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
-                result = repeatedService.getSingleRepeates("");
-                if (result.getData() != null && result.getData().size() > 0) {
-                    list.addAll(result.getData());
+                if (StringUtils.isEmpty(subTypeDictType)) {
+                    result = repeatedService.getSingleRepeates(questionType, "");
+                    if (result != null && result.size() > 0) {
+                        list.addAll(result);
+                    }
+                } else {
+                    List<EnrolmentDictBean> subDictBeans = enrolmentDictBeanService.getDictBeanByType(subTypeDictType);
+                    for (int j = 0; j < subDictBeans.size(); j++) {
+                        EnrolmentDictBean subDictBean = subDictBeans.get(j);
+                        result = repeatedService.getSingleRepeates(questionType, subDictBean.getValue());
+                        if (result != null && result.size() > 0) {
+                            list.addAll(result);
+                        }
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -60,12 +73,40 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
     public JsonStatus autoCreateTestPaper(Long paperId) {
         JsonStatus jsonStatus = new JsonStatus();
         try {
-            int copies=1;
+            int copies = 1;
             int  total=0;
             List<Map> quesList =null;
             Map tempMap = new HashMap<>();
             PaperBean paperBean = paperBeanService.getEntity(paperId);
             Date year = paperBean.getYear();
+
+            List list_rule = ruleBeanService.findByPaperId(paperId);
+            if (paperBean.getCopies() > 1) {
+                copies = paperBean.getCopies();
+            }
+            for (int j = 0; j < copies; j++) {
+                for (int i = 0; i < list_rule.size(); i++) {
+                    RuleDto ruleBean = (RuleDto) list_rule.get(i);
+                    Map paper_map = new HashMap();
+                    paper_map.put("year", year);
+                    paper_map.put("score", ruleBean.getQuesScore());
+                    paper_map.put("totalscore", ruleBean.getQuesTotalscore());
+                    paper_map.put("desc", ruleBean.getQuesDesc());
+                    paper_map.put("titlenum", ruleBean.getTitleNum());
+                    paper_map.put("paperid", ruleBean.getPaperId());
+                    paper_map.put("questype", ruleBean.getQuesType());
+                    paper_map.put("subtype", ruleBean.getSubType());
+                    paper_map.put("questypename", ruleBean.getQuesTypeName());
+                    String beanName = ruleBean.getQuesTypeDesc();
+                    Map<String, String> map = new HashMap<String, String>();
+                    map.put("beanName", beanName);
+                    questionService = JNDIHelper.getJNDIServiceForName(IQuestionService.class.getName(), map);
+                    Map singleTestPaper = questionService.createSingleTestPaper(paper_map);
+                    quesList.add(singleTestPaper);
+                }
+                tempMap.put("quesList", quesList);
+                jsonStatus = produceTestPaper("testPaper.ftl", tempMap);
+            }
             int paperTotal=paperBean.getTotalMark();
             List<RuleDto> list_rule = ruleBeanService.findByPaperId(paperId);
             for(RuleDto rule1Bean:list_rule){
