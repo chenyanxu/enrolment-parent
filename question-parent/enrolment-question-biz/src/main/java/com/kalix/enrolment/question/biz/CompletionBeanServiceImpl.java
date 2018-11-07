@@ -23,9 +23,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         implements ICompletionBeanService, IDownloadService {
 
     private static String TEMP_NAME = "completion.ftl";
-    private static String DICT_TYPE = "题型";
-    private static String DICT_VALUE = "1";
-    private IEnrolmentDictBeanService enrolmentDictBeanService;
+    private static String DICT_QUESTIONVALUE = "1";
     private IPaperQuesBeanService paperQuesBeanService;
 
     @Override
@@ -49,9 +47,9 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
 
     @Override
     public String getAuditRoleName(String subType) {
-        EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_TYPE, DICT_VALUE);
+        EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_QUESTIONTYPE, DICT_QUESTIONVALUE);
         String label = enrolmentDictBean.getLabel();
-        String auditRoleName = label.trim() + "审核人";
+        String auditRoleName = label + "审核人";
         return auditRoleName;
     }
 
@@ -60,10 +58,10 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         return TEMP_NAME;
     }
 
-//    @Override
-//    public Map<String, Object> createSingleTestPaper(Map paperMap) {
-//        return null;
-//    }
+    @Override
+    public String getSubTypeName(String subType) {
+        return "";
+    }
 
     @Override
     public Map<String, Object> createSingleTestPaper(Map paperMap) {
@@ -166,10 +164,6 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
             }
 
         }
-    }
-
-    public void setEnrolmentDictBeanService(IEnrolmentDictBeanService enrolmentDictBeanService) {
-        this.enrolmentDictBeanService = enrolmentDictBeanService;
     }
 
     public void setPaperQuesBeanService(IPaperQuesBeanService paperQuesBeanService) {

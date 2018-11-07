@@ -11,10 +11,12 @@ import javax.persistence.Table;
 @Table(name = "enrolment_dict")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class EnrolmentDictBean extends PersistentEntity {
-    private String label;    // 标签名
-    private String value;    // 数据值
-    private String type;    // 类型
-    private String description;// 描述
+    private String label;       // 标签名
+    private String value;       // 数据值
+    private String type;        // 类型
+    private String description; // 描述
+
+    private String subType;     // 子类型
 
     public String getLabel() {
         return label;
@@ -46,5 +48,13 @@ public class EnrolmentDictBean extends PersistentEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getSubType() {
+        return subType;
+    }
+
+    public void setSubType(String subType) {
+        this.subType = subType;
     }
 }

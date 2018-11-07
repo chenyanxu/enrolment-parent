@@ -21,6 +21,8 @@ public interface IQuestionService<T extends BaseQuestionEntity> extends ILogicDe
      */
     String getTempName(String subType);
 
+    String getSubTypeName(String subType);
+
     /**
      * 生成试卷单项题型试题结果
      *

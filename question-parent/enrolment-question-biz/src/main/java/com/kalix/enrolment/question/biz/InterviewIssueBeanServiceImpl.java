@@ -4,7 +4,6 @@ import com.kalix.enrolment.question.api.biz.IInterviewIssueBeanService;
 import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
 import com.kalix.enrolment.question.api.dao.IInterviewIssueBeanDao;
 import com.kalix.enrolment.question.entities.InterviewIssueBean;
-import com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService;
 import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 
@@ -18,21 +17,24 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
         implements IInterviewIssueBeanService, IDownloadService {
 
     private static String TEMP_NAME = "subject.ftl";
-    private static String DICT_TYPE = "面试题类型";
-    private IEnrolmentDictBeanService enrolmentDictBeanService;
+    private static String DICT_SUBTYPE = "面试题类型";
     private IPaperQuesBeanService paperQuesBeanService;
 
     @Override
     public String getAuditRoleName(String subType) {
-        EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_TYPE, subType);
-        String label = enrolmentDictBean.getLabel();
-        String auditRoleName = label.trim() + "审核人";
+        String auditRoleName = getSubTypeName(subType) + "审核人";
         return auditRoleName;
     }
 
     @Override
     public String getTempName(String subType) {
         return TEMP_NAME;
+    }
+
+    @Override
+    public String getSubTypeName(String subType) {
+        EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_SUBTYPE, subType);
+        return enrolmentDictBean.getLabel();
     }
 
     @Override
@@ -54,10 +56,6 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
         str[0] = "面试题";
         str[1] = this.createSinglePreview(tempMap, interviewIssueBean.getSubType());
         return str;
-    }
-
-    public void setEnrolmentDictBeanService(IEnrolmentDictBeanService enrolmentDictBeanService) {
-        this.enrolmentDictBeanService = enrolmentDictBeanService;
     }
 
     public void setPaperQuesBeanService(IPaperQuesBeanService paperQuesBeanService) {

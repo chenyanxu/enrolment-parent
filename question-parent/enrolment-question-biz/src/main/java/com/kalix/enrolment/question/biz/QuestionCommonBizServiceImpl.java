@@ -9,6 +9,7 @@ import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
 import com.kalix.framework.core.util.ConfigUtil;
 import com.kalix.framework.core.util.JNDIHelper;
+import com.kalix.framework.core.util.StringUtils;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
@@ -22,7 +23,7 @@ import java.util.*;
  */
 public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
 
-    private static String ENROLMENT_DICT_TYPE = "题型";
+    protected static String DICT_QUESTIONTYPE = "题型";
     //    private ICouchdbService couchdbService;
     private IEnrolmentDictBeanService enrolmentDictBeanService;
     private IPaperBeanService paperBeanService;
@@ -35,18 +36,31 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
     public JsonData getAllRepeates() {
         JsonData jsonData = new JsonData();
         List list = new ArrayList();
-        List<EnrolmentDictBean> dictBeans = enrolmentDictBeanService.getDictBeanByType(ENROLMENT_DICT_TYPE);
+        List<EnrolmentDictBean> dictBeans = enrolmentDictBeanService.getDictBeanByType(DICT_QUESTIONTYPE);
         for (int i = 0; i < dictBeans.size(); i++) {
             EnrolmentDictBean enrolmentDictBean = dictBeans.get(i);
+            String questionType = enrolmentDictBean.getValue();
+            String subTypeDictType = enrolmentDictBean.getSubType();
             String beanName = enrolmentDictBean.getDescription();
             Map<String, String> map = new HashMap<String, String>();
             map.put("beanName", beanName);
             try {
-                JsonData result = new JsonData();
+                List result = new ArrayList<>();
                 repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
-                result = repeatedService.getSingleRepeates("");
-                if (result.getData() != null && result.getData().size() > 0) {
-                    list.addAll(result.getData());
+                if (StringUtils.isEmpty(subTypeDictType)) {
+                    result = repeatedService.getSingleRepeates(questionType, "");
+                    if (result != null && result.size() > 0) {
+                        list.addAll(result);
+                    }
+                } else {
+                    List<EnrolmentDictBean> subDictBeans = enrolmentDictBeanService.getDictBeanByType(subTypeDictType);
+                    for (int j = 0;j<subDictBeans.size();j++) {
+                        EnrolmentDictBean subDictBean = subDictBeans.get(j);
+                        result = repeatedService.getSingleRepeates(questionType, subDictBean.getValue());
+                        if (result != null && result.size() > 0) {
+                            list.addAll(result);
+                        }
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
