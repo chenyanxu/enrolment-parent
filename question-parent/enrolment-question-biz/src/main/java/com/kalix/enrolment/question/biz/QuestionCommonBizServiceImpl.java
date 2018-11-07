@@ -11,6 +11,7 @@ import com.kalix.framework.core.util.ConfigUtil;
 import com.kalix.framework.core.util.JNDIHelper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.*;
 import java.text.ParseException;
@@ -79,34 +80,6 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             Map tempMap = new HashMap<>();
             PaperBean paperBean = paperBeanService.getEntity(paperId);
             Date year = paperBean.getYear();
-
-            List list_rule = ruleBeanService.findByPaperId(paperId);
-            if (paperBean.getCopies() > 1) {
-                copies = paperBean.getCopies();
-            }
-            for (int j = 0; j < copies; j++) {
-                for (int i = 0; i < list_rule.size(); i++) {
-                    RuleDto ruleBean = (RuleDto) list_rule.get(i);
-                    Map paper_map = new HashMap();
-                    paper_map.put("year", year);
-                    paper_map.put("score", ruleBean.getQuesScore());
-                    paper_map.put("totalscore", ruleBean.getQuesTotalscore());
-                    paper_map.put("desc", ruleBean.getQuesDesc());
-                    paper_map.put("titlenum", ruleBean.getTitleNum());
-                    paper_map.put("paperid", ruleBean.getPaperId());
-                    paper_map.put("questype", ruleBean.getQuesType());
-                    paper_map.put("subtype", ruleBean.getSubType());
-                    paper_map.put("questypename", ruleBean.getQuesTypeName());
-                    String beanName = ruleBean.getQuesTypeDesc();
-                    Map<String, String> map = new HashMap<String, String>();
-                    map.put("beanName", beanName);
-                    questionService = JNDIHelper.getJNDIServiceForName(IQuestionService.class.getName(), map);
-                    Map singleTestPaper = questionService.createSingleTestPaper(paper_map);
-                    quesList.add(singleTestPaper);
-                }
-                tempMap.put("quesList", quesList);
-                jsonStatus = produceTestPaper("testPaper.ftl", tempMap);
-            }
             int paperTotal=paperBean.getTotalMark();
             List<RuleDto> list_rule = ruleBeanService.findByPaperId(paperId);
             for(RuleDto rule1Bean:list_rule){
