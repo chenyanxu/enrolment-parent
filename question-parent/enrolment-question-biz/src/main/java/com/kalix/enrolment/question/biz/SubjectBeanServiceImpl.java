@@ -71,19 +71,22 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
         // 以下需要通过算法动态获取（抽取试题）
         List<SubjectBean> list = this.dao.findByNativeSql(sql, SubjectBean.class);
-        for (int i = 0; i < list.size(); i++) {
-            Map<String, Object> map = new HashMap<String, Object>();
-            SubjectBean subjectBean = list.get(i);
-            PaperQuesBean paperQuesBean = new PaperQuesBean();
-            map.put("type", "论述题");
-            map.put("stem", subjectBean.getStem());
-            paperQuesBean.setQuesid(subjectBean.getId());
-            paperQuesBean.setYear(year);
-            paperQuesBean.setQuesType(questype);
-            paperQuesBean.setSubType(subtype);
-            paperQuesBeanService.saveEntity(paperQuesBean);
-            question.add(map);
+        if(list.size()==quesNum){
+            for (int i = 0; i < list.size(); i++) {
+                Map<String, Object> map = new HashMap<String, Object>();
+                SubjectBean subjectBean = list.get(i);
+                PaperQuesBean paperQuesBean = new PaperQuesBean();
+                map.put("type", "论述题");
+                map.put("stem", subjectBean.getStem());
+                paperQuesBean.setQuesid(subjectBean.getId());
+                paperQuesBean.setYear(year);
+                paperQuesBean.setQuesType(questype);
+                paperQuesBean.setSubType(subtype);
+                paperQuesBeanService.saveEntity(paperQuesBean);
+                question.add(map);
+            }
         }
+
         singleTestPaper.put("question", question);
         return singleTestPaper;
     }

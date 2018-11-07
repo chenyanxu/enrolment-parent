@@ -72,21 +72,24 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
         // 以下需要通过算法动态获取（抽取试题）
         List<VerseBean> list = this.dao.findByNativeSql(sql, VerseBean.class);
-        for (int i = 0; i < list.size(); i++) {
-            Map<String, Object> map = new HashMap<String, Object>();
-            VerseBean verseBean = list.get(i);
-            map.put("type", "补全诗句");
-            Matcher m = p1.matcher(verseBean.getStem());
-            String stem = m.replaceAll("________").replaceAll("\\[#", "").replaceAll("\\]", "");
-            map.put("stem", stem);
-            PaperQuesBean paperQuesBean = new PaperQuesBean();
-            paperQuesBean.setQuesid(verseBean.getId());
-            paperQuesBean.setYear(year);
-            paperQuesBean.setQuesType(questype);
-            paperQuesBean.setSubType(subtype);
-            paperQuesBeanService.saveEntity(paperQuesBean);
-            question.add(map);
+        if(list.size()==quesNum){
+            for (int i = 0; i < list.size(); i++) {
+                Map<String, Object> map = new HashMap<String, Object>();
+                VerseBean verseBean = list.get(i);
+                map.put("type", "补全诗句");
+                Matcher m = p1.matcher(verseBean.getStem());
+                String stem = m.replaceAll("________").replaceAll("\\[#", "").replaceAll("\\]", "");
+                map.put("stem", stem);
+                PaperQuesBean paperQuesBean = new PaperQuesBean();
+                paperQuesBean.setQuesid(verseBean.getId());
+                paperQuesBean.setYear(year);
+                paperQuesBean.setQuesType(questype);
+                paperQuesBean.setSubType(subtype);
+                paperQuesBeanService.saveEntity(paperQuesBean);
+                question.add(map);
+            }
         }
+
         singleTestPaper.put("question", question);
 
         return singleTestPaper;

@@ -99,21 +99,24 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
         // 以下需要通过算法动态获取（抽取试题）
         // List<CompletionBean> list = this.dao.findByNativeSql(sql, CompletionBean.class);
-        for (int i = 0; i < list_completion.size(); i++) {
-            Map<String, Object> map = new HashMap<String, Object>();
-            CompletionBean completionBean = list_completion.get(i);
-            map.put("type", "填空题");
-            Matcher m = p1.matcher(completionBean.getStem());
-            String stem = m.replaceAll("________").replaceAll("\\[#", "").replaceAll("\\]", "");
-            map.put("stem", stem);
-            question.add(map);
-            PaperQuesBean paperQuesBean = new PaperQuesBean();
-            paperQuesBean.setQuesid(completionBean.getId());
-            paperQuesBean.setYear(year);
-            paperQuesBean.setQuesType(questype);
-            paperQuesBean.setSubType(subtype);
-            paperQuesBeanService.saveEntity(paperQuesBean);
+        if(list_completion.size()==quesNum){
+            for (int i = 0; i < list_completion.size(); i++) {
+                Map<String, Object> map = new HashMap<String, Object>();
+                CompletionBean completionBean = list_completion.get(i);
+                map.put("type", "填空题");
+                Matcher m = p1.matcher(completionBean.getStem());
+                String stem = m.replaceAll("________").replaceAll("\\[#", "").replaceAll("\\]", "");
+                map.put("stem", stem);
+                question.add(map);
+                PaperQuesBean paperQuesBean = new PaperQuesBean();
+                paperQuesBean.setQuesid(completionBean.getId());
+                paperQuesBean.setYear(year);
+                paperQuesBean.setQuesType(questype);
+                paperQuesBean.setSubType(subtype);
+                paperQuesBeanService.saveEntity(paperQuesBean);
+            }
         }
+
         singleTestPaper.put("question", question);
 
         return singleTestPaper;
@@ -145,12 +148,6 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
                 spacenum = spacenum - completionSpaceNum;
                 if (spacenum > 0) {
                     list_completion.add(completionBean);
-                    PaperQuesBean paperQuesBean = new PaperQuesBean();
-                    paperQuesBean.setQuesid(completionBean.getId());
-                    paperQuesBean.setYear(year);
-                    paperQuesBean.setQuesType(questype);
-                    paperQuesBean.setSubType(subtype);
-                    paperQuesBeanService.saveEntity(paperQuesBean);
                     getComletionList(spacenum, list_completion, year_str, questype, subtype,year);
                 } else if (spacenum < 0) {
                     spacenum = spacenum + completionSpaceNum;
@@ -159,12 +156,6 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
                     if (list_1 != null && list_1.size() > 0) {
                         CompletionBean completionBean_1 = list_1.get(0);
                         list_completion.add(completionBean_1);
-                        PaperQuesBean paperQuesBean = new PaperQuesBean();
-                        paperQuesBean.setQuesid(completionBean.getId());
-                        paperQuesBean.setYear(year);
-                        paperQuesBean.setQuesType(questype);
-                        paperQuesBean.setSubType(subtype);
-                        paperQuesBeanService.saveEntity(paperQuesBean);
                     } else {
                         CompletionBean completionBean_last = list_completion.get(list_completion.size() - 1);
                         spacenum = completionBean_last.getSpaceNum() + spacenum;
@@ -173,12 +164,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
                     }
 
                 } else {
-                    PaperQuesBean paperQuesBean = new PaperQuesBean();
-                    paperQuesBean.setQuesid(completionBean.getId());
-                    paperQuesBean.setYear(year);
-                    paperQuesBean.setQuesType(questype);
-                    paperQuesBean.setSubType(subtype);
-                    paperQuesBeanService.saveEntity(paperQuesBean);
+
                     list_completion.add(completionBean);
                 }
             }else {

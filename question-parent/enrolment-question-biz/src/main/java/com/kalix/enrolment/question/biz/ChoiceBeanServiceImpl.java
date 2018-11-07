@@ -71,23 +71,26 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
         // 以下需要通过算法动态获取（抽取试题）
         List<ChoiceBean> list = this.dao.findByNativeSql(sql, ChoiceBean.class);
-        for (int i = 0; i < list.size(); i++) {
-            Map<String, Object> map = new HashMap<String, Object>();
-            ChoiceBean choiceBean = list.get(i);
-            PaperQuesBean paperQuesBean = new PaperQuesBean();
-            map.put("type", "选择题");
-            map.put("stem", choiceBean.getStem());
-            map.put("answerA", choiceBean.getAnswerA());
-            map.put("answerB", choiceBean.getAnswerB());
-            map.put("answerC", choiceBean.getAnswerC());
-            map.put("answerD", choiceBean.getAnswerD());
-            paperQuesBean.setQuesid(choiceBean.getId());
-            paperQuesBean.setYear(year);
-            paperQuesBean.setQuesType(questype);
-            paperQuesBean.setSubType(subtype);
-            paperQuesBeanService.saveEntity(paperQuesBean);
-            question.add(map);
+        if(list.size()==quesNum){
+            for (int i = 0; i < list.size(); i++) {
+                Map<String, Object> map = new HashMap<String, Object>();
+                ChoiceBean choiceBean = list.get(i);
+                PaperQuesBean paperQuesBean = new PaperQuesBean();
+                map.put("type", "选择题");
+                map.put("stem", choiceBean.getStem());
+                map.put("answerA", choiceBean.getAnswerA());
+                map.put("answerB", choiceBean.getAnswerB());
+                map.put("answerC", choiceBean.getAnswerC());
+                map.put("answerD", choiceBean.getAnswerD());
+                paperQuesBean.setQuesid(choiceBean.getId());
+                paperQuesBean.setYear(year);
+                paperQuesBean.setQuesType(questype);
+                paperQuesBean.setSubType(subtype);
+                paperQuesBeanService.saveEntity(paperQuesBean);
+                question.add(map);
+            }
         }
+
         singleTestPaper.put("question", question);
 
         return singleTestPaper;
