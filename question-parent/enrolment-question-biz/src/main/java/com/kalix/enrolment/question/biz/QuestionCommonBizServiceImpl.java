@@ -54,7 +54,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
                     }
                 } else {
                     List<EnrolmentDictBean> subDictBeans = enrolmentDictBeanService.getDictBeanByType(subTypeDictType);
-                    for (int j = 0;j<subDictBeans.size();j++) {
+                    for (int j = 0; j < subDictBeans.size(); j++) {
                         EnrolmentDictBean subDictBean = subDictBeans.get(j);
                         result = repeatedService.getSingleRepeates(questionType, subDictBean.getValue());
                         if (result != null && result.size() > 0) {
@@ -74,18 +74,17 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
     public JsonStatus autoCreateTestPaper(Long paperId) {
         JsonStatus jsonStatus = new JsonStatus();
         try {
-            int copies=1;
+            int copies = 1;
             Map tempMap = new HashMap<>();
             PaperBean paperBean = paperBeanService.getEntity(paperId);
             Date year = paperBean.getYear();
-         ;
+            ;
             List list_rule = ruleBeanService.findByPaperId(paperId);
             List<Map> quesList = new ArrayList<Map>();
-            if(paperBean.getCopies()>1)
-            {
-                copies=paperBean.getCopies();
+            if (paperBean.getCopies() > 1) {
+                copies = paperBean.getCopies();
             }
-            for(int j=0;j<copies;j++){
+            for (int j = 0; j < copies; j++) {
                 for (int i = 0; i < list_rule.size(); i++) {
                     RuleDto ruleBean = (RuleDto) list_rule.get(i);
                     Map paper_map = new HashMap();
