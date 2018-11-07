@@ -96,7 +96,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         String year_str = simpleDateFormat.format(year);
         String questype = paperMap.get("questype").toString();
         String subtype = paperMap.get("subtype") == null ? "" : paperMap.get("subtype").toString();
-        getComletionList(quesNum, list_completion, year_str, questype, subtype);
+        getComletionList(quesNum, list_completion, year_str, questype, subtype,year);
         // 创建试题内容
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
         // 以下需要通过算法动态获取（抽取试题）
@@ -137,33 +137,56 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         return str;
     }
 
-    public void getComletionList(int spacenum, List<CompletionBean> list_completion, String year_str, String questype, String subtype) {
+    public void getComletionList(int spacenum, List<CompletionBean> list_completion, String year_str, String questype, String subtype,Date year) {
         String sql = "select * from enrolment_question_completion where id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit 1";
         List<CompletionBean> list = this.dao.findByNativeSql(sql, CompletionBean.class);
         if (list != null && list.size() > 0) {
             CompletionBean completionBean = list.get(0);
             int completionSpaceNum = completionBean.getSpaceNum();
-            spacenum = spacenum - completionSpaceNum;
-            if (spacenum > 0) {
-                list_completion.add(completionBean);
-                getComletionList(spacenum, list_completion, year_str, questype, subtype);
-            } else if (spacenum < 0) {
-                spacenum = spacenum + completionSpaceNum;
-                String sql_1 = "select * from enrolment_question_completion where  id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') and spacenum='" + spacenum + "' order by random() limit 1";
-                List<CompletionBean> list_1 = this.dao.findByNativeSql(sql_1, CompletionBean.class);
-                if (list_1 != null && list_1.size() > 0) {
-                    CompletionBean completionBean_1 = list_1.get(0);
-                    list_completion.add(completionBean_1);
-                } else {
-                    CompletionBean completionBean_last = list_completion.get(list_completion.size() - 1);
-                    spacenum = completionBean_last.getSpaceNum() + spacenum;
-                    list_completion.remove(list_completion.size() - 1);
-                    getComletionList(spacenum, list_completion, year_str, questype, subtype);
-                }
+            if(!list_completion.contains(completionBean)){
+                spacenum = spacenum - completionSpaceNum;
+                if (spacenum > 0) {
+                    list_completion.add(completionBean);
+                    PaperQuesBean paperQuesBean = new PaperQuesBean();
+                    paperQuesBean.setQuesid(completionBean.getId());
+                    paperQuesBean.setYear(year);
+                    paperQuesBean.setQuesType(questype);
+                    paperQuesBean.setSubType(subtype);
+                    paperQuesBeanService.saveEntity(paperQuesBean);
+                    getComletionList(spacenum, list_completion, year_str, questype, subtype,year);
+                } else if (spacenum < 0) {
+                    spacenum = spacenum + completionSpaceNum;
+                    String sql_1 = "select * from enrolment_question_completion where  id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') and spacenum='" + spacenum + "' order by random() limit 1";
+                    List<CompletionBean> list_1 = this.dao.findByNativeSql(sql_1, CompletionBean.class);
+                    if (list_1 != null && list_1.size() > 0) {
+                        CompletionBean completionBean_1 = list_1.get(0);
+                        list_completion.add(completionBean_1);
+                        PaperQuesBean paperQuesBean = new PaperQuesBean();
+                        paperQuesBean.setQuesid(completionBean.getId());
+                        paperQuesBean.setYear(year);
+                        paperQuesBean.setQuesType(questype);
+                        paperQuesBean.setSubType(subtype);
+                        paperQuesBeanService.saveEntity(paperQuesBean);
+                    } else {
+                        CompletionBean completionBean_last = list_completion.get(list_completion.size() - 1);
+                        spacenum = completionBean_last.getSpaceNum() + spacenum;
+                        list_completion.remove(list_completion.size() - 1);
+                        getComletionList(spacenum, list_completion, year_str, questype, subtype,year);
+                    }
 
-            } else {
-                list_completion.add(completionBean);
+                } else {
+                    PaperQuesBean paperQuesBean = new PaperQuesBean();
+                    paperQuesBean.setQuesid(completionBean.getId());
+                    paperQuesBean.setYear(year);
+                    paperQuesBean.setQuesType(questype);
+                    paperQuesBean.setSubType(subtype);
+                    paperQuesBeanService.saveEntity(paperQuesBean);
+                    list_completion.add(completionBean);
+                }
+            }else {
+                getComletionList(spacenum, list_completion, year_str, questype, subtype,year);
             }
+
 
         }
     }

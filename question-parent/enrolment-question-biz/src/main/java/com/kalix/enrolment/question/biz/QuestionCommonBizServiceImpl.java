@@ -61,38 +61,51 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
         JsonStatus jsonStatus = new JsonStatus();
         try {
             int copies=1;
+            int  total=0;
+            List<Map> quesList =null;
             Map tempMap = new HashMap<>();
             PaperBean paperBean = paperBeanService.getEntity(paperId);
             Date year = paperBean.getYear();
-         ;
-            List list_rule = ruleBeanService.findByPaperId(paperId);
-            List<Map> quesList = new ArrayList<Map>();
-            if(paperBean.getCopies()>1)
-            {
-                copies=paperBean.getCopies();
+            int paperTotal=paperBean.getTotalMark();
+            List<RuleDto> list_rule = ruleBeanService.findByPaperId(paperId);
+            for(RuleDto rule1Bean:list_rule){
+                total+=rule1Bean.getQuesTotalscore();
             }
-            for(int j=0;j<copies;j++){
-                for (int i = 0; i < list_rule.size(); i++) {
-                    RuleDto ruleBean = (RuleDto) list_rule.get(i);
-                    Map paper_map = new HashMap();
-                    paper_map.put("year", year);
-                    paper_map.put("score", ruleBean.getQuesScore());
-                    paper_map.put("totalscore", ruleBean.getQuesTotalscore());
-                    paper_map.put("desc", ruleBean.getQuesDesc());
-                    paper_map.put("titlenum", ruleBean.getTitleNum());
-                    paper_map.put("paperid", ruleBean.getPaperId());
-                    paper_map.put("questype", ruleBean.getQuesType());
-                    paper_map.put("subtype", ruleBean.getSubType());
-                    paper_map.put("questypename", ruleBean.getQuesTypeName());
-                    String beanName = ruleBean.getQuesTypeDesc();
-                    Map<String, String> map = new HashMap<String, String>();
-                    map.put("beanName", beanName);
-                    questionService = JNDIHelper.getJNDIServiceForName(IQuestionService.class.getName(), map);
-                    Map singleTestPaper = questionService.createSingleTestPaper(paper_map);
-                    quesList.add(singleTestPaper);
+            if(total==paperTotal)
+            {
+
+                if(paperBean.getCopies()>1)
+                {
+                    copies=paperBean.getCopies();
                 }
-                tempMap.put("quesList", quesList);
-                jsonStatus = produceTestPaper("testPaper.ftl", tempMap);
+                for(int j=0;j<copies;j++){
+                    quesList=new ArrayList<Map>();
+                    for (int i = 0; i < list_rule.size(); i++) {
+                        RuleDto ruleBean = (RuleDto) list_rule.get(i);
+                        Map paper_map = new HashMap();
+                        paper_map.put("year", year);
+                        paper_map.put("score", ruleBean.getQuesScore());
+                        paper_map.put("totalscore", ruleBean.getQuesTotalscore());
+                        paper_map.put("desc", ruleBean.getQuesDesc());
+                        paper_map.put("titlenum", ruleBean.getTitleNum());
+                        paper_map.put("paperid", ruleBean.getPaperId());
+                        paper_map.put("questype", ruleBean.getQuesType());
+                        paper_map.put("subtype", ruleBean.getSubType());
+                        paper_map.put("questypename", ruleBean.getQuesTypeName());
+                        String beanName = ruleBean.getQuesTypeDesc();
+                        Map<String, String> map = new HashMap<String, String>();
+                        map.put("beanName", beanName);
+                        questionService = JNDIHelper.getJNDIServiceForName(IQuestionService.class.getName(), map);
+                        Map singleTestPaper = questionService.createSingleTestPaper(paper_map);
+                        quesList.add(singleTestPaper);
+                    }
+                    tempMap.put("quesList", quesList);
+                    jsonStatus = produceTestPaper("testPaper.ftl", tempMap);
+                }
+
+            }else {
+                jsonStatus.setSuccess(false);
+                jsonStatus.setMsg("试卷分数与参数分数不符，请核对后重新提交！");
             }
 
         } catch (IOException e) {
@@ -110,7 +123,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
         return null;
     }
 
-    private JsonStatus produceTestPaper(String fileName, Map tempMap) {
+    private JsonStatus produceTestPaper(String fileName, Map tempMap) throws IOException {
         JsonStatus jsonStatus = new JsonStatus();
 
         Configuration configuration = new Configuration();
@@ -118,6 +131,8 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
         //dataMap 要填入模本的数据文件
         //设置模本装置方法和路径,
         Template t = null;
+        Writer out = null;
+        FileOutputStream fos = null;
         try {
             String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
             if (realPath.charAt(realPath.length() - 1) != '/') {
@@ -134,16 +149,16 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
 
             outFile = new File("d:\\" + testPaperName + ".doc");
 
-            Writer out = null;
-            FileOutputStream fos = null;
+
             fos = new FileOutputStream(outFile);
             OutputStreamWriter oWriter = new OutputStreamWriter(fos, "UTF-8");
             //这个地方对流的编码不可或缺，使用main（）单独调用时，应该可以，但是如果是web请求导出时导出后word文档就会打不开，并且包XML文件错误。主要是编码格式不正确，无法解析。
             //out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile)));
             out = new BufferedWriter(oWriter);
             t.process(tempMap, out);
-            out.close();
-            fos.close();
+
+            jsonStatus.setSuccess(true);
+            jsonStatus.setMsg("试卷生成成功!");
 //            if(outFile.exists())
 //            {
 //                InputStream input = new FileInputStream(outFile);
@@ -158,6 +173,8 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             // throw new BusinessException(CommonResultEnum.COMMON_ERROR_637);
         } finally {
             //outFile.delete();
+            out.close();
+            fos.close();
         }
         return jsonStatus;
     }
