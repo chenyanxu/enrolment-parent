@@ -76,12 +76,16 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
         try {
             int copies = 1;
             int  total=0;
+            //成卷结果
+            String doPaperRes="T";
             List<Map> quesList =null;
             Map tempMap = new HashMap<>();
+            //List<RuleDto> list_copyrule = new ArrayList<>();
             PaperBean paperBean = paperBeanService.getEntity(paperId);
             Date year = paperBean.getYear();
             int paperTotal=paperBean.getTotalMark();
             List<RuleDto> list_rule = ruleBeanService.findByPaperId(paperId);
+          //  list_copyrule.addAll(list_rule);
             for(RuleDto rule1Bean:list_rule){
                 total+=rule1Bean.getQuesTotalscore();
             }
@@ -111,10 +115,22 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
                         map.put("beanName", beanName);
                         questionService = JNDIHelper.getJNDIServiceForName(IQuestionService.class.getName(), map);
                         Map singleTestPaper = questionService.createSingleTestPaper(paper_map);
+                       List list_ques= (List)singleTestPaper.get("question");
+                       if(list_ques==null||list_ques.size()==0)
+                       {
+                           doPaperRes="F";
+                           break;
+                       }
                         quesList.add(singleTestPaper);
                     }
-                    tempMap.put("quesList", quesList);
-                    jsonStatus = produceTestPaper("testPaper.ftl", tempMap);
+                    if("F".equals(doPaperRes)){
+                        jsonStatus.setSuccess(false);
+                        jsonStatus.setMsg("试题数量不足，成卷失败!");
+                    }else {
+                        tempMap.put("quesList", quesList);
+                        jsonStatus = produceTestPaper("testPaper.ftl", tempMap);
+                    }
+
                 }
 
             }else {

@@ -76,6 +76,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         String sql = "";
         // 创建试题标题
         String title = "";
+        int sumSpace=0;
         //Map paperMap=new HashMap();
         //paperMap.put("titlenum","1");
         //paperMap.put("score","2");
@@ -97,25 +98,33 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         getComletionList(quesNum, list_completion, year_str, questype, subtype,year);
         // 创建试题内容
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
-        // 以下需要通过算法动态获取（抽取试题）
-        // List<CompletionBean> list = this.dao.findByNativeSql(sql, CompletionBean.class);
-        if(list_completion.size()==quesNum){
-            for (int i = 0; i < list_completion.size(); i++) {
-                Map<String, Object> map = new HashMap<String, Object>();
-                CompletionBean completionBean = list_completion.get(i);
-                map.put("type", "填空题");
-                Matcher m = p1.matcher(completionBean.getStem());
-                String stem = m.replaceAll("________").replaceAll("\\[#", "").replaceAll("\\]", "");
-                map.put("stem", stem);
-                question.add(map);
-                PaperQuesBean paperQuesBean = new PaperQuesBean();
-                paperQuesBean.setQuesid(completionBean.getId());
-                paperQuesBean.setYear(year);
-                paperQuesBean.setQuesType(questype);
-                paperQuesBean.setSubType(subtype);
-                paperQuesBeanService.saveEntity(paperQuesBean);
+
+        if(list_completion!=null&&list_completion.size()>0){
+            for(CompletionBean completionBean:list_completion){
+                sumSpace+=completionBean.getSpaceNum();
+            }
+            // 以下需要通过算法动态获取（抽取试题）
+            // List<CompletionBean> list = this.dao.findByNativeSql(sql, CompletionBean.class);
+            if(sumSpace==quesNum){
+                for (int i = 0; i < list_completion.size(); i++) {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    CompletionBean completionBean = list_completion.get(i);
+                    map.put("type", "填空题");
+                    Matcher m = p1.matcher(completionBean.getStem());
+                    String stem = m.replaceAll("________").replaceAll("\\[#", "").replaceAll("\\]", "");
+                    map.put("stem", stem);
+                    question.add(map);
+                    PaperQuesBean paperQuesBean = new PaperQuesBean();
+                    paperQuesBean.setQuesid(completionBean.getId());
+                    paperQuesBean.setYear(year);
+                    paperQuesBean.setQuesType(questype);
+                    paperQuesBean.setSubType(subtype);
+                    paperQuesBeanService.saveEntity(paperQuesBean);
+                }
             }
         }
+
+
 
         singleTestPaper.put("question", question);
 
