@@ -223,5 +223,4 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
     public void setRuleBeanService(IRuleBeanService ruleBeanService) {
         this.ruleBeanService = ruleBeanService;
     }
-
 }

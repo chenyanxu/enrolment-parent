@@ -4,7 +4,7 @@
 
 Bundle-Activator: ${bundle.namespace}.internal.InitActivator
 Bundle-Category: Kalix Enrolment Question
-Embed-Dependency:*;artifactId=!admin-core-api|framework-core-impl|framework-core-util|enrolment-question-api|framework-extend-api|framework-extend-impl
+Embed-Dependency:*;artifactId=!framework-core-api|framework-core-impl|framework-core-util|framework-extend-api|framework-extend-impl|admin-core-api|middleware-couchdb-api|enrolment-question-api|enrolment-system-dict-api
 Import-Package: com.kalix.framework.core.util,\
                 com.kalix.framework.core.api.osgi,\
                 com.kalix.framework.core.api.security,\
@@ -36,4 +36,11 @@ Import-Package: com.kalix.framework.core.util,\
                 com.kalix.enrolment.system.dict.api.biz,\
                 com.kalix.enrolment.system.dict.entities,\
                 org.apache.commons.lang,\
-                org.osgi.service.http
+                org.osgi.service.http,\
+                org.osgi.service.cm,\
+                com.google.gson*,\
+                javax.net.ssl,\
+                org.apache.commons.codec,\
+                org.apache.commons.logging,\
+                org.apache.http*
+
