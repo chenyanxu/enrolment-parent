@@ -266,9 +266,9 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             defaultSimilarity = questionSettingBean.getCilinSimilarity().doubleValue();
         }
 
-        StringBuilder stringBuilder = new StringBuilder();
+        //StringBuilder stringBuilder = new StringBuilder();
         List<RepeatedDTO> dtoList = this.doRepeat(entity, referenceList, defaultSimilarity,
-                stringBuilder, questionType, questionTypeName, subType, subTypeName);
+                questionType, questionTypeName, subType, subTypeName);
 
         RepeatedCountDTO repeatedCountDTO = new RepeatedCountDTO();
         if (dtoList != null && dtoList.size() > 0) {
@@ -325,12 +325,12 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             defaultSimilarity = questionSettingBean.getCilinSimilarity().doubleValue();
         }
 
-        StringBuilder stringBuilder = new StringBuilder();
+        //StringBuilder stringBuilder = new StringBuilder();
         int count = 1;
         for (int i = 0; i < list.size(); i++) {
             TP entity = (TP) list.get(i);
             List<RepeatedDTO> dtoList = this.doRepeat(entity, referenceList, defaultSimilarity,
-                    stringBuilder, questionType, questionTypeName, subType, subTypeName);
+                    questionType, questionTypeName, subType, subTypeName);
 
             RepeatedCountDTO repeatedCountDTO = new RepeatedCountDTO();
             if (dtoList != null && dtoList.size() > 0) {
@@ -345,8 +345,8 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                 repeatedDTO.setSubType(subType);
                 repeatedDTO.setSubTypeName(subTypeName);
                 dtoList.add(0, repeatedDTO);
-                String strId = "," + String.valueOf(entity.getId()) + ",";
-                stringBuilder.append(strId);
+                //String strId = "," + String.valueOf(entity.getId()) + ",";
+                //stringBuilder.append(strId);
 
                 String name = "";
                 if (StringUtils.isEmpty(subType)) {
@@ -394,7 +394,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         return jsonStatus;
     }
 
-    private List doRepeat(TP entity, List<TP> list, double defaultSimilarity, StringBuilder stringBuilder,
+    private List doRepeat(TP entity, List<TP> list, double defaultSimilarity,
                           String questionType, String questionTypeName, String subType, String subTypeName) {
         long id = entity.getId();
         String stem = entity.getStem();
@@ -402,8 +402,8 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         for (int i = 0; i < list.size(); i++) {
             TP questionEntity = list.get(i);
             long questionId = questionEntity.getId();
-            String strQuestionId = "," + String.valueOf(questionId) + ",";
-            if (questionId != id && stringBuilder.indexOf(strQuestionId) < 0) {
+            //String strQuestionId = "," + String.valueOf(questionId) + ",";
+            if (questionId != id) {
                 String questionStem = questionEntity.getStem();
                 // 词林相似度
                 // double result = Similarity.cilinSimilarity(stem, questionStem);
@@ -454,7 +454,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                     repeatedDTO.setSubTypeName(subTypeName);
 
                     dtoList.add(repeatedDTO);
-                    stringBuilder.append(strQuestionId);
+                    //stringBuilder.append(strQuestionId);
                 }
             }
         }
