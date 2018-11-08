@@ -13,7 +13,7 @@
     <reference id="paperQuesBeanDao" interface="com.kalix.enrolment.question.api.dao.IPaperQuesBeanDao"/>
     <reference id="interviewIssueBeanDao" interface="com.kalix.enrolment.question.api.dao.IInterviewIssueBeanDao"/>
     <reference id="roleBeanService" interface="com.kalix.admin.core.api.biz.IRoleBeanService"/>
-    <!--<reference id="couchdbService" interface="com.kalix.middleware.couchdb.api.biz.ICouchdbService"/>-->
+    <reference id="couchdbService" interface="com.kalix.middleware.couchdb.api.biz.ICouchdbService"/>
     <reference id="questionSettingBeanDao" interface="com.kalix.enrolment.question.api.dao.IQuestionSettingBeanDao"/>
     <reference id="paperBeanDao" interface="com.kalix.enrolment.question.api.dao.IPaperBeanDao"/>
     <reference id="ruleBeanDao" interface="com.kalix.enrolment.question.api.dao.IRuleBeanDao"/>
@@ -238,7 +238,7 @@
     <!-- 题库试题公共服务(全库排重、自动成卷等) -->
     <bean id="questionCommonBizServiceImpl" class="com.kalix.enrolment.question.biz.QuestionCommonBizServiceImpl">
         <property name="enrolmentDictBeanService" ref="enrolmentDictBeanService"/>
-        <!--<property name="couchdbService" ref="couchdbService"/>-->
+        <property name="couchdbService" ref="couchdbService"/>
         <property name="paperBeanService" ref="paperBeanServiceImpl"/>
         <property name="ruleBeanService" ref="ruleBeanServiceImpl"/>
     </bean>

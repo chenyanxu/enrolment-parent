@@ -9,6 +9,7 @@ import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
 import com.kalix.framework.core.util.ConfigUtil;
 import com.kalix.framework.core.util.JNDIHelper;
+import com.kalix.middleware.couchdb.api.biz.ICouchdbService;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.apache.commons.lang.StringUtils;
@@ -24,7 +25,7 @@ import java.util.*;
 public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
 
     protected static String DICT_QUESTIONTYPE = "题型";
-    //    private ICouchdbService couchdbService;
+    private ICouchdbService couchdbService;
     private IEnrolmentDictBeanService enrolmentDictBeanService;
     private IPaperBeanService paperBeanService;
     private IRuleBeanService ruleBeanService;
@@ -80,12 +81,10 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             String doPaperRes="T";
             List<Map> quesList =null;
             Map tempMap = new HashMap<>();
-            //List<RuleDto> list_copyrule = new ArrayList<>();
             PaperBean paperBean = paperBeanService.getEntity(paperId);
             Date year = paperBean.getYear();
             int paperTotal=paperBean.getTotalMark();
             List<RuleDto> list_rule = ruleBeanService.findByPaperId(paperId);
-          //  list_copyrule.addAll(list_rule);
             for(RuleDto rule1Bean:list_rule){
                 total+=rule1Bean.getQuesTotalscore();
             }
@@ -189,12 +188,12 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
 
             jsonStatus.setSuccess(true);
             jsonStatus.setMsg("试卷生成成功!");
-//            if(outFile.exists())
-//            {
-//                InputStream input = new FileInputStream(outFile);
-//                couchdbService.addAttachment(input,
-//                        testPaperName + ".doc", "application/vnd.ms-word");
-//            }
+            if(outFile.exists())
+            {
+                InputStream input = new FileInputStream(outFile);
+                couchdbService.addAttachment(input,
+                        testPaperName + ".doc", "application/vnd.ms-word");
+            }
 
 
         } catch (Exception e) {
@@ -202,7 +201,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             e.printStackTrace();
             // throw new BusinessException(CommonResultEnum.COMMON_ERROR_637);
         } finally {
-            //outFile.delete();
+            outFile.delete();
             out.close();
             fos.close();
         }
@@ -213,9 +212,9 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
         this.enrolmentDictBeanService = enrolmentDictBeanService;
     }
 
-//    public void setCouchdbService(ICouchdbService couchdbService) {
-//        this.couchdbService = couchdbService;
-//    }
+    public void setCouchdbService(ICouchdbService couchdbService) {
+        this.couchdbService = couchdbService;
+    }
 
     public void setPaperBeanService(IPaperBeanService paperBeanService) {
         this.paperBeanService = paperBeanService;
