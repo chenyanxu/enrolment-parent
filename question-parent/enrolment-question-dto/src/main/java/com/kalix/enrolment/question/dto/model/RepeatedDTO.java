@@ -15,6 +15,7 @@ public class RepeatedDTO extends BaseDTO {
     private String subTypeName;      // 返回结果题型子类名称
     private String questionType;     // 返回结果题型
     private String questionTypeName; // 返回结果题型名称
+    private String questionBeans;    // 返回结果题型beans
 
     public Long getQuestionId() {
         return questionId;
@@ -70,5 +71,13 @@ public class RepeatedDTO extends BaseDTO {
 
     public void setQuestionTypeName(String questionTypeName) {
         this.questionTypeName = questionTypeName;
+    }
+
+    public String getQuestionBeans() {
+        return questionBeans;
+    }
+
+    public void setQuestionBeans(String questionBeans) {
+        this.questionBeans = questionBeans;
     }
 }

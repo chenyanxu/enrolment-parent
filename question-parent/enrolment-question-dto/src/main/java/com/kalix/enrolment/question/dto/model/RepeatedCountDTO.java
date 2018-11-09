@@ -9,17 +9,8 @@ import java.util.List;
  */
 public class RepeatedCountDTO extends BaseDTO {
 
-
     private String name; // 名称
     private List repeateList;
-
-    public List getRepeateList() {
-        return repeateList;
-    }
-
-    public void setRepeateList(List repeateList) {
-        repeateList = repeateList;
-    }
 
     public String getName() {
         return name;
@@ -27,5 +18,13 @@ public class RepeatedCountDTO extends BaseDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List getRepeateList() {
+        return repeateList;
+    }
+
+    public void setRepeateList(List repeateList) {
+        this.repeateList = repeateList;
     }
 }
