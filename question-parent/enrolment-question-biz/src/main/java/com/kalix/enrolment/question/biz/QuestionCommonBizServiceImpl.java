@@ -9,10 +9,13 @@ import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
 import com.kalix.framework.core.util.ConfigUtil;
 import com.kalix.framework.core.util.JNDIHelper;
+import com.kalix.middleware.attachment.api.biz.IAttachmentBeanService;
+import com.kalix.middleware.attachment.entities.AttachmentBean;
 import com.kalix.middleware.couchdb.api.biz.ICouchdbService;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.apache.commons.lang.StringUtils;
+import org.lightcouch.Response;
 
 import java.io.*;
 import java.text.ParseException;
@@ -27,6 +30,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
     protected static String DICT_QUESTIONTYPE = "题型";
     private ICouchdbService couchdbService;
     private IEnrolmentDictBeanService enrolmentDictBeanService;
+    private IAttachmentBeanService attachmentBeanService;
     private IPaperBeanService paperBeanService;
     private IRuleBeanService ruleBeanService;
 
@@ -127,7 +131,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
                         jsonStatus.setMsg("试题数量不足，成卷失败!");
                     }else {
                         tempMap.put("quesList", quesList);
-                        jsonStatus = produceTestPaper("testPaper.ftl", tempMap);
+                        jsonStatus = produceTestPaper("testPaper.ftl", tempMap,paperId);
                     }
 
                 }
@@ -152,7 +156,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
         return null;
     }
 
-    private JsonStatus produceTestPaper(String fileName, Map tempMap) throws IOException {
+    private JsonStatus produceTestPaper(String fileName, Map tempMap,Long paperId) throws IOException {
         JsonStatus jsonStatus = new JsonStatus();
 
         Configuration configuration = new Configuration();
@@ -162,6 +166,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
         Template t = null;
         Writer out = null;
         FileOutputStream fos = null;
+        Response response = null;
         try {
             String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
             if (realPath.charAt(realPath.length() - 1) != '/') {
@@ -191,8 +196,16 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             if(outFile.exists())
             {
                 InputStream input = new FileInputStream(outFile);
-                couchdbService.addAttachment(input,
+                response=couchdbService.addAttachment(input,
                         testPaperName + ".doc", "application/vnd.ms-word");
+
+                AttachmentBean attachmentBean = new AttachmentBean();
+                attachmentBean.setAttachmentId(response.getId());
+                attachmentBean.setAttachmentName(testPaperName + ".doc");
+                attachmentBean.setAttachmentPath(couchdbService.getDBUrl() + response.getId() + "/" + testPaperName + ".doc");
+                attachmentBean.setAttachmentRev(response.getRev());
+                attachmentBean.setMainId(paperId);
+                attachmentBeanService.saveEntity(attachmentBean);
             }
 
 
@@ -214,6 +227,10 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
 
     public void setCouchdbService(ICouchdbService couchdbService) {
         this.couchdbService = couchdbService;
+    }
+
+    public void setAttachmentBeanService(IAttachmentBeanService attachmentBeanService) {
+        this.attachmentBeanService = attachmentBeanService;
     }
 
     public void setPaperBeanService(IPaperBeanService paperBeanService) {
