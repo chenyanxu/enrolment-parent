@@ -11,14 +11,14 @@ public class RepeatedCountDTO extends BaseDTO {
 
 
     private String name; // 名称
-    private List RepeateList;
+    private List repeateList;
 
     public List getRepeateList() {
-        return RepeateList;
+        return repeateList;
     }
 
     public void setRepeateList(List repeateList) {
-        RepeateList = repeateList;
+        repeateList = repeateList;
     }
 
     public String getName() {
