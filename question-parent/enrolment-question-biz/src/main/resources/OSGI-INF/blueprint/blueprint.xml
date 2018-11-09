@@ -14,6 +14,7 @@
     <reference id="interviewIssueBeanDao" interface="com.kalix.enrolment.question.api.dao.IInterviewIssueBeanDao"/>
     <reference id="roleBeanService" interface="com.kalix.admin.core.api.biz.IRoleBeanService"/>
     <reference id="couchdbService" interface="com.kalix.middleware.couchdb.api.biz.ICouchdbService"/>
+    <reference id="attachmentBeanService" interface="com.kalix.middleware.attachment.api.biz.IAttachmentBeanService"/>
     <reference id="questionSettingBeanDao" interface="com.kalix.enrolment.question.api.dao.IQuestionSettingBeanDao"/>
     <reference id="paperBeanDao" interface="com.kalix.enrolment.question.api.dao.IPaperBeanDao"/>
     <reference id="ruleBeanDao" interface="com.kalix.enrolment.question.api.dao.IRuleBeanDao"/>
@@ -239,6 +240,7 @@
     <bean id="questionCommonBizServiceImpl" class="com.kalix.enrolment.question.biz.QuestionCommonBizServiceImpl">
         <property name="enrolmentDictBeanService" ref="enrolmentDictBeanService"/>
         <property name="couchdbService" ref="couchdbService"/>
+        <property name="attachmentBeanService" ref="attachmentBeanService"/>
         <property name="paperBeanService" ref="paperBeanServiceImpl"/>
         <property name="ruleBeanService" ref="ruleBeanServiceImpl"/>
     </bean>
