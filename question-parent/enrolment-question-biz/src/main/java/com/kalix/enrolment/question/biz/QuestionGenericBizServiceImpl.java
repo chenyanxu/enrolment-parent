@@ -222,6 +222,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         String subType = repeatedDTO.getSubType();
         String questionType = repeatedDTO.getQuestionType();
         String questionTypeName = repeatedDTO.getQuestionTypeName();
+        String questionBeans = repeatedDTO.getQuestionBeans();
         String subTypeName = repeatedDTO.getSubTypeName();
         Class cls = null;
         TP entity = null;
@@ -268,7 +269,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
 
         //StringBuilder stringBuilder = new StringBuilder();
         List<RepeatedDTO> dtoList = this.doRepeat(entity, referenceList, defaultSimilarity,
-                questionType, questionTypeName, subType, subTypeName);
+                questionType, questionTypeName, questionBeans, subType, subTypeName);
 
         RepeatedCountDTO repeatedCountDTO = new RepeatedCountDTO();
         if (dtoList != null && dtoList.size() > 0) {
@@ -292,6 +293,8 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         List<RepeatedCountDTO> repeateList = new ArrayList<RepeatedCountDTO>();
         EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_QUESTIONTYPE, questionType);
         String questionTypeName = enrolmentDictBean.getLabel();
+        String questionBeans = enrolmentDictBean.getDescription() == null ? "" :
+                enrolmentDictBean.getDescription().toLowerCase() + "s";
         String subTypeName = this.getSubTypeName(subType);
         String sql = "";
         String sqlAll = "";
@@ -330,7 +333,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         for (int i = 0; i < list.size(); i++) {
             TP entity = (TP) list.get(i);
             List<RepeatedDTO> dtoList = this.doRepeat(entity, referenceList, defaultSimilarity,
-                    questionType, questionTypeName, subType, subTypeName);
+                    questionType, questionTypeName, questionBeans, subType, subTypeName);
 
             RepeatedCountDTO repeatedCountDTO = new RepeatedCountDTO();
             if (dtoList != null && dtoList.size() > 0) {
@@ -342,6 +345,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
 
                 repeatedDTO.setQuestionType(questionType);
                 repeatedDTO.setQuestionTypeName(questionTypeName);
+                repeatedDTO.setQuestionBeans(questionBeans);
                 repeatedDTO.setSubType(subType);
                 repeatedDTO.setSubTypeName(subTypeName);
                 dtoList.add(0, repeatedDTO);
@@ -371,11 +375,18 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     @Transactional
     public JsonStatus doSaveRepeate(Long questionId) {
         JsonStatus jsonStatus = new JsonStatus();
-        TP entity = (TP) this.dao.get(questionId);
-        entity.setRepeatedFlag("1");
-        this.dao.save(entity);
-        jsonStatus.setSuccess(true);
-        jsonStatus.setMsg("试题保留成功！");
+        try {
+            TP entity = (TP) this.dao.get(questionId);
+            entity.setRepeatedFlag("1");
+            entity.setUpdateBy(shiroService.getCurrentUserLoginName());
+            entity.setUpdateById(shiroService.getCurrentUserId());
+            this.dao.save(entity);
+            jsonStatus.setSuccess(true);
+            jsonStatus.setMsg("试题保留成功！");
+        } catch (Exception e) {
+            jsonStatus.setSuccess(false);
+            jsonStatus.setMsg(e.getMessage());
+        }
         return jsonStatus;
     }
 
@@ -383,19 +394,24 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     @Transactional
     public JsonStatus doDeleteRepeate(Long questionId) {
         JsonStatus jsonStatus = new JsonStatus();
-        TP entity = (TP) this.dao.get(questionId);
-        entity.setDelFlag("1");
-        entity.setRepeatedFlag("1");
-        entity.setUpdateBy(shiroService.getCurrentUserLoginName());
-        entity.setUpdateById(shiroService.getCurrentUserId());
-        this.dao.save(entity);
-        jsonStatus.setSuccess(true);
-        jsonStatus.setMsg("试题删除成功！");
+        try {
+            TP entity = (TP) this.dao.get(questionId);
+            entity.setDelFlag("1");
+            entity.setRepeatedFlag("1");
+            entity.setUpdateBy(shiroService.getCurrentUserLoginName());
+            entity.setUpdateById(shiroService.getCurrentUserId());
+            this.dao.save(entity);
+            jsonStatus.setSuccess(true);
+            jsonStatus.setMsg("试题删除成功！");
+        } catch (Exception e) {
+            jsonStatus.setSuccess(false);
+            jsonStatus.setMsg(e.getMessage());
+        }
         return jsonStatus;
     }
 
     private List doRepeat(TP entity, List<TP> list, double defaultSimilarity,
-                          String questionType, String questionTypeName, String subType, String subTypeName) {
+                          String questionType, String questionTypeName, String questionBeans, String subType, String subTypeName) {
         long id = entity.getId();
         String stem = entity.getStem();
         List<RepeatedDTO> dtoList = new ArrayList<RepeatedDTO>();
@@ -450,6 +466,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
 
                     repeatedDTO.setQuestionType(questionType);
                     repeatedDTO.setQuestionTypeName(questionTypeName);
+                    repeatedDTO.setQuestionBeans(questionBeans);
                     repeatedDTO.setSubType(subType);
                     repeatedDTO.setSubTypeName(subTypeName);
 
