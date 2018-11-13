@@ -141,7 +141,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         return str;
     }
 
-    public void getComletionList(int spacenum, List<CompletionBean> list_completion, String year_str, String questype, String subtype,Date year) {
+    public void getComletionList(int spacenum, List<CompletionBean> list_completion, String year_str, String questype, String subtype, Date year) {
         String sql = "select * from enrolment_question_completion where checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit 1";
         List<CompletionBean> list = this.dao.findByNativeSql(sql, CompletionBean.class);
         if (list != null && list.size() > 0) {
