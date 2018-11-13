@@ -6,7 +6,6 @@ import com.kalix.enrolment.question.api.dao.IVerseBeanDao;
 import com.kalix.enrolment.question.biz.util.Constants;
 import com.kalix.enrolment.question.entities.PaperQuesBean;
 import com.kalix.enrolment.question.entities.VerseBean;
-import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 
 import java.text.SimpleDateFormat;
@@ -20,26 +19,24 @@ import java.util.regex.Pattern;
 public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBeanDao, VerseBean>
         implements IVerseBeanService, IDownloadService {
 
-    private static String TEMP_NAME = "verse.ftl";
     private static String DICT_QUESTIONVALUE = "3";
+    private static String DICT_SUBTYPE = "";
+    private static String TEMP_NAME = "verse.ftl";
     private IPaperQuesBeanService paperQuesBeanService;
 
     @Override
-    public String getAuditRoleName(String subType) {
-        EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_QUESTIONTYPE, DICT_QUESTIONVALUE);
-        String label = enrolmentDictBean.getLabel();
-        String auditRoleName = label + "审核人";
-        return auditRoleName;
+    public String getQuestionType() {
+        return DICT_QUESTIONVALUE;
+    }
+
+    @Override
+    public String getSubTypeDictType() {
+        return DICT_SUBTYPE;
     }
 
     @Override
     public String getTempName(String subType) {
         return TEMP_NAME;
-    }
-
-    @Override
-    public String getSubTypeName(String subType) {
-        return "";
     }
 
     @Override
@@ -72,7 +69,7 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
         // 以下需要通过算法动态获取（抽取试题）
         List<VerseBean> list = this.dao.findByNativeSql(sql, VerseBean.class);
-        if(list.size()==quesNum){
+        if (list.size() == quesNum) {
             for (int i = 0; i < list.size(); i++) {
                 Map<String, Object> map = new HashMap<String, Object>();
                 VerseBean verseBean = list.get(i);

@@ -11,6 +11,16 @@ import java.util.Map;
  */
 public interface IQuestionService<T extends BaseQuestionEntity> extends ILogicDeleteService<T> {
 
+    String getQuestionType();
+
+    String getQuestionTypeName();
+
+    String getQuestionBeans();
+
+    String getSubTypeDictType();
+
+    String getSubTypeName(String subType);
+
     String getAuditRoleName(String subType);
 
     /**
@@ -20,8 +30,6 @@ public interface IQuestionService<T extends BaseQuestionEntity> extends ILogicDe
      * @return
      */
     String getTempName(String subType);
-
-    String getSubTypeName(String subType);
 
     /**
      * 生成试卷单项题型试题结果

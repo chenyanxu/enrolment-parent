@@ -12,6 +12,15 @@
             <dataFormatProperty key="prettyPrint" value="${rest.pretty}"/>
         </restConfiguration>
 
+        <rest path="/questiontestings" consumes="application/json;charset=utf-8" produces="application/json">
+            <description>questionTesting rest service</description>
+            <!-- this is a rest GET to find all questionTestings -->
+            <get id="route-getAllQuestionTestings" outType="com.kalix.framework.core.api.persistence.JsonData">
+                <description>Find all questionTestings</description>
+                <to uri="bean:questionCommonBizService?method=getAllQuestionTestings(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+            </get>
+        </rest>
+
         <rest path="/repeates" consumes="application/json;charset=utf-8" produces="application/json">
             <description>repeate rest service</description>
             <!-- this is a rest GET to find all repeates -->

@@ -4,7 +4,6 @@ import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
 import com.kalix.enrolment.question.api.biz.ISubjectBeanService;
 import com.kalix.enrolment.question.api.dao.ISubjectBeanDao;
 import com.kalix.enrolment.question.biz.util.Constants;
-import com.kalix.enrolment.question.entities.ChoiceBean;
 import com.kalix.enrolment.question.entities.PaperQuesBean;
 import com.kalix.enrolment.question.entities.SubjectBean;
 import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
@@ -19,25 +18,24 @@ import java.util.*;
 public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubjectBeanDao, SubjectBean>
         implements ISubjectBeanService, IDownloadService {
 
-    private static String TEMP_NAME = "subject.ftl";
+    private static String DICT_QUESTIONVALUE = "5";
     private static String DICT_SUBTYPE = "主观题类型";
+    private static String TEMP_NAME = "subject.ftl";
     private IPaperQuesBeanService paperQuesBeanService;
 
     @Override
-    public String getAuditRoleName(String subType) {
-        String auditRoleName = getSubTypeName(subType) + "审核人";
-        return auditRoleName;
+    public String getQuestionType() {
+        return DICT_QUESTIONVALUE;
+    }
+
+    @Override
+    public String getSubTypeDictType() {
+        return DICT_SUBTYPE;
     }
 
     @Override
     public String getTempName(String subType) {
         return TEMP_NAME;
-    }
-
-    @Override
-    public String getSubTypeName(String subType) {
-        EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_SUBTYPE, subType);
-        return enrolmentDictBean.getLabel();
     }
 
     @Override
@@ -58,7 +56,7 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
         String subtype = paperMap.get("subtype") == null ? "" : paperMap.get("subtype").toString();
         EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_SUBTYPE, subtype);
         String titleName = enrolmentDictBean.getLabel();
-      //  String titleName = "评述题";
+        //  String titleName = "评述题";
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
         int quesNum = total / perScore;
@@ -71,7 +69,7 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
         // 以下需要通过算法动态获取（抽取试题）
         List<SubjectBean> list = this.dao.findByNativeSql(sql, SubjectBean.class);
-        if(list.size()==quesNum){
+        if (list.size() == quesNum) {
             for (int i = 0; i < list.size(); i++) {
                 Map<String, Object> map = new HashMap<String, Object>();
                 SubjectBean subjectBean = list.get(i);

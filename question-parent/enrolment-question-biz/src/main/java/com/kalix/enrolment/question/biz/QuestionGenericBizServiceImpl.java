@@ -6,8 +6,8 @@ import com.kalix.enrolment.question.api.biz.IQuestionAuditService;
 import com.kalix.enrolment.question.api.biz.IQuestionService;
 import com.kalix.enrolment.question.api.biz.IQuestionSettingBeanService;
 import com.kalix.enrolment.question.api.biz.IRepeatedService;
+import com.kalix.enrolment.question.dto.model.BaseQuestionDTO;
 import com.kalix.enrolment.question.dto.model.RepeatedCountDTO;
-import com.kalix.enrolment.question.dto.model.RepeatedDTO;
 import com.kalix.enrolment.question.entities.BaseQuestionEntity;
 import com.kalix.enrolment.question.entities.QuestionSettingBean;
 import com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService;
@@ -50,6 +50,43 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             sort = "[{'property': 'delFlag', 'direction': 'ASC'},{'property': 'updateDate', 'direction': 'DESC'}]";
         }
         return super.getAllEntityByQuery(page, limit, jsonStr, sort);
+    }
+
+    @Override
+    public String getQuestionTypeName() {
+        String questionType = this.getQuestionType();
+        EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_QUESTIONTYPE, questionType);
+        return enrolmentDictBean.getLabel();
+    }
+
+    @Override
+    public String getQuestionBeans() {
+        String questionType = this.getQuestionType();
+        EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_QUESTIONTYPE, questionType);
+        return enrolmentDictBean.getDescription() == null ? "" : enrolmentDictBean.getDescription().toLowerCase() + "s";
+    }
+
+    @Override
+    public String getSubTypeName(String subType) {
+        String subTypeName = "";
+        if (StringUtils.isEmpty(subType)) {
+            subTypeName = "";
+        } else {
+            EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(this.getSubTypeDictType(), subType);
+            subTypeName = enrolmentDictBean.getLabel();
+        }
+        return subTypeName;
+    }
+
+    @Override
+    public String getAuditRoleName(String subType) {
+        String auditRoleName = "";
+        if (StringUtils.isEmpty(subType)) {
+            auditRoleName = this.getQuestionTypeName() + "审核人";
+        } else {
+            auditRoleName = this.getSubTypeName(subType) + "审核人";
+        }
+        return auditRoleName;
     }
 
     @Override
@@ -213,17 +250,14 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     }
 
     @Override
-    public JsonData validateRepeates(RepeatedDTO repeatedDTO) {
+    public JsonData validateRepeates(BaseQuestionDTO baseQuestionDTO) {
         JsonData jsonData = new JsonData();
         List<RepeatedCountDTO> repeateList = new ArrayList<RepeatedCountDTO>();
 
-        Long questionId = repeatedDTO.getQuestionId() == null ? 0 : repeatedDTO.getQuestionId();
-        String stem = repeatedDTO.getStem();
-        String subType = repeatedDTO.getSubType();
-        String questionType = repeatedDTO.getQuestionType();
-        String questionTypeName = repeatedDTO.getQuestionTypeName();
-        String questionBeans = repeatedDTO.getQuestionBeans();
-        String subTypeName = repeatedDTO.getSubTypeName();
+        Long questionId = baseQuestionDTO.getQuestionId() == null ? 0 : baseQuestionDTO.getQuestionId();
+        String stem = baseQuestionDTO.getStem();
+        String subType = baseQuestionDTO.getSubType();
+
         Class cls = null;
         TP entity = null;
         try {
@@ -243,18 +277,18 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         if (StringUtils.isEmpty(subType)) {
             if (entity.getId() > 0) {
                 sql = "select t.* from " + dao.getTableName() + " t "
-                        + " where t.delFlag = '0' and t.id <> " + entity.getId();
+                        + " where t.delFlag = '0' and t.checkFlag <> '2' and t.id <> " + entity.getId();
             } else {
                 sql = "select t.* from " + dao.getTableName() + " t "
-                        + " where t.delFlag = '0'";
+                        + " where t.delFlag = '0' and t.checkFlag <> '2'";
             }
         } else {
             if (entity.getId() > 0) {
                 sql = "select t.* from " + dao.getTableName() + " t "
-                        + " where t.delFlag = '0' and t.subType = '" + subType + "' and t.id <> " + entity.getId();
+                        + " where t.delFlag = '0' and t.checkFlag <> '2' and t.subType = '" + subType + "' and t.id <> " + entity.getId();
             } else {
                 sql = "select t.* from " + dao.getTableName() + " t "
-                        + " where t.delFlag = '0' and t.subType = '" + subType + "'";
+                        + " where t.delFlag = '0' and t.checkFlag <> '2' and t.subType = '" + subType + "'";
             }
         }
         List list = dao.findByNativeSql(sql, cls);
@@ -267,17 +301,15 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             defaultSimilarity = questionSettingBean.getCilinSimilarity().doubleValue();
         }
 
-        //StringBuilder stringBuilder = new StringBuilder();
-        List<RepeatedDTO> dtoList = this.doRepeat(entity, referenceList, defaultSimilarity,
-                questionType, questionTypeName, questionBeans, subType, subTypeName);
+        List<BaseQuestionDTO> dtoList = this.doRepeat(entity, referenceList, defaultSimilarity, subType);
 
         RepeatedCountDTO repeatedCountDTO = new RepeatedCountDTO();
         if (dtoList != null && dtoList.size() > 0) {
             String name = "";
             if (StringUtils.isEmpty(subType)) {
-                name = questionTypeName + "题目";
+                name = this.getQuestionTypeName() + "题目";
             } else {
-                name = questionTypeName + "-" + subTypeName + "题目";
+                name = this.getQuestionTypeName() + "-" + this.getSubTypeName(subType) + "题目";
             }
             repeatedCountDTO.setName(name);
             repeatedCountDTO.setRepeateList(dtoList);
@@ -289,26 +321,25 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     }
 
     @Override
-    public List getSingleRepeates(String questionType, String subType) {
+    public List getSingleRepeates(String subType) {
         List<RepeatedCountDTO> repeateList = new ArrayList<RepeatedCountDTO>();
-        EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_QUESTIONTYPE, questionType);
-        String questionTypeName = enrolmentDictBean.getLabel();
-        String questionBeans = enrolmentDictBean.getDescription() == null ? "" :
-                enrolmentDictBean.getDescription().toLowerCase() + "s";
+        String questionType = this.getQuestionType();
+        String questionTypeName = this.getQuestionTypeName();
+        String questionBeans = this.getQuestionBeans();
         String subTypeName = this.getSubTypeName(subType);
         String sql = "";
         String sqlAll = "";
         if (StringUtils.isEmpty(subType)) {
             sql = "select t.* from " + dao.getTableName() + " t "
-                    + " where t.delFlag = '0' and t.repeatedFlag = '0'";
+                    + " where t.delFlag = '0' and t.repeatedFlag = '0' and t.checkFlag <> '2'";
             sqlAll = "select t.* from " + dao.getTableName() + " t "
-                    + " where t.delFlag = '0'";
+                    + " where t.delFlag = '0' and t.checkFlag <> '2'";
         } else {
             sql = "select t.* from " + dao.getTableName() + " t "
-                    + " where t.delFlag = '0' and t.repeatedFlag = '0'"
+                    + " where t.delFlag = '0' and t.repeatedFlag = '0' and t.checkFlag <> '2'"
                     + " and t.subType = '" + subType + "'";
             sqlAll = "select t.* from " + dao.getTableName() + " t "
-                    + " where t.delFlag = '0'"
+                    + " where t.delFlag = '0' and t.checkFlag <> '2'"
                     + " and t.subType = '" + subType + "'";
         }
         Class cls = null;
@@ -328,29 +359,33 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             defaultSimilarity = questionSettingBean.getCilinSimilarity().doubleValue();
         }
 
-        //StringBuilder stringBuilder = new StringBuilder();
         int count = 1;
         for (int i = 0; i < list.size(); i++) {
             TP entity = (TP) list.get(i);
-            List<RepeatedDTO> dtoList = this.doRepeat(entity, referenceList, defaultSimilarity,
-                    questionType, questionTypeName, questionBeans, subType, subTypeName);
+            List<BaseQuestionDTO> dtoList = this.doRepeat(entity, referenceList, defaultSimilarity, subType);
 
             RepeatedCountDTO repeatedCountDTO = new RepeatedCountDTO();
             if (dtoList != null && dtoList.size() > 0) {
                 // 有重复
-                RepeatedDTO repeatedDTO = new RepeatedDTO();
-                repeatedDTO.setQuestionId(entity.getId());
-                repeatedDTO.setStem(entity.getStem());
-                repeatedDTO.setSimilarity("");
+                BaseQuestionDTO baseQuestionDTO = new BaseQuestionDTO();
+                baseQuestionDTO.setQuestionId(entity.getId());
+                baseQuestionDTO.setStem(entity.getStem());
+                baseQuestionDTO.setSimilarity("");
 
-                repeatedDTO.setQuestionType(questionType);
-                repeatedDTO.setQuestionTypeName(questionTypeName);
-                repeatedDTO.setQuestionBeans(questionBeans);
-                repeatedDTO.setSubType(subType);
-                repeatedDTO.setSubTypeName(subTypeName);
-                dtoList.add(0, repeatedDTO);
-                //String strId = "," + String.valueOf(entity.getId()) + ",";
-                //stringBuilder.append(strId);
+                baseQuestionDTO.setQuestionType(questionType);
+                baseQuestionDTO.setQuestionTypeName(questionTypeName);
+                baseQuestionDTO.setQuestionBeans(questionBeans);
+                baseQuestionDTO.setSubType(subType);
+                baseQuestionDTO.setSubTypeName(subTypeName);
+
+                baseQuestionDTO.setAnalysis(entity.getAnalysis());
+                baseQuestionDTO.setCheckFlag(entity.getCheckFlag());
+                baseQuestionDTO.setCheckerId(entity.getCheckerId());
+                baseQuestionDTO.setChecker(entity.getChecker());
+                baseQuestionDTO.setCheckDate(entity.getCheckDate());
+                baseQuestionDTO.setCreateBy(entity.getCreateBy());
+                baseQuestionDTO.setCreationDate(entity.getCreationDate());
+                dtoList.add(0, baseQuestionDTO);
 
                 String name = "";
                 if (StringUtils.isEmpty(subType)) {
@@ -369,6 +404,51 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         }
 
         return repeateList;
+    }
+
+    @Override
+    public JsonData getRepeates(Long questionId) {
+        JsonData jsonData = new JsonData();
+        List<BaseQuestionDTO> list = new ArrayList<BaseQuestionDTO>();
+        if (questionId == null || questionId < 1) {
+            return jsonData;
+        }
+        try {
+            TP entity = (TP) this.dao.get(questionId);
+            String subType = entity.getSubType();
+
+            Class cls = null;
+            try {
+                cls = Class.forName(this.entityClassName);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            String sql = "";
+            if (StringUtils.isEmpty(subType)) {
+                sql = "select t.* from " + dao.getTableName() + " t "
+                        + " where t.delFlag = '0' and t.checkFlag <> '2' and t.id <> " + entity.getId();
+            } else {
+                sql = "select t.* from " + dao.getTableName() + " t "
+                        + " where t.delFlag = '0' and t.checkFlag <> '2' and t.subType = '" + subType + "' and t.id <> " + entity.getId();
+            }
+            List result = dao.findByNativeSql(sql, cls);
+            List<TP> referenceList = new ArrayList<TP>();
+            referenceList.addAll(result);
+
+            double defaultSimilarity = 0.5d;
+            QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
+            if (questionSettingBean != null) {
+                defaultSimilarity = questionSettingBean.getCilinSimilarity().doubleValue();
+            }
+
+            list = this.doRepeat(entity, referenceList, defaultSimilarity, subType);
+
+            jsonData.setData(list);
+            jsonData.setTotalCount((long) list.size());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonData;
     }
 
     @Override
@@ -410,15 +490,17 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         return jsonStatus;
     }
 
-    private List doRepeat(TP entity, List<TP> list, double defaultSimilarity,
-                          String questionType, String questionTypeName, String questionBeans, String subType, String subTypeName) {
+    private List doRepeat(TP entity, List<TP> list, double defaultSimilarity, String subType) {
         long id = entity.getId();
         String stem = entity.getStem();
-        List<RepeatedDTO> dtoList = new ArrayList<RepeatedDTO>();
+        String questionType = this.getQuestionType();
+        String questionTypeName = this.getQuestionTypeName();
+        String questionBeans = this.getQuestionBeans();
+        String subTypeName = this.getSubTypeName(subType);
+        List<BaseQuestionDTO> dtoList = new ArrayList<BaseQuestionDTO>();
         for (int i = 0; i < list.size(); i++) {
             TP questionEntity = list.get(i);
             long questionId = questionEntity.getId();
-            //String strQuestionId = "," + String.valueOf(questionId) + ",";
             if (questionId != id) {
                 String questionStem = questionEntity.getStem();
                 // 词林相似度
@@ -458,20 +540,27 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                         stringBuilder.append(strId);
                     }*/
 
-                    RepeatedDTO repeatedDTO = new RepeatedDTO();
-                    repeatedDTO.setQuestionId(questionId);
-                    repeatedDTO.setStem(questionStem);
-                    // repeatedDTO.setSimilarity("词林相似度" + new DecimalFormat("0.00").format(result));
-                    repeatedDTO.setSimilarity("词形词序句子相似度" + new DecimalFormat("0.00").format(result));
+                    BaseQuestionDTO baseQuestionDTO = new BaseQuestionDTO();
+                    baseQuestionDTO.setQuestionId(questionId);
+                    baseQuestionDTO.setStem(questionStem);
+                    // baseQuestionDTO.setSimilarity("词林相似度" + new DecimalFormat("0.00").format(result));
+                    baseQuestionDTO.setSimilarity("词形词序句子相似度" + new DecimalFormat("0.00").format(result));
 
-                    repeatedDTO.setQuestionType(questionType);
-                    repeatedDTO.setQuestionTypeName(questionTypeName);
-                    repeatedDTO.setQuestionBeans(questionBeans);
-                    repeatedDTO.setSubType(subType);
-                    repeatedDTO.setSubTypeName(subTypeName);
+                    baseQuestionDTO.setQuestionType(questionType);
+                    baseQuestionDTO.setQuestionTypeName(questionTypeName);
+                    baseQuestionDTO.setQuestionBeans(questionBeans);
+                    baseQuestionDTO.setSubType(subType);
+                    baseQuestionDTO.setSubTypeName(subTypeName);
 
-                    dtoList.add(repeatedDTO);
-                    //stringBuilder.append(strQuestionId);
+                    baseQuestionDTO.setAnalysis(questionEntity.getAnalysis());
+                    baseQuestionDTO.setCheckFlag(questionEntity.getCheckFlag());
+                    baseQuestionDTO.setCheckerId(questionEntity.getCheckerId());
+                    baseQuestionDTO.setChecker(questionEntity.getChecker());
+                    baseQuestionDTO.setCheckDate(questionEntity.getCheckDate());
+                    baseQuestionDTO.setCreateBy(questionEntity.getCreateBy());
+                    baseQuestionDTO.setCreationDate(questionEntity.getCreationDate());
+
+                    dtoList.add(baseQuestionDTO);
                 }
             }
         }

@@ -13,20 +13,10 @@ import java.util.Date;
 @Entity
 @Table(name = "enrolment_question_interview")
 public class InterviewIssueBean extends BaseQuestionEntity {
-    @Column(nullable = false)
-    private String subType;            // 面试题类型,字典（面试题类型）
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy", timezone = "GMT+8")
     private Date year;                 // 年份
     private String scoreStandard;      // 评分标准
-
-    public String getSubType() {
-        return subType;
-    }
-
-    public void setSubType(String subType) {
-        this.subType = subType;
-    }
 
     public Date getYear() {
         return year;

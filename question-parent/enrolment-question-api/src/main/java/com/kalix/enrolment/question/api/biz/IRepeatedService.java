@@ -1,6 +1,6 @@
 package com.kalix.enrolment.question.api.biz;
 
-import com.kalix.enrolment.question.dto.model.RepeatedDTO;
+import com.kalix.enrolment.question.dto.model.BaseQuestionDTO;
 import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
 
@@ -12,10 +12,13 @@ import java.util.List;
 public interface IRepeatedService {
 
     // 新增或编辑题型数据时验证排重
-    JsonData validateRepeates(RepeatedDTO repeatedDTO);
+    JsonData validateRepeates(BaseQuestionDTO baseQuestionDTO);
 
     // 单一题型全库排重
-    List getSingleRepeates(String questionType, String subType);
+    List getSingleRepeates(String subType);
+
+    // 查询重复
+    JsonData getRepeates(Long questionId);
 
     // 保留重复
     JsonStatus doSaveRepeate(Long questionId);

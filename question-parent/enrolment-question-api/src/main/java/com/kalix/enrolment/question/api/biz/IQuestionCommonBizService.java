@@ -10,6 +10,11 @@ import com.kalix.framework.core.api.persistence.JsonStatus;
 public interface IQuestionCommonBizService extends IService {
 
     /**
+     * 查询题库试题，获取试题检测需要的试题
+     */
+    JsonData getAllQuestionTestings(Integer page, Integer limit, String jsonStr, String sort);
+
+    /**
      * 全库排重
      *
      * @return
@@ -23,6 +28,4 @@ public interface IQuestionCommonBizService extends IService {
      * @return
      */
     JsonStatus autoCreateTestPaper(Long paperId);
-
-    JsonStatus autoCreateTestPaper();
 }

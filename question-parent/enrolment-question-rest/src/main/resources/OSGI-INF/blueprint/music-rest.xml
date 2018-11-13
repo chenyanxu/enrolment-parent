@@ -74,7 +74,7 @@
 
         <rest path="/musics/repeated/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <description>music rest service</description>
-            <post id="route-getRepeatedMusics" type="com.kalix.enrolment.question.dto.model.RepeatedDTO"
+            <post id="route-getRepeatedMusics" type="com.kalix.enrolment.question.dto.model.BaseQuestionDTO"
                  outType="com.kalix.framework.core.api.persistence.JsonData">
                 <description>Find all repeated musics</description>
                 <to uri="bean:musicRepeatedService?method=validateRepeates(${body})"/>
@@ -82,6 +82,11 @@
         </rest>
 
         <rest path="/musics/repeated/list/{questionId}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <get id="route-getRepeatedMusicsById">
+                <description>Find all repeated by id</description>
+                <to uri="bean:musicRepeatedService?method=getRepeates(${header.questionId})"/>
+            </get>
+
             <put id="route-update-RepeatedMusic" outType="com.kalix.framework.core.api.persistence.JsonStatus">
                 <description>Updates a RepeatedMusic</description>
                 <to uri="bean:musicRepeatedService?method=doSaveRepeate(${header.questionId})"/>

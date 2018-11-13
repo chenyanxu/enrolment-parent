@@ -4,7 +4,6 @@ import com.kalix.enrolment.question.api.biz.IInterviewIssueBeanService;
 import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
 import com.kalix.enrolment.question.api.dao.IInterviewIssueBeanDao;
 import com.kalix.enrolment.question.entities.InterviewIssueBean;
-import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 
 import java.util.HashMap;
@@ -16,25 +15,24 @@ import java.util.Map;
 public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl<IInterviewIssueBeanDao, InterviewIssueBean>
         implements IInterviewIssueBeanService, IDownloadService {
 
-    private static String TEMP_NAME = "subject.ftl";
+    private static String DICT_QUESTIONVALUE = "6";
     private static String DICT_SUBTYPE = "面试题类型";
+    private static String TEMP_NAME = "subject.ftl";
     private IPaperQuesBeanService paperQuesBeanService;
 
     @Override
-    public String getAuditRoleName(String subType) {
-        String auditRoleName = getSubTypeName(subType) + "审核人";
-        return auditRoleName;
+    public String getQuestionType() {
+        return DICT_QUESTIONVALUE;
+    }
+
+    @Override
+    public String getSubTypeDictType() {
+        return DICT_SUBTYPE;
     }
 
     @Override
     public String getTempName(String subType) {
         return TEMP_NAME;
-    }
-
-    @Override
-    public String getSubTypeName(String subType) {
-        EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_SUBTYPE, subType);
-        return enrolmentDictBean.getLabel();
     }
 
     @Override

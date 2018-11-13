@@ -6,8 +6,6 @@ import com.kalix.enrolment.question.api.dao.ICompletionBeanDao;
 import com.kalix.enrolment.question.biz.util.Constants;
 import com.kalix.enrolment.question.entities.CompletionBean;
 import com.kalix.enrolment.question.entities.PaperQuesBean;
-import com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService;
-import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 import com.kalix.framework.core.api.persistence.JsonStatus;
 
@@ -22,8 +20,9 @@ import java.util.regex.Pattern;
 public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICompletionBeanDao, CompletionBean>
         implements ICompletionBeanService, IDownloadService {
 
-    private static String TEMP_NAME = "completion.ftl";
     private static String DICT_QUESTIONVALUE = "1";
+    private static String DICT_SUBTYPE = "";
+    private static String TEMP_NAME = "completion.ftl";
     private IPaperQuesBeanService paperQuesBeanService;
 
     @Override
@@ -46,21 +45,18 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
     }
 
     @Override
-    public String getAuditRoleName(String subType) {
-        EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_QUESTIONTYPE, DICT_QUESTIONVALUE);
-        String label = enrolmentDictBean.getLabel();
-        String auditRoleName = label + "审核人";
-        return auditRoleName;
+    public String getQuestionType() {
+        return DICT_QUESTIONVALUE;
+    }
+
+    @Override
+    public String getSubTypeDictType() {
+        return DICT_SUBTYPE;
     }
 
     @Override
     public String getTempName(String subType) {
         return TEMP_NAME;
-    }
-
-    @Override
-    public String getSubTypeName(String subType) {
-        return "";
     }
 
     @Override
@@ -76,7 +72,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         String sql = "";
         // 创建试题标题
         String title = "";
-        int sumSpace=0;
+        int sumSpace = 0;
         //Map paperMap=new HashMap();
         //paperMap.put("titlenum","1");
         //paperMap.put("score","2");
@@ -95,17 +91,17 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         String year_str = simpleDateFormat.format(year);
         String questype = paperMap.get("questype").toString();
         String subtype = paperMap.get("subtype") == null ? "" : paperMap.get("subtype").toString();
-        getComletionList(quesNum, list_completion, year_str, questype, subtype,year);
+        getComletionList(quesNum, list_completion, year_str, questype, subtype, year);
         // 创建试题内容
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
 
-        if(list_completion!=null&&list_completion.size()>0){
-            for(CompletionBean completionBean:list_completion){
-                sumSpace+=completionBean.getSpaceNum();
+        if (list_completion != null && list_completion.size() > 0) {
+            for (CompletionBean completionBean : list_completion) {
+                sumSpace += completionBean.getSpaceNum();
             }
             // 以下需要通过算法动态获取（抽取试题）
             // List<CompletionBean> list = this.dao.findByNativeSql(sql, CompletionBean.class);
-            if(sumSpace==quesNum){
+            if (sumSpace == quesNum) {
                 for (int i = 0; i < list_completion.size(); i++) {
                     Map<String, Object> map = new HashMap<String, Object>();
                     CompletionBean completionBean = list_completion.get(i);
@@ -123,8 +119,6 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
                 }
             }
         }
-
-
 
         singleTestPaper.put("question", question);
 
@@ -147,17 +141,17 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         return str;
     }
 
-    public void getComletionList(int spacenum, List<CompletionBean> list_completion, String year_str, String questype, String subtype,Date year) {
+    public void getComletionList(int spacenum, List<CompletionBean> list_completion, String year_str, String questype, String subtype, Date year) {
         String sql = "select * from enrolment_question_completion where id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit 1";
         List<CompletionBean> list = this.dao.findByNativeSql(sql, CompletionBean.class);
         if (list != null && list.size() > 0) {
             CompletionBean completionBean = list.get(0);
             int completionSpaceNum = completionBean.getSpaceNum();
-            if(!list_completion.contains(completionBean)){
+            if (!list_completion.contains(completionBean)) {
                 spacenum = spacenum - completionSpaceNum;
                 if (spacenum > 0) {
                     list_completion.add(completionBean);
-                    getComletionList(spacenum, list_completion, year_str, questype, subtype,year);
+                    getComletionList(spacenum, list_completion, year_str, questype, subtype, year);
                 } else if (spacenum < 0) {
                     spacenum = spacenum + completionSpaceNum;
                     String sql_1 = "select * from enrolment_question_completion where  id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') and spacenum='" + spacenum + "' order by random() limit 1";
@@ -169,18 +163,14 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
                         CompletionBean completionBean_last = list_completion.get(list_completion.size() - 1);
                         spacenum = completionBean_last.getSpaceNum() + spacenum;
                         list_completion.remove(list_completion.size() - 1);
-                        getComletionList(spacenum, list_completion, year_str, questype, subtype,year);
+                        getComletionList(spacenum, list_completion, year_str, questype, subtype, year);
                     }
-
                 } else {
-
                     list_completion.add(completionBean);
                 }
-            }else {
-                getComletionList(spacenum, list_completion, year_str, questype, subtype,year);
+            } else {
+                getComletionList(spacenum, list_completion, year_str, questype, subtype, year);
             }
-
-
         }
     }
 

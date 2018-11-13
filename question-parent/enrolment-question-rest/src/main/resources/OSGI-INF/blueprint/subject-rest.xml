@@ -74,7 +74,7 @@
 
         <rest path="/subjects/repeated/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <description>subject rest service</description>
-            <post id="route-getRepeatedSubjects" type="com.kalix.enrolment.question.dto.model.RepeatedDTO"
+            <post id="route-getRepeatedSubjects" type="com.kalix.enrolment.question.dto.model.BaseQuestionDTO"
                  outType="com.kalix.framework.core.api.persistence.JsonData">
                 <description>Find all repeated subjects</description>
                 <to uri="bean:subjectRepeatedService?method=validateRepeates(${body})"/>
@@ -82,6 +82,11 @@
         </rest>
 
         <rest path="/subjects/repeated/list/{questionId}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <get id="route-getRepeatedSubjectsById">
+                <description>Find all repeated by id</description>
+                <to uri="bean:subjectRepeatedService?method=getRepeates(${header.questionId})"/>
+            </get>
+
             <put id="route-update-RepeatedSubject" outType="com.kalix.framework.core.api.persistence.JsonStatus">
                 <description>Updates a RepeatedSubject</description>
                 <to uri="bean:subjectRepeatedService?method=doSaveRepeate(${header.questionId})"/>

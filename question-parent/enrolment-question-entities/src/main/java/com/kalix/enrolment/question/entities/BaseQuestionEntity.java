@@ -27,6 +27,8 @@ public abstract class BaseQuestionEntity extends BaseLogicDeleteEntity {
     private String checkReason;        // 审核不通过原因
     private String repeatedFlag = "0"; // 题库排重标识
 
+    private String subType;            // 试题子类类型,字典（可以为空）
+
     public String getStem() {
         return stem;
     }
@@ -89,5 +91,13 @@ public abstract class BaseQuestionEntity extends BaseLogicDeleteEntity {
 
     public void setRepeatedFlag(String repeatedFlag) {
         this.repeatedFlag = repeatedFlag;
+    }
+
+    public String getSubType() {
+        return subType;
+    }
+
+    public void setSubType(String subType) {
+        this.subType = subType;
     }
 }
