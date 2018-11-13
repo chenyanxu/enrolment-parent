@@ -27,6 +27,7 @@ Import-Package: com.kalix.framework.core.util,\
                 javax.xml.*,\
                 org.apache.log4j.*,\
                 javax.swing.*,\
+                javax.servlet.*,\
                 javax.naming.*,\
                 com.kalix.middleware.couchdb.*,\
                 com.kalix.middleware.attachment.*,\
