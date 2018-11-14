@@ -34,6 +34,13 @@
             <systemPath>${project.basedir}/similarity-1.1.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>nochump.util.ZipOutput</groupId>
+            <artifactId>ZipOutput</artifactId>
+            <version>1.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/EncryptZip.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>freemarker</groupId>
             <artifactId>freemarker</artifactId>
             <version>2.3.8</version>
@@ -49,6 +56,10 @@
         <dependency>
             <groupId>com.kalix.middleware.attachment</groupId>
             <artifactId>middleware-attachment-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.lingala.zip4j</groupId>
+            <artifactId>zip4j</artifactId>
         </dependency>
     </dependencies>
 </project>

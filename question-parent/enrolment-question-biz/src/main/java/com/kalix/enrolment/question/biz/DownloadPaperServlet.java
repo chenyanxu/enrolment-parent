@@ -34,7 +34,9 @@ public class DownloadPaperServlet extends CustomServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ZipOutputStream out_zip=null;
+        OutputStream  out_zip=null;
+        FileInputStream zipInputStream=null;
+        File zipFile=null;
         try {
             String fileName="";
             List list=null;
@@ -47,17 +49,23 @@ public class DownloadPaperServlet extends CustomServlet {
             paperBeanService = JNDIHelper.getJNDIServiceForName(IPaperBeanService.class.getName());
             PaperBean paperBean=paperBeanService.getEntity(Long.parseLong(paperId));
             fileName= paperBean.getTitle();
-
+// 预览文件真实路径地址
+            String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
+            if (realPath.charAt(realPath.length() - 1) != '/') {
+                realPath += "/";
+            }
+            // 设置默认预览文件地址
+            String reviewBaseDir = realPath + "reviewfiles";
             switch (fileType.toLowerCase()) {
                 case "zip":
-                    fileName += ".zip";
+                    String fileName_str = fileName+".zip";
                     String xlsPath = "";
                     resp.setHeader("Access-Control-Allow-Origin", "*");
                     resp.setHeader("Access-Control-Allow-Credentials", "true");
                     resp.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
                     resp.setContentType("application/octet-stream; charset=utf-8");
-                    resp.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, "UTF-8"));
-                     out_zip = new ZipOutputStream(resp.getOutputStream());
+                    resp.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName_str, "UTF-8"));
+                   //  out_zip = new ZipOutputStream(resp.getOutputStream());
                     attachmentBeanService = JNDIHelper.getJNDIServiceForName(IAttachmentBeanService.class.getName());
                     doZipUtils doZipUtils = new doZipUtils();
                     if(!StringUtils.isEmpty(ids)){
@@ -74,7 +82,17 @@ public class DownloadPaperServlet extends CustomServlet {
                             list.add(attachmentBean);
                         }
                     }
-                    doZipUtils.doZip(list,out_zip);
+                    String path=doZipUtils.doZip(list,reviewBaseDir,fileName);
+                     zipFile = new File(path);
+                    zipInputStream = new FileInputStream(zipFile);
+                    out_zip = resp.getOutputStream();
+                    BufferedOutputStream zipBos = new BufferedOutputStream(out_zip);
+                    int xlsLen = 2048;
+                    byte[] xlsB = new byte[xlsLen];
+                    while ((xlsLen = zipInputStream.read(xlsB)) != -1) {
+                        zipBos.write(xlsB, 0, xlsLen);
+                    }
+                    zipBos.flush();
                     resp.flushBuffer();
                     default:
                     break;
@@ -83,8 +101,15 @@ public class DownloadPaperServlet extends CustomServlet {
             e.printStackTrace();
         } finally {
 
+            if(zipInputStream!=null)
+            {
+                zipInputStream.close();
+            }
             if (out_zip != null) {
                 out_zip.close();
+            }
+            if(zipFile.exists()){
+                zipFile.delete();
             }
         }
     }
