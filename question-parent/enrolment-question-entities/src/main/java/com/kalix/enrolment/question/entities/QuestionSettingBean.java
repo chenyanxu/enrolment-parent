@@ -19,6 +19,7 @@ public class QuestionSettingBean extends PersistentEntity {
     private Date questionStartTime;        // 题库功能开启时间
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date questionCloseTime;        // 题库功能关闭时间
+    private Double similarity = 0.5;       // 题库去重相似度参数
     private Double cilinSimilarity = 0.5;  // 题库去重词林相似度参数
     private Double morphoSimilarity = 0.5; // 题库去重词形词序句子相似度参数
     private Double phraseSimilarity = 0.5; // 题库去重短语相似度参数
@@ -45,6 +46,14 @@ public class QuestionSettingBean extends PersistentEntity {
 
     public void setQuestionCloseTime(Date questionCloseTime) {
         this.questionCloseTime = questionCloseTime;
+    }
+
+    public Double getSimilarity() {
+        return similarity;
+    }
+
+    public void setSimilarity(Double similarity) {
+        this.similarity = similarity;
     }
 
     public Double getCilinSimilarity() {
