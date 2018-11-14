@@ -295,13 +295,8 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         List<TP> referenceList = new ArrayList<TP>();
         referenceList.addAll(list);
 
-        double defaultSimilarity = 0.5d;
-        QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
-        if (questionSettingBean != null) {
-            defaultSimilarity = questionSettingBean.getCilinSimilarity().doubleValue();
-        }
-
-        List<BaseQuestionDTO> dtoList = this.doRepeat(entity, referenceList, defaultSimilarity, subType);
+        double similarity = this.getSimilarity();
+        List<BaseQuestionDTO> dtoList = this.doRepeat(entity, referenceList, similarity, subType);
 
         RepeatedCountDTO repeatedCountDTO = new RepeatedCountDTO();
         if (dtoList != null && dtoList.size() > 0) {
@@ -353,16 +348,11 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         List<TP> referenceList = new ArrayList<TP>();
         referenceList.addAll(listAll);
 
-        double defaultSimilarity = 0.5d;
-        QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
-        if (questionSettingBean != null) {
-            defaultSimilarity = questionSettingBean.getCilinSimilarity().doubleValue();
-        }
-
+        double similarity = this.getSimilarity();
         int count = 1;
         for (int i = 0; i < list.size(); i++) {
             TP entity = (TP) list.get(i);
-            List<BaseQuestionDTO> dtoList = this.doRepeat(entity, referenceList, defaultSimilarity, subType);
+            List<BaseQuestionDTO> dtoList = this.doRepeat(entity, referenceList, similarity, subType);
 
             RepeatedCountDTO repeatedCountDTO = new RepeatedCountDTO();
             if (dtoList != null && dtoList.size() > 0) {
@@ -435,13 +425,8 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             List<TP> referenceList = new ArrayList<TP>();
             referenceList.addAll(result);
 
-            double defaultSimilarity = 0.5d;
-            QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
-            if (questionSettingBean != null) {
-                defaultSimilarity = questionSettingBean.getCilinSimilarity().doubleValue();
-            }
-
-            list = this.doRepeat(entity, referenceList, defaultSimilarity, subType);
+            double similarity = this.getSimilarity();
+            list = this.doRepeat(entity, referenceList, similarity, subType);
 
             jsonData.setData(list);
             jsonData.setTotalCount((long) list.size());
@@ -490,7 +475,17 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         return jsonStatus;
     }
 
-    private List doRepeat(TP entity, List<TP> list, double defaultSimilarity, String subType) {
+    private double getSimilarity() {
+        double defaultSimilarity = 0.5d;
+        QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
+        if (questionSettingBean != null) {
+            defaultSimilarity = questionSettingBean.getSimilarity() == null ?
+                    defaultSimilarity : questionSettingBean.getSimilarity().doubleValue();
+        }
+        return defaultSimilarity;
+    }
+
+    private List doRepeat(TP entity, List<TP> list, double similarity, String subType) {
         long id = entity.getId();
         String stem = entity.getStem();
         String questionType = this.getQuestionType();
@@ -521,7 +516,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                 // double result = Similarity.conceptSimilarity(stem, questionStem);
                 // 字面相似度
                 // double result = Similarity.charBasedSimilarity(stem, questionStem);
-                if (result > defaultSimilarity) {
+                if (result > similarity) {
                     /*String strId = "," + String.valueOf(id) + ",";
                     if (stringBuilder.indexOf(strId) < 0) {
                         RepeatedDTO repeatedDTO = new RepeatedDTO();
