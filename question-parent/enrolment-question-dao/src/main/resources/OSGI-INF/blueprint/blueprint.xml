@@ -67,4 +67,10 @@
     </bean>
     <service id="paperQuesBeanDao" ref="paperQuesBeanDaoImpl" interface="com.kalix.enrolment.question.api.dao.IPaperQuesBeanDao"/>
 
+    <!--密码dao-->
+    <bean id="passwordBeanDaoImpl" class="com.kalix.enrolment.question.dao.PasswordBeanDaoImpl">
+        <tx:transaction method="*" value="Required"/>
+    </bean>
+    <service id="passwordBeanDao" ref="passwordBeanDaoImpl" interface="com.kalix.enrolment.question.api.dao.IPasswordBeanDao"/>
+
 </blueprint>

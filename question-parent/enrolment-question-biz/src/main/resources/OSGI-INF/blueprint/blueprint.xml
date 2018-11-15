@@ -19,6 +19,8 @@
     <reference id="paperBeanDao" interface="com.kalix.enrolment.question.api.dao.IPaperBeanDao"/>
     <reference id="ruleBeanDao" interface="com.kalix.enrolment.question.api.dao.IRuleBeanDao"/>
     <reference id="enrolmentDictBeanService" interface="com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService"/>
+    <reference id="passwordBeanDao" interface="com.kalix.enrolment.question.api.dao.IPasswordBeanDao"/>
+
 
     <!-- 填空题服务 -->
     <bean id="completionBeanServiceImpl" class="com.kalix.enrolment.question.biz.CompletionBeanServiceImpl">
@@ -274,4 +276,11 @@
     </bean>
     <service id="paperQuesBeanService" ref="paperQuesBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IPaperQuesBeanService"/>
+
+    <!-- 密码服务 -->
+    <bean id="passwordBeanServiceImpl" class="com.kalix.enrolment.question.biz.PasswordBeanServiceImpl">
+        <property name="dao" ref="passwordBeanDao"/>
+    </bean>
+    <service id="passwordBeanService" ref="passwordBeanServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.IPasswordBeanService"/>
 </blueprint>
