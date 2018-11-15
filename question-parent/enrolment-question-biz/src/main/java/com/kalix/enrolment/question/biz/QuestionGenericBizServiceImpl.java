@@ -516,6 +516,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                 // double result = Similarity.conceptSimilarity(stem, questionStem);
                 // 字面相似度
                 // double result = Similarity.charBasedSimilarity(stem, questionStem);
+                // double result = 0.7;
                 if (result > similarity) {
                     /*String strId = "," + String.valueOf(id) + ",";
                     if (stringBuilder.indexOf(strId) < 0) {
