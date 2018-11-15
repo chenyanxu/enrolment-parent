@@ -19,7 +19,7 @@ public interface IQuestionCommonBizService extends IService {
      *
      * @return
      */
-    JsonData getAllRepeates();
+    JsonData getAllRepeates(boolean isAll);
 
     /**
      * 根据试卷及试卷规则参数自动生成试卷
