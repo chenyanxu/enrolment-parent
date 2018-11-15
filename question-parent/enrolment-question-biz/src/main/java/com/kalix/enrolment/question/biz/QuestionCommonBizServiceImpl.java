@@ -104,7 +104,8 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
 
     @Override
     public JsonData getAllRepeates(boolean isAll) {
-        System.out.println(new Date().getTime());
+        System.out.println("=====start");
+        System.out.println("=====isall:" + isAll);
         System.out.println(new Date().toString());
         JsonData jsonData = new JsonData();
         List list = new ArrayList();
@@ -139,8 +140,8 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
         }
         jsonData.setData(list);
         System.out.println("=======ok:" + list.size());
-        System.out.println(new Date().getTime());
         System.out.println(new Date().toString());
+        System.out.println("=====end");
         return jsonData;
     }
 

@@ -44,7 +44,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     private IRoleBeanService roleBeanService;
     private IQuestionSettingBeanService questionSettingBeanService;
 
-    protected static int MAX_REPEATED_RECORD = 20;
+    protected static int MAX_REPEATED_RECORD = 5;
 
     @Override
     public JsonData getAllEntityByQuery(Integer page, Integer limit, String jsonStr, String sort) {
