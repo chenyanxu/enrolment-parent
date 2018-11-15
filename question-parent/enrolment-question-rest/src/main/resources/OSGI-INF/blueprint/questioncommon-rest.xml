@@ -39,23 +39,17 @@
                 <to uri="bean:questionCommonBizService?method=autoCreateTestPaper(${header.id})"/>
             </get>
 
-            <!-- this is a rest POST to create an choice -->
-            <!--<post id="route-addChoice" type="com.kalix.enrolment.question.entities.ChoiceBean"-->
-                  <!--outType="com.kalix.framework.core.api.persistence.JsonStatus">-->
-                <!--<description>Create a choice</description>-->
-                <!--<to uri="bean:choiceService?method=saveEntity"/>-->
-            <!--</post>-->
         </rest>
-        <!--<rest path="/PaperDatas" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">-->
-            <!--<description>testPaper rest service</description>-->
+        <rest path="/deletePaper" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>deletePaper rest service</description>
 
-            <!--&lt;!&ndash; this is a rest GET to find all choices &ndash;&gt;-->
-            <!--<get id="route-getPaperData">-->
-                <!--<description>create PaperData</description>-->
-                <!--<to uri="bean:testPaperService?method=getPaperData(${header.id})"/>-->
-            <!--</get>-->
+            <!-- this is a rest GET to find all choices -->
+            <post id="route-deletePaper">
+                <description>deletePaper</description>
+                <to uri="bean:questionCommonBizService?method=deletePaper(${header.id})"/>
+            </post>
 
-        <!--</rest>-->
+        </rest>
 
     </camelContext>
 </blueprint>

@@ -238,7 +238,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
             String testPaperName = sdf.format(new Date());
 
-            outFile = new File("d:\\" + testPaperName + ".doc");
+            outFile = new File(reviewBaseDir+"\\" + testPaperName + ".doc");
 
             fos = new FileOutputStream(outFile);
             OutputStreamWriter oWriter = new OutputStreamWriter(fos, "UTF-8");
@@ -273,6 +273,26 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
         }
         return jsonStatus;
     }
+
+    @Override
+    public JsonStatus deletePaper(String id){
+        JsonStatus jsonStatus = new JsonStatus();
+
+        if(!StringUtils.isEmpty(id)){
+            if(id.indexOf(":")>-1){
+                String [] str =id.split(":");
+                for(String idStr: str){
+                    attachmentBeanService.deleteEntity(Long.parseLong(idStr));
+                }
+
+            }else {
+                attachmentBeanService.deleteEntity(Long.parseLong(id));
+            }
+        }
+
+        return  jsonStatus;
+    }
+
 
     public void setEnrolmentDictBeanService(IEnrolmentDictBeanService enrolmentDictBeanService) {
         this.enrolmentDictBeanService = enrolmentDictBeanService;
