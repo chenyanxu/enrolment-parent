@@ -1,13 +1,13 @@
 package com.kalix.enrolment.question.biz;
 
 import com.kalix.enrolment.question.api.biz.IPaperBeanService;
+import com.kalix.enrolment.question.api.biz.IPasswordBeanService;
+import com.kalix.enrolment.question.biz.util.PassWordCreate;
 import com.kalix.enrolment.question.biz.util.doZipUtils;
 import com.kalix.enrolment.question.entities.PaperBean;
-import com.kalix.framework.core.api.biz.IDownloadService;
+import com.kalix.enrolment.question.entities.PasswordBean;
 import com.kalix.framework.core.impl.biz.CustomServlet;
-import com.kalix.framework.core.util.ConfigUtil;
-import com.kalix.framework.core.util.JNDIHelper;
-import com.kalix.framework.core.util.StringUtils;
+import com.kalix.framework.core.util.*;
 import com.kalix.middleware.attachment.api.biz.IAttachmentBeanService;
 import com.kalix.middleware.attachment.entities.AttachmentBean;
 
@@ -16,11 +16,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.ZipOutputStream;
 
 /**
  * Created by hqj on 2018/10/22.
@@ -46,10 +46,16 @@ public class DownloadPaperServlet extends CustomServlet {
             String ids = req.getParameter("ids") == null ? "" : req.getParameter("ids");
             // 预览文件名称
             String paperId = req.getParameter("paperId") == null ? "" : req.getParameter("paperId");
+            // access_token
+            String access_token = req.getParameter("access_token") == null ? "" : req.getParameter("access_token");
+            // sessionId
+            String sessionId = req.getParameter("sessionId") == null ? "" : req.getParameter("sessionId");
+
+
             paperBeanService = JNDIHelper.getJNDIServiceForName(IPaperBeanService.class.getName());
             PaperBean paperBean=paperBeanService.getEntity(Long.parseLong(paperId));
             fileName= paperBean.getTitle();
-// 预览文件真实路径地址
+            // 预览文件真实路径地址
             String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
             if (realPath.charAt(realPath.length() - 1) != '/') {
                 realPath += "/";
@@ -58,8 +64,10 @@ public class DownloadPaperServlet extends CustomServlet {
             String reviewBaseDir = realPath + "reviewfiles";
             switch (fileType.toLowerCase()) {
                 case "zip":
-                    String fileName_str = fileName+".zip";
-                    String xlsPath = "";
+                    //输出文档路径及名称
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+                    String testPaperName = sdf.format(new Date());
+                    String fileName_str = fileName+"_"+testPaperName+".zip";
                     resp.setHeader("Access-Control-Allow-Origin", "*");
                     resp.setHeader("Access-Control-Allow-Credentials", "true");
                     resp.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
@@ -82,8 +90,20 @@ public class DownloadPaperServlet extends CustomServlet {
                             list.add(attachmentBean);
                         }
                     }
-                    String path=doZipUtils.doZip(list,reviewBaseDir,fileName);
-                     zipFile = new File(path);
+                    PassWordCreate passWordCreate = new PassWordCreate();
+                    String  password=passWordCreate.createPassWord(10);
+                    PasswordBean passwordBean = new PasswordBean();
+                    passwordBean.setPaperId(Long.parseLong(paperId));
+                    passwordBean.setFileName(fileName_str);
+                    passwordBean.setPassword(password);
+
+                    Map<String, String> map = SerializeUtil.json2Map(SerializeUtil.serializeJson(passwordBean, "yyyy-MM-dd HH:mm:ss"));
+                    map.remove("id");
+                    map.remove("version");
+                    HttpClientUtil.shiroPost("/passwords", map, sessionId, access_token);
+
+                    String path=doZipUtils.doZip(list,reviewBaseDir,fileName+"_"+testPaperName,password);
+                    zipFile = new File(path);
                     zipInputStream = new FileInputStream(zipFile);
                     out_zip = resp.getOutputStream();
                     BufferedOutputStream zipBos = new BufferedOutputStream(out_zip);
