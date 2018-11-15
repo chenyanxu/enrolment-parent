@@ -44,6 +44,8 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     private IRoleBeanService roleBeanService;
     private IQuestionSettingBeanService questionSettingBeanService;
 
+    protected static int MAX_REPEATED_RECORD = 20;
+
     @Override
     public JsonData getAllEntityByQuery(Integer page, Integer limit, String jsonStr, String sort) {
         if (StringUtils.isEmpty(sort)) {
@@ -316,7 +318,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     }
 
     @Override
-    public List getSingleRepeates(String subType) {
+    public List getSingleRepeates(String subType, boolean isAll) {
         List<RepeatedCountDTO> repeateList = new ArrayList<RepeatedCountDTO>();
         String questionType = this.getQuestionType();
         String questionTypeName = this.getQuestionTypeName();
@@ -349,7 +351,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         referenceList.addAll(listAll);
 
         double similarity = this.getSimilarity();
-        int count = 1;
+        int count = 0; // 记录比对重复结果个数
         for (int i = 0; i < list.size(); i++) {
             TP entity = (TP) list.get(i);
             List<BaseQuestionDTO> dtoList = this.doRepeat(entity, referenceList, similarity, subType);
@@ -376,12 +378,13 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                 baseQuestionDTO.setCreateBy(entity.getCreateBy());
                 baseQuestionDTO.setCreationDate(entity.getCreationDate());
                 dtoList.add(0, baseQuestionDTO);
+                count++;
 
                 String name = "";
                 if (StringUtils.isEmpty(subType)) {
-                    name = questionTypeName + "题目" + (count++);
+                    name = questionTypeName + "题目" + count;
                 } else {
-                    name = questionTypeName + "-" + subTypeName + "题目" + (count++);
+                    name = questionTypeName + "-" + subTypeName + "题目" + count;
                 }
                 repeatedCountDTO.setName(name);
                 repeatedCountDTO.setRepeateList(dtoList);
@@ -390,6 +393,11 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                 // 无重复
                 entity.setRepeatedFlag("1");
                 this.dao.save(entity);
+            }
+            if (!isAll) {
+                if (count >= MAX_REPEATED_RECORD) {
+                    break;
+                }
             }
         }
 

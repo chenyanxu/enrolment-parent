@@ -103,7 +103,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
     }
 
     @Override
-    public JsonData getAllRepeates() {
+    public JsonData getAllRepeates(boolean isAll) {
         System.out.println(new Date().getTime());
         System.out.println(new Date().toString());
         JsonData jsonData = new JsonData();
@@ -119,7 +119,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
                 List result = new ArrayList<>();
                 repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
                 if (StringUtils.isEmpty(subTypeDictType)) {
-                    result = repeatedService.getSingleRepeates("");
+                    result = repeatedService.getSingleRepeates("", isAll);
                     if (result != null && result.size() > 0) {
                         list.addAll(result);
                     }
@@ -127,7 +127,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
                     List<EnrolmentDictBean> subDictBeans = enrolmentDictBeanService.getDictBeanByType(subTypeDictType);
                     for (int j = 0; j < subDictBeans.size(); j++) {
                         EnrolmentDictBean subDictBean = subDictBeans.get(j);
-                        result = repeatedService.getSingleRepeates(subDictBean.getValue());
+                        result = repeatedService.getSingleRepeates(subDictBean.getValue(), isAll);
                         if (result != null && result.size() > 0) {
                             list.addAll(result);
                         }

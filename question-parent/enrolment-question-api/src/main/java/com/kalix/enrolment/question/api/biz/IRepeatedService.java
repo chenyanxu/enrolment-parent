@@ -15,7 +15,7 @@ public interface IRepeatedService {
     JsonData validateRepeates(BaseQuestionDTO baseQuestionDTO);
 
     // 单一题型全库排重
-    List getSingleRepeates(String subType);
+    List getSingleRepeates(String subType, boolean isAll);
 
     // 查询重复
     JsonData getRepeates(Long questionId);
