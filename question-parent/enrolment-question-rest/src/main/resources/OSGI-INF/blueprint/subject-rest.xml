@@ -74,6 +74,11 @@
 
         <rest path="/subjects/repeated/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <description>subject rest service</description>
+            <get id="route-getAllSubjectRepeates" outType="com.kalix.framework.core.api.persistence.JsonData">
+                <description>Find all repeates</description>
+                <to uri="bean:subjectRepeatedService?method=getRepeates(${header.jsonStr}, ${header.isAll})"/>
+            </get>
+
             <post id="route-getRepeatedSubjects" type="com.kalix.enrolment.question.dto.model.BaseQuestionDTO"
                  outType="com.kalix.framework.core.api.persistence.JsonData">
                 <description>Find all repeated subjects</description>

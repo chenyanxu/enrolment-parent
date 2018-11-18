@@ -15,11 +15,11 @@ public interface IQuestionCommonBizService extends IService {
     JsonData getAllQuestionTestings(Integer page, Integer limit, String jsonStr, String sort);
 
     /**
-     * 全库排重
+     * 全库排重处理(处理比对非重复数据)
      *
      * @return
      */
-    JsonData getAllRepeates(boolean isAll);
+    JsonData getAllRepeates(String jsonStr, boolean isAll);
 
     /**
      * 根据试卷及试卷规则参数自动生成试卷
