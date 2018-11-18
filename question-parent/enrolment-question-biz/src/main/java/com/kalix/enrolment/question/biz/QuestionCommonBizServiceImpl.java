@@ -239,7 +239,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             if (realPath.charAt(realPath.length() - 1) != '/') {
                 realPath += "/";
             }
-            String reviewBaseDir = realPath + "questionfiles";
+            String reviewBaseDir = realPath + "reviewfiles"+File.separatorChar+"ftl";
             configuration.setDirectoryForTemplateLoading(new File(reviewBaseDir));
             //test.ftl为要装载的模板
             t = configuration.getTemplate(fileName, "utf-8");
@@ -276,9 +276,9 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             e.printStackTrace();
             // throw new BusinessException(CommonResultEnum.COMMON_ERROR_637);
         } finally {
-            outFile.delete();
             out.close();
             fos.close();
+            outFile.delete();
         }
         return jsonStatus;
     }
