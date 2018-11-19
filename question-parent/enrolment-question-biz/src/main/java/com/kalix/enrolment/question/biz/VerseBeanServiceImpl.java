@@ -58,7 +58,7 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
         int quesNum = total / perScore;
-
+        String uuid=paperMap.get("uuid").toString();
         Date year = (Date) paperMap.get("year");
         String year_str = simpleDateFormat.format(year);
         String questype = paperMap.get("questype").toString();
@@ -82,6 +82,7 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
                 paperQuesBean.setYear(year);
                 paperQuesBean.setQuesType(questype);
                 paperQuesBean.setSubType(subtype);
+                paperQuesBean.setUuid(uuid);
                 paperQuesBeanService.saveEntity(paperQuesBean);
                 question.add(map);
             }

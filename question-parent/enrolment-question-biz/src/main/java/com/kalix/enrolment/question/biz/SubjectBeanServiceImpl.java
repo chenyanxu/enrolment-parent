@@ -53,6 +53,7 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
         int total = Integer.parseInt(paperMap.get("totalscore").toString());
 
         String questype = paperMap.get("questype").toString();
+        String uuid=paperMap.get("uuid").toString();
         String subtype = paperMap.get("subtype") == null ? "" : paperMap.get("subtype").toString();
         EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_SUBTYPE, subtype);
         String titleName = enrolmentDictBean.getLabel();
@@ -80,6 +81,7 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
                 paperQuesBean.setYear(year);
                 paperQuesBean.setQuesType(questype);
                 paperQuesBean.setSubType(subtype);
+                paperQuesBean.setUuid(uuid);
                 paperQuesBeanService.saveEntity(paperQuesBean);
                 question.add(map);
             }

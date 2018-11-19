@@ -51,7 +51,7 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
         String titleName = paperMap.get("questypename").toString();
         int perScore = Integer.parseInt(paperMap.get("score").toString());
         int total = Integer.parseInt(paperMap.get("totalscore").toString());
-
+        String uuid=paperMap.get("uuid").toString();
         String questype = paperMap.get("questype").toString();
         String subtype = paperMap.get("subtype") == null ? "" : paperMap.get("subtype").toString();
 
@@ -82,6 +82,7 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
                 paperQuesBean.setYear(year);
                 paperQuesBean.setQuesType(questype);
                 paperQuesBean.setSubType(subtype);
+                paperQuesBean.setUuid(uuid);
                 paperQuesBeanService.saveEntity(paperQuesBean);
                 question.add(map);
             }
