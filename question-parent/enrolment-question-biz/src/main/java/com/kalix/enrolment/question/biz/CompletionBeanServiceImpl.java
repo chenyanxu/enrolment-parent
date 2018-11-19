@@ -72,6 +72,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         String sql = "";
         // 创建试题标题
         String title = "";
+        int num=0;
         int sumSpace = 0;
         //Map paperMap=new HashMap();
         //paperMap.put("titlenum","1");
@@ -91,36 +92,39 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         String year_str = simpleDateFormat.format(year);
         String questype = paperMap.get("questype").toString();
         String subtype = paperMap.get("subtype") == null ? "" : paperMap.get("subtype").toString();
-        getComletionList(quesNum, list_completion, year_str, questype, subtype, year);
-        // 创建试题内容
-        List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
+        try {
+            getComletionList(quesNum, list_completion, year_str, questype, subtype, num);
+            // 创建试题内容
+            List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
 
-        if (list_completion != null && list_completion.size() > 0) {
-            for (CompletionBean completionBean : list_completion) {
-                sumSpace += completionBean.getSpaceNum();
-            }
-            // 以下需要通过算法动态获取（抽取试题）
-            // List<CompletionBean> list = this.dao.findByNativeSql(sql, CompletionBean.class);
-            if (sumSpace == quesNum) {
-                for (int i = 0; i < list_completion.size(); i++) {
-                    Map<String, Object> map = new HashMap<String, Object>();
-                    CompletionBean completionBean = list_completion.get(i);
-                    map.put("type", "填空题");
-                    Matcher m = p1.matcher(completionBean.getStem());
-                    String stem = m.replaceAll("________").replaceAll("\\[#", "").replaceAll("\\]", "");
-                    map.put("stem", stem);
-                    question.add(map);
-                    PaperQuesBean paperQuesBean = new PaperQuesBean();
-                    paperQuesBean.setQuesid(completionBean.getId());
-                    paperQuesBean.setYear(year);
-                    paperQuesBean.setQuesType(questype);
-                    paperQuesBean.setSubType(subtype);
-                    paperQuesBeanService.saveEntity(paperQuesBean);
+            if (list_completion != null && list_completion.size() > 0) {
+                for (CompletionBean completionBean : list_completion) {
+                    sumSpace += completionBean.getSpaceNum();
+                }
+                // 以下需要通过算法动态获取（抽取试题）
+                // List<CompletionBean> list = this.dao.findByNativeSql(sql, CompletionBean.class);
+                if (sumSpace == quesNum) {
+                    for (int i = 0; i < list_completion.size(); i++) {
+                        Map<String, Object> map = new HashMap<String, Object>();
+                        CompletionBean completionBean = list_completion.get(i);
+                        map.put("type", "填空题");
+                        Matcher m = p1.matcher(completionBean.getStem());
+                        String stem = m.replaceAll("________").replaceAll("\\[#", "").replaceAll("\\]", "");
+                        map.put("stem", stem);
+                        question.add(map);
+                        PaperQuesBean paperQuesBean = new PaperQuesBean();
+                        paperQuesBean.setQuesid(completionBean.getId());
+                        paperQuesBean.setYear(year);
+                        paperQuesBean.setQuesType(questype);
+                        paperQuesBean.setSubType(subtype);
+                        paperQuesBeanService.saveEntity(paperQuesBean);
+                    }
                 }
             }
+            singleTestPaper.put("question", question);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        singleTestPaper.put("question", question);
 
         return singleTestPaper;
     }
@@ -141,7 +145,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         return str;
     }
 
-    public void getComletionList(int spacenum, List<CompletionBean> list_completion, String year_str, String questype, String subtype, Date year) {
+    public void getComletionList(int spacenum, List<CompletionBean> list_completion, String year_str, String questype, String subtype, int num) throws Exception {
         String sql = "select * from enrolment_question_completion where checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit 1";
         List<CompletionBean> list = this.dao.findByNativeSql(sql, CompletionBean.class);
         if (list != null && list.size() > 0) {
@@ -151,7 +155,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
                 spacenum = spacenum - completionSpaceNum;
                 if (spacenum > 0) {
                     list_completion.add(completionBean);
-                    getComletionList(spacenum, list_completion, year_str, questype, subtype, year);
+                    getComletionList(spacenum, list_completion, year_str, questype, subtype, (num+1));
                 } else if (spacenum < 0) {
                     spacenum = spacenum + completionSpaceNum;
                     String sql_1 = "select * from enrolment_question_completion where checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') and spacenum='" + spacenum + "' order by random() limit 1";
@@ -163,13 +167,23 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
                         CompletionBean completionBean_last = list_completion.get(list_completion.size() - 1);
                         spacenum = completionBean_last.getSpaceNum() + spacenum;
                         list_completion.remove(list_completion.size() - 1);
-                        getComletionList(spacenum, list_completion, year_str, questype, subtype, year);
+                        getComletionList(spacenum, list_completion, year_str, questype, subtype, (num+1));
                     }
                 } else {
-                    list_completion.add(completionBean);
+
+                        list_completion.add(completionBean);
+
+
                 }
             } else {
-                getComletionList(spacenum, list_completion, year_str, questype, subtype, year);
+                if(num>5)
+                {
+                    JsonStatus jsonStatus = new JsonStatus();
+                    jsonStatus.setMsg("试题数量不够，请补充试题！");
+                    throw new Exception(jsonStatus.getMsg());
+                }else {
+                    getComletionList(spacenum, list_completion, year_str, questype, subtype, (num+1));
+                }
             }
         }
     }
