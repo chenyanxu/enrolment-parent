@@ -103,43 +103,52 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
     }
 
     @Override
-    public JsonData getAllRepeates(boolean isAll) {
+    public JsonData getAllRepeates(String jsonStr, boolean isAll) {
         System.out.println("=====start");
-        System.out.println("=====isall:" + isAll);
+        System.out.println("=====isAll:" + isAll);
         System.out.println(new Date().toString());
         JsonData jsonData = new JsonData();
-        List list = new ArrayList();
-        List<EnrolmentDictBean> dictBeans = enrolmentDictBeanService.getDictBeanByType(DICT_QUESTIONTYPE);
-        for (int i = 0; i < dictBeans.size(); i++) {
-            EnrolmentDictBean enrolmentDictBean = dictBeans.get(i);
+        try {
+            if (StringUtils.isEmpty(jsonStr)) {
+                return jsonData;
+            }
+            Map queryMap = SerializeUtil.json2Map(jsonStr);
+            String questionType = (String) queryMap.get("questionType");
+            if (StringUtils.isEmpty(questionType)) {
+                return jsonData;
+            }
+
+            List list = new ArrayList();
+            EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_QUESTIONTYPE, questionType);
             String subTypeDictType = enrolmentDictBean.getSubType();
             String beanName = enrolmentDictBean.getDescription();
             Map<String, String> map = new HashMap<String, String>();
             map.put("beanName", beanName);
-            try {
-                List result = new ArrayList<>();
-                repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
-                if (StringUtils.isEmpty(subTypeDictType)) {
-                    result = repeatedService.getSingleRepeates("", isAll);
+
+            List result = new ArrayList<>();
+            repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
+            if (StringUtils.isEmpty(subTypeDictType)) {
+                result = repeatedService.getSingleRepeates("", isAll);
+                if (result != null && result.size() > 0) {
+                    list.addAll(result);
+                }
+            } else {
+                List<EnrolmentDictBean> subDictBeans = enrolmentDictBeanService.getDictBeanByType(subTypeDictType);
+                for (int j = 0; j < subDictBeans.size(); j++) {
+                    EnrolmentDictBean subDictBean = subDictBeans.get(j);
+                    result = repeatedService.getSingleRepeates(subDictBean.getValue(), isAll);
                     if (result != null && result.size() > 0) {
                         list.addAll(result);
                     }
-                } else {
-                    List<EnrolmentDictBean> subDictBeans = enrolmentDictBeanService.getDictBeanByType(subTypeDictType);
-                    for (int j = 0; j < subDictBeans.size(); j++) {
-                        EnrolmentDictBean subDictBean = subDictBeans.get(j);
-                        result = repeatedService.getSingleRepeates(subDictBean.getValue(), isAll);
-                        if (result != null && result.size() > 0) {
-                            list.addAll(result);
-                        }
-                    }
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+            jsonData.setData(list);
+            jsonData.setTotalCount((long) list.size());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        jsonData.setData(list);
-        System.out.println("=======ok:" + list.size());
         System.out.println(new Date().toString());
         System.out.println("=====end");
         return jsonData;
@@ -238,7 +247,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
             String testPaperName = sdf.format(new Date());
 
-            outFile = new File(reviewBaseDir+"\\" + testPaperName + ".doc");
+            outFile = new File(reviewBaseDir + "\\" + testPaperName + ".doc");
 
             fos = new FileOutputStream(outFile);
             OutputStreamWriter oWriter = new OutputStreamWriter(fos, "UTF-8");
@@ -275,22 +284,22 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
     }
 
     @Override
-    public JsonStatus deletePaper(String id){
+    public JsonStatus deletePaper(String id) {
         JsonStatus jsonStatus = new JsonStatus();
 
-        if(!StringUtils.isEmpty(id)){
-            if(id.indexOf(":")>-1){
-                String [] str =id.split(":");
-                for(String idStr: str){
+        if (!StringUtils.isEmpty(id)) {
+            if (id.indexOf(":") > -1) {
+                String[] str = id.split(":");
+                for (String idStr : str) {
                     attachmentBeanService.deleteEntity(Long.parseLong(idStr));
                 }
 
-            }else {
+            } else {
                 attachmentBeanService.deleteEntity(Long.parseLong(id));
             }
         }
 
-        return  jsonStatus;
+        return jsonStatus;
     }
 
 

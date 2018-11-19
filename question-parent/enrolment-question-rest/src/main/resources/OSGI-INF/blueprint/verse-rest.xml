@@ -74,6 +74,11 @@
 
         <rest path="/verses/repeated/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <description>verse rest service</description>
+            <get id="route-getAllVerseRepeates" outType="com.kalix.framework.core.api.persistence.JsonData">
+                <description>Find all repeates</description>
+                <to uri="bean:verseRepeatedService?method=getRepeates(${header.jsonStr}, ${header.isAll})"/>
+            </get>
+
             <post id="route-getRepeatedVerses" type="com.kalix.enrolment.question.dto.model.BaseQuestionDTO"
                  outType="com.kalix.framework.core.api.persistence.JsonData">
                 <description>Find all repeated verses</description>

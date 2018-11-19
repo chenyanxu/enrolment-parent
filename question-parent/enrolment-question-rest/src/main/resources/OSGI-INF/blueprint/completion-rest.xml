@@ -74,6 +74,11 @@
 
         <rest path="/completions/repeated/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <description>completion rest service</description>
+            <get id="route-getAllCompletionRepeates" outType="com.kalix.framework.core.api.persistence.JsonData">
+                <description>Find all repeates</description>
+                <to uri="bean:completionRepeatedService?method=getRepeates(${header.jsonStr}, ${header.isAll})"/>
+            </get>
+
             <post id="route-getRepeatedCompletions" type="com.kalix.enrolment.question.dto.model.BaseQuestionDTO"
                  outType="com.kalix.framework.core.api.persistence.JsonData">
                 <description>Find all repeated completions</description>
