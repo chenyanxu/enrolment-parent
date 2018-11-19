@@ -83,6 +83,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         String titleName = paperMap.get("questypename").toString();
         int perScore = Integer.parseInt(paperMap.get("score").toString());
         int total = Integer.parseInt(paperMap.get("totalscore").toString());
+        String uuid=paperMap.get("uuid").toString();
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每空" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
         int quesNum = total / perScore;
@@ -117,6 +118,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
                         paperQuesBean.setYear(year);
                         paperQuesBean.setQuesType(questype);
                         paperQuesBean.setSubType(subtype);
+                        paperQuesBean.setUuid(uuid);
                         paperQuesBeanService.saveEntity(paperQuesBean);
                     }
                 }
@@ -155,7 +157,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
                 spacenum = spacenum - completionSpaceNum;
                 if (spacenum > 0) {
                     list_completion.add(completionBean);
-                    getComletionList(spacenum, list_completion, year_str, questype, subtype, (num+1));
+                    getComletionList(spacenum, list_completion, year_str, questype, subtype, num);
                 } else if (spacenum < 0) {
                     spacenum = spacenum + completionSpaceNum;
                     String sql_1 = "select * from enrolment_question_completion where checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') and spacenum='" + spacenum + "' order by random() limit 1";
@@ -167,13 +169,11 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
                         CompletionBean completionBean_last = list_completion.get(list_completion.size() - 1);
                         spacenum = completionBean_last.getSpaceNum() + spacenum;
                         list_completion.remove(list_completion.size() - 1);
-                        getComletionList(spacenum, list_completion, year_str, questype, subtype, (num+1));
+                        getComletionList(spacenum, list_completion, year_str, questype, subtype, num);
                     }
                 } else {
 
                         list_completion.add(completionBean);
-
-
                 }
             } else {
                 if(num>5)

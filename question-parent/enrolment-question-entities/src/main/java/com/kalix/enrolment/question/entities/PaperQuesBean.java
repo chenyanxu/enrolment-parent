@@ -23,6 +23,16 @@ public class PaperQuesBean extends BaseLogicDeleteEntity {
 
     private String subType;
 
+    private String uuid;
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     public Date getYear() {
         return year;
     }

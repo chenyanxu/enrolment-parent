@@ -4,6 +4,7 @@ import com.kalix.enrolment.question.api.biz.*;
 import com.kalix.enrolment.question.dto.model.BaseQuestionDTO;
 import com.kalix.enrolment.question.dto.model.RuleDto;
 import com.kalix.enrolment.question.entities.BaseQuestionEntity;
+import com.kalix.enrolment.question.entities.ChoiceBean;
 import com.kalix.enrolment.question.entities.PaperBean;
 import com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService;
 import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
@@ -36,7 +37,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
     private IAttachmentBeanService attachmentBeanService;
     private IPaperBeanService paperBeanService;
     private IRuleBeanService ruleBeanService;
-
+    private IPaperQuesBeanService paperQuesBeanService;
     private IRepeatedService repeatedService;
     private IQuestionService questionService;
 
@@ -155,8 +156,10 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
     }
 
     @Override
+
     public JsonStatus autoCreateTestPaper(Long paperId) {
         JsonStatus jsonStatus = new JsonStatus();
+
         try {
             int copies = 1;
             int total = 0;
@@ -176,6 +179,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
                     copies = paperBean.getCopies();
                 }
                 for (int j = 0; j < copies; j++) {
+                    String uuid = UUID.randomUUID().toString();
                     quesList = new ArrayList<Map>();
                     for (int i = 0; i < list_rule.size(); i++) {
                         RuleDto ruleBean = (RuleDto) list_rule.get(i);
@@ -189,6 +193,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
                         paper_map.put("questype", ruleBean.getQuesType());
                         paper_map.put("subtype", ruleBean.getSubType());
                         paper_map.put("questypename", ruleBean.getQuesTypeName());
+                        paper_map.put("uuid", uuid);
                         String beanName = ruleBean.getQuesTypeDesc();
                         Map<String, String> map = new HashMap<String, String>();
                         map.put("beanName", beanName);
@@ -202,8 +207,11 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
                         quesList.add(singleTestPaper);
                     }
                     if ("F".equals(doPaperRes)) {
+
+                        paperQuesBeanService.deleteByUuid(uuid);
                         jsonStatus.setSuccess(false);
                         jsonStatus.setMsg("试题数量不足，成卷失败!");
+                        break;
                     } else {
                         tempMap.put("quesList", quesList);
                         jsonStatus = produceTestPaper("testPaper.ftl", tempMap, paperId);
@@ -302,6 +310,10 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
         return jsonStatus;
     }
 
+
+    public void setPaperQuesBeanService(IPaperQuesBeanService paperQuesBeanService) {
+        this.paperQuesBeanService = paperQuesBeanService;
+    }
 
     public void setEnrolmentDictBeanService(IEnrolmentDictBeanService enrolmentDictBeanService) {
         this.enrolmentDictBeanService = enrolmentDictBeanService;

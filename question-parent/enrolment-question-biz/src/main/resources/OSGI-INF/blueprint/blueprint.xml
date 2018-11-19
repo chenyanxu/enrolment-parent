@@ -245,6 +245,7 @@
         <property name="attachmentBeanService" ref="attachmentBeanService"/>
         <property name="paperBeanService" ref="paperBeanServiceImpl"/>
         <property name="ruleBeanService" ref="ruleBeanServiceImpl"/>
+        <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
     </bean>
     <service id="questionCommonBizService" ref="questionCommonBizServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IQuestionCommonBizService"/>
