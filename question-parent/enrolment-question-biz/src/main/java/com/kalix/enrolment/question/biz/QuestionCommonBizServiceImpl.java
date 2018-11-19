@@ -210,7 +210,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
 
                         paperQuesBeanService.deleteByUuid(uuid);
                         jsonStatus.setSuccess(false);
-                        jsonStatus.setMsg("试题数量不足，成卷失败!");
+                        jsonStatus.setMsg("试题数量不足，成卷失败，已生成"+j+"套卷!");
                         break;
                     } else {
                         tempMap.put("quesList", quesList);
