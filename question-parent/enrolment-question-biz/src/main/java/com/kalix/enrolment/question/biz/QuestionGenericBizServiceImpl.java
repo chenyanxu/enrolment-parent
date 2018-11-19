@@ -706,6 +706,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                 baseQuestionDTO.setCheckDate(questionEntity.getCheckDate());
                 baseQuestionDTO.setCreateBy(questionEntity.getCreateBy());
                 baseQuestionDTO.setCreationDate(questionEntity.getCreationDate());
+                baseQuestionDTO.setRepeatedFlag(questionEntity.getRepeatedFlag());
 
                 dtoList.add(baseQuestionDTO);
             }
