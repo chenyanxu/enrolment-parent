@@ -89,6 +89,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
                         baseQuestionDTO.setCheckDate(entity.getCheckDate());
                         baseQuestionDTO.setCreateBy(entity.getCreateBy());
                         baseQuestionDTO.setCreationDate(entity.getCreationDate());
+                        baseQuestionDTO.setRepeatedFlag(entity.getRepeatedFlag());
                         list.add(baseQuestionDTO);
                     }
                 }
