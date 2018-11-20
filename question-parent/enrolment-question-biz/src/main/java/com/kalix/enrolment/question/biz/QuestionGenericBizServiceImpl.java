@@ -483,7 +483,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                 List<EnrolmentDictBean> subDictBeans = enrolmentDictBeanService.getDictBeanByType(subTypeDictType);
                 for (int n = 0; n < subDictBeans.size(); n++) {
                     EnrolmentDictBean subDictBean = subDictBeans.get(n);
-                    subType = subDictBean.getSubType();
+                    subType = subDictBean.getValue();
                     subTypeName = subDictBean.getLabel();
                     sql = "select t.* from " + dao.getTableName() + " t "
                             + " where t.delFlag = '0' and t.repeatedFlag = '0' and t.checkFlag <> '2'"
