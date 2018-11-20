@@ -27,14 +27,11 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
 
     @Override
     public void beforeSaveEntity(CompletionBean entity, JsonStatus status) {
-        String pattern ="(\\[#).*?(\\])";
-        // 编译正则
-        Pattern p1 = Pattern.compile(pattern);
-        // 指定要匹配的内容
-        Matcher m = p1.matcher(entity.getStem());
-        // 计算次数
-        int count = 0;
-        while (m.find()) {
+        int count=0;
+        int index = 0;
+        String stem=entity.getStem();
+        while ((index = stem.indexOf("[#", index)) != -1) {
+            index = index + "[#".length();
             count++;
         }
         entity.setSpaceNum(count);
