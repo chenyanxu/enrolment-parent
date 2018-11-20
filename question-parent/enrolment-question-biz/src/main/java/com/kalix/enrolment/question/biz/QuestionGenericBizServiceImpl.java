@@ -28,10 +28,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by hqj at 2018-10-31
@@ -669,24 +666,6 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             // double result = Similarity.charBasedSimilarity(stem, questionStem);
             // double result = 0.7;
             if (result > similarity) {
-                /*String strId = "," + String.valueOf(id) + ",";
-                if (stringBuilder.indexOf(strId) < 0) {
-                    RepeatedDTO repeatedDTO = new RepeatedDTO();
-                    repeatedDTO.setQuestionId(id);
-                    repeatedDTO.setStem(stem);
-                    // repeatedDTO.setSimilarity("短语相似度-->" + new DecimalFormat("0.00").format(result1) + "；词林相似度" + new DecimalFormat("0.00").format(result));
-                    // repeatedDTO.setSimilarity("词林相似度" + new DecimalFormat("0.00").format(result));
-                    repeatedDTO.setSimilarity("词形词序句子相似度" + new DecimalFormat("0.00").format(result));
-
-                    repeatedDTO.setQuestionType(questionType);
-                    repeatedDTO.setQuestionTypeName(questionTypeName);
-                    repeatedDTO.setSubType(subType);
-                    repeatedDTO.setSubTypeName(subTypeName);
-
-                    dtoList.add(repeatedDTO);
-                    stringBuilder.append(strId);
-                }*/
-
                 BaseQuestionDTO baseQuestionDTO = new BaseQuestionDTO();
                 baseQuestionDTO.setQuestionId(questionId);
                 baseQuestionDTO.setStem(questionStem);
@@ -736,24 +715,6 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
 //                // double result = Similarity.charBasedSimilarity(stem, questionStem);
 //                // double result = 0.7;
 //                if (result > similarity) {
-//                    /*String strId = "," + String.valueOf(id) + ",";
-//                    if (stringBuilder.indexOf(strId) < 0) {
-//                        RepeatedDTO repeatedDTO = new RepeatedDTO();
-//                        repeatedDTO.setQuestionId(id);
-//                        repeatedDTO.setStem(stem);
-//                        // repeatedDTO.setSimilarity("短语相似度-->" + new DecimalFormat("0.00").format(result1) + "；词林相似度" + new DecimalFormat("0.00").format(result));
-//                        // repeatedDTO.setSimilarity("词林相似度" + new DecimalFormat("0.00").format(result));
-//                        repeatedDTO.setSimilarity("词形词序句子相似度" + new DecimalFormat("0.00").format(result));
-//
-//                        repeatedDTO.setQuestionType(questionType);
-//                        repeatedDTO.setQuestionTypeName(questionTypeName);
-//                        repeatedDTO.setSubType(subType);
-//                        repeatedDTO.setSubTypeName(subTypeName);
-//
-//                        dtoList.add(repeatedDTO);
-//                        stringBuilder.append(strId);
-//                    }*/
-//
 //                    BaseQuestionDTO baseQuestionDTO = new BaseQuestionDTO();
 //                    baseQuestionDTO.setQuestionId(questionId);
 //                    baseQuestionDTO.setStem(questionStem);
@@ -778,6 +739,18 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
 //                }
 //            }
 //        }
+        // 排序
+//        Collections.sort(dtoList, new Comparator<BaseQuestionDTO>(){
+//            public int compare(BaseQuestionDTO p1, BaseQuestionDTO p2) {
+//                if(p1.getSimilarity() > p2.getSimilarity()){
+//                    return 1;
+//                }
+//                if(p1.getAge() == p2.getAge()){
+//                    return 0;
+//                }
+//                return -1;
+//            }
+//        });
         return dtoList;
     }
 

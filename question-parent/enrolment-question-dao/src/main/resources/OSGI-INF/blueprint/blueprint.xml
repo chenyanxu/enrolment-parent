@@ -73,4 +73,9 @@
     </bean>
     <service id="passwordBeanDao" ref="passwordBeanDaoImpl" interface="com.kalix.enrolment.question.api.dao.IPasswordBeanDao"/>
 
+    <!--题库排重dao-->
+    <bean id="questionRepeatedBeanDaoImpl" class="com.kalix.enrolment.question.dao.QuestionRepeatedBeanDaoImpl">
+        <tx:transaction method="*" value="Required"/>
+    </bean>
+    <service id="questionRepeatedBeanDao" ref="questionRepeatedBeanDaoImpl" interface="com.kalix.enrolment.question.api.dao.IQuestionRepeatedBeanDao"/>
 </blueprint>
