@@ -3,7 +3,7 @@ package com.kalix.enrolment.question.dto.model;
 import com.kalix.framework.core.api.web.model.BaseDTO;
 
 /**
- * 试卷组合试题规则实体
+ *
  *
  * @author: fwb
  * @CreateDate: 2018-10-22
@@ -12,39 +12,39 @@ import com.kalix.framework.core.api.web.model.BaseDTO;
 
 public class RuleDto extends BaseDTO {
     /**
-     * 试卷id
+     * 璇曞嵎id
      */
     private Long paperId;
     /**
-     * 试题顺序号
+     *璇曢鏁伴噺
      */
     private int titleNum;
     /**
-     * 题型,字典[题型]
+     * 璇曢绫诲瀷
      */
     private String quesType;
     /**
-     * 题型名称
+     * 绫诲瀷鍚嶇О
      */
     private String quesTypeName;
     /**
-     * 题型描述,题型对应beanName
+     * 绫诲瀷鎻忚堪
      */
     private String quesTypeDesc;
     /**
-     * 题型子类，字典[主观题类型、面试题类型等]
+     * 瀛愮被
      */
     private String subType;
     /**
-     * 题型每题分数（每空分数）
+     * 姣忛鍒嗘暟
      */
     private Long quesScore;
     /**
-     * 题型总分
+     * 鎬诲垎
      */
     private Long quesTotalscore;
     /**
-     * 题型描述（说明）
+     * 闂鎻忚堪
      */
     private Long quesDesc;
 
