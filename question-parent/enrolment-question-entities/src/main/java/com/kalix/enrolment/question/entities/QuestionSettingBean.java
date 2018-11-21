@@ -23,6 +23,7 @@ public class QuestionSettingBean extends PersistentEntity {
     private Double cilinSimilarity = 0.5;  // 题库去重词林相似度参数
     private Double morphoSimilarity = 0.5; // 题库去重词形词序句子相似度参数
     private Double phraseSimilarity = 0.5; // 题库去重短语相似度参数
+    private Boolean repeated = false;      // 题库排重状态
 
     public Boolean getAvailable() {
         return available;
@@ -78,5 +79,13 @@ public class QuestionSettingBean extends PersistentEntity {
 
     public void setMorphoSimilarity(Double morphoSimilarity) {
         this.morphoSimilarity = morphoSimilarity;
+    }
+
+    public Boolean getRepeated() {
+        return repeated;
+    }
+
+    public void setRepeated(Boolean repeated) {
+        this.repeated = repeated;
     }
 }

@@ -20,7 +20,7 @@
     <reference id="ruleBeanDao" interface="com.kalix.enrolment.question.api.dao.IRuleBeanDao"/>
     <reference id="enrolmentDictBeanService" interface="com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService"/>
     <reference id="passwordBeanDao" interface="com.kalix.enrolment.question.api.dao.IPasswordBeanDao"/>
-
+    <reference id="questionRepeatedBeanDao" interface="com.kalix.enrolment.question.api.dao.IQuestionRepeatedBeanDao"/>
 
     <!-- 填空题服务 -->
     <bean id="completionBeanServiceImpl" class="com.kalix.enrolment.question.biz.CompletionBeanServiceImpl">
@@ -284,4 +284,18 @@
     </bean>
     <service id="passwordBeanService" ref="passwordBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IPasswordBeanService"/>
+
+    <!-- 题库排重服务 -->
+    <bean id="questionRepeatedBeanServiceImpl" class="com.kalix.enrolment.question.biz.QuestionRepeatedBeanServiceImpl">
+        <property name="dao" ref="questionRepeatedBeanDao"/>
+    </bean>
+    <service id="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.IQuestionRepeatedBeanService"/>
+
+    <service interface="com.kalix.middleware.websocket.api.biz.IWebsocketService"
+             ref="questionCommonBizServiceImpl">
+        <service-properties>
+            <entry key="wsMessage" value="QuestionRepeatedMessage"/>
+        </service-properties>
+    </service>
 </blueprint>
