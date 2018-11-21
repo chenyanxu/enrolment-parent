@@ -36,6 +36,16 @@ public class PaperBean extends BaseLogicDeleteEntity {
      */
     private int copies;
 
+    private String kskm;
+
+    public String getKskm() {
+        return kskm;
+    }
+
+    public void setKskm(String kskm) {
+        this.kskm = kskm;
+    }
+
     public int getCopies() {
         return copies;
     }
