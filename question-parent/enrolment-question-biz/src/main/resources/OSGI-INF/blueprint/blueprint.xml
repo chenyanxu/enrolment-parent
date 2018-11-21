@@ -291,4 +291,11 @@
     </bean>
     <service id="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IQuestionRepeatedBeanService"/>
+
+    <service interface="com.kalix.middleware.websocket.api.biz.IWebsocketService"
+             ref="questionCommonBizServiceImpl">
+        <service-properties>
+            <entry key="wsMessage" value="QuestionRepeatedMessage"/>
+        </service-properties>
+    </service>
 </blueprint>

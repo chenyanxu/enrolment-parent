@@ -4,7 +4,6 @@ import com.kalix.enrolment.question.api.biz.*;
 import com.kalix.enrolment.question.dto.model.BaseQuestionDTO;
 import com.kalix.enrolment.question.dto.model.RuleDto;
 import com.kalix.enrolment.question.entities.BaseQuestionEntity;
-import com.kalix.enrolment.question.entities.ChoiceBean;
 import com.kalix.enrolment.question.entities.PaperBean;
 import com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService;
 import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
@@ -17,8 +16,10 @@ import com.kalix.framework.core.util.StringUtils;
 import com.kalix.middleware.attachment.api.biz.IAttachmentBeanService;
 import com.kalix.middleware.attachment.entities.AttachmentBean;
 import com.kalix.middleware.couchdb.api.biz.ICouchdbService;
+import com.kalix.middleware.websocket.api.biz.IWebsocketService;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import org.json.JSONObject;
 import org.lightcouch.Response;
 
 import java.io.*;
@@ -29,7 +30,7 @@ import java.util.*;
 /**
  * Created by Administrator_ on 2018/9/17.
  */
-public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
+public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, IWebsocketService {
 
     protected static String DICT_QUESTIONTYPE = "题型";
     private ICouchdbService couchdbService;
@@ -211,7 +212,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
 
                         paperQuesBeanService.deleteByUuid(uuid);
                         jsonStatus.setSuccess(false);
-                        jsonStatus.setMsg("试题数量不足，成卷失败，已生成"+j+"套卷!");
+                        jsonStatus.setMsg("试题数量不足，成卷失败，已生成" + j + "套卷!");
                         break;
                     } else {
                         tempMap.put("quesList", quesList);
@@ -248,7 +249,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
             if (realPath.charAt(realPath.length() - 1) != '/') {
                 realPath += "/";
             }
-            String reviewBaseDir = realPath + "reviewfiles"+File.separatorChar+"ftl";
+            String reviewBaseDir = realPath + "reviewfiles" + File.separatorChar + "ftl";
             configuration.setDirectoryForTemplateLoading(new File(reviewBaseDir));
             //test.ftl为要装载的模板
             t = configuration.getTemplate(fileName, "utf-8");
@@ -334,5 +335,16 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService {
 
     public void setRuleBeanService(IRuleBeanService ruleBeanService) {
         this.ruleBeanService = ruleBeanService;
+    }
+
+    @Override
+    public JSONObject getData(String key) {
+        JSONObject jsonObject = new JSONObject();
+        List countList = null;
+        if (countList != null) {
+            jsonObject.put("msgCount", countList.size());
+        }
+        jsonObject.put("msgTag", "{'title':'aaa','content':'bbb'}");
+        return jsonObject;
     }
 }

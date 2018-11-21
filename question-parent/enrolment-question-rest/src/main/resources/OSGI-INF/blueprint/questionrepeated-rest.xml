@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+       http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+
+    <reference id="questionrepeatedService" interface="com.kalix.enrolment.question.api.biz.IQuestionRepeatedBeanService"/>
+
+    <bean id="questionRepeatedRoute" class="com.kalix.framework.core.impl.camel.BaseRouteBuilder">
+        <property name="beanName" value="com.kalix.enrolment.question.entities.QuestionRepeatedBean"/>
+        <property name="rests">
+            <list>
+                <bean class="com.kalix.framework.core.api.camel.CustomRest">
+                    <property name="path" value="/questionrepeateds/list"/>
+
+                    <property name="getDescription" value="查询题库重复试题列表数据"/>
+                    <property name="getOutType" value="com.kalix.framework.core.api.persistence.JsonData"/>
+                    <property name="getToUri" value="bean:questionrepeatedService?method=getAllRepeatedCountDTO(${header.jsonStr})"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <camelContext id="questionRepeatedCamel" xmlns="http://camel.apache.org/schema/blueprint">
+        <routeBuilder ref="questionRepeatedRoute"/>
+    </camelContext>
+</blueprint>
