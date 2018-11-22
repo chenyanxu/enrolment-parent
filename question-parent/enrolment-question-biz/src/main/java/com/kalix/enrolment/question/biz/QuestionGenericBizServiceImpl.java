@@ -252,6 +252,70 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     }
 
     @Override
+    public JsonStatus compareAllSimilarity(String subType) {
+        JsonStatus jsonStatus = new JsonStatus();
+        String questionType = this.getQuestionType();
+        String questionTypeName = this.getQuestionTypeName();
+        String questionBeans = this.getQuestionBeans();
+        String subTypeName = this.getSubTypeName(subType);
+        String sql = "";
+        if (StringUtils.isEmpty(subType)) {
+            sql = "select t.* from " + dao.getTableName() + " t "
+                    + " where t.delFlag = '0' and t.checkFlag <> '2'";
+        } else {
+            sql = "select t.* from " + dao.getTableName() + " t "
+                    + " where t.delFlag = '0' and t.checkFlag <> '2'"
+                    + " and t.subType = '" + subType + "'";
+        }
+        Class cls = null;
+        try {
+            cls = Class.forName(this.entityClassName);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        List list = dao.findByNativeSql(sql, cls);
+        for (int i = 0; i < list.size(); i++) {
+            TP firstEntity = (TP) list.get(i);
+            long firstId = firstEntity.getId();
+            String firstStem = firstEntity.getStem();
+            for (int j = i + 1; j < list.size(); j++) {
+                TP secondEntity = (TP) list.get(j);
+                long secondId = secondEntity.getId();
+                String secondStem = secondEntity.getStem();
+                double result = Similarity.morphoSimilarity(firstStem, secondStem);
+                String resultDesc = "词形词序句子相似度" + new DecimalFormat("0.0000").format(result);
+
+                QuestionRepeatedBean questionRepeatedBean = new QuestionRepeatedBean();
+                questionRepeatedBean.setQuestionType(questionType);
+                questionRepeatedBean.setQuestionTypeName(questionTypeName);
+                questionRepeatedBean.setQuestionBeans(questionBeans);
+                questionRepeatedBean.setSubType(subType);
+                questionRepeatedBean.setSubTypeName(subTypeName);
+                questionRepeatedBean.setFirstQuestionId(firstId);
+                questionRepeatedBean.setSecondQuestionId(secondId);
+                questionRepeatedBean.setSimilarity(result);
+                questionRepeatedBean.setSimilarityDesc(resultDesc);
+                questionRepeatedBeanService.saveSimilarity(questionRepeatedBean);
+
+                questionRepeatedBean = new QuestionRepeatedBean();
+                questionRepeatedBean.setQuestionType(questionType);
+                questionRepeatedBean.setQuestionTypeName(questionTypeName);
+                questionRepeatedBean.setQuestionBeans(questionBeans);
+                questionRepeatedBean.setSubType(subType);
+                questionRepeatedBean.setSubTypeName(subTypeName);
+                questionRepeatedBean.setFirstQuestionId(secondId);
+                questionRepeatedBean.setSecondQuestionId(firstId);
+                questionRepeatedBean.setSimilarity(result);
+                questionRepeatedBean.setSimilarityDesc(resultDesc);
+                questionRepeatedBeanService.saveSimilarity(questionRepeatedBean);
+                System.out.print(".");
+            }
+        }
+        jsonStatus.setSuccess(true);
+        return jsonStatus;
+    }
+
+    @Override
     public JsonData validateRepeates(BaseQuestionDTO baseQuestionDTO) {
         JsonData jsonData = new JsonData();
         List<RepeatedCountDTO> repeateList = new ArrayList<RepeatedCountDTO>();
@@ -649,55 +713,42 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             e.printStackTrace();
         }
         List list = dao.findByNativeSql(sql, cls);
-        List<TP> referenceList = new ArrayList<TP>();
-        referenceList.addAll(list);
         for (int i = 0; i < list.size(); i++) {
             TP firstEntity = (TP) list.get(i);
             long firstId = firstEntity.getId();
             String firstStem = firstEntity.getStem();
-            /*TP deleteEntity = null;*/
-            for (int j = 0; j < referenceList.size(); j++) {
-                TP secondEntity = referenceList.get(j);
+            for (int j = i + 1; j < list.size(); j++) {
+                TP secondEntity = (TP) list.get(j);
                 long secondId = secondEntity.getId();
                 String secondStem = secondEntity.getStem();
-                /*if (firstId == secondId){
-                    deleteEntity = secondEntity;
-                } else {
-                    double result = Similarity.morphoSimilarity(firstStem, secondStem);
-                    String resultDesc = "词形词序句子相似度" + new DecimalFormat("0.0000").format(result);
-                    QuestionRepeatedBean questionRepeatedBean = new QuestionRepeatedBean();
-                    questionRepeatedBean.setQuestionType(questionType);
-                    questionRepeatedBean.setQuestionTypeName(questionTypeName);
-                    questionRepeatedBean.setQuestionBeans(questionBeans);
-                    questionRepeatedBean.setSubType(subType);
-                    questionRepeatedBean.setSubTypeName(subTypeName);
-                    questionRepeatedBean.setFirstQuestionId(firstId);
-                    questionRepeatedBean.setSecondQuestionId(secondId);
-                    questionRepeatedBean.setSimilarity(result);
-                    questionRepeatedBean.setSimilarityDesc(resultDesc);
-                    questionRepeatedBeanService.saveEntity(questionRepeatedBean);
-                    System.out.print(".");
-                }*/
-                if (firstId != secondId) {
-                    double result = Similarity.morphoSimilarity(firstStem, secondStem);
-                    String resultDesc = "词形词序句子相似度" + new DecimalFormat("0.0000").format(result);
-                    QuestionRepeatedBean questionRepeatedBean = new QuestionRepeatedBean();
-                    questionRepeatedBean.setQuestionType(questionType);
-                    questionRepeatedBean.setQuestionTypeName(questionTypeName);
-                    questionRepeatedBean.setQuestionBeans(questionBeans);
-                    questionRepeatedBean.setSubType(subType);
-                    questionRepeatedBean.setSubTypeName(subTypeName);
-                    questionRepeatedBean.setFirstQuestionId(firstId);
-                    questionRepeatedBean.setSecondQuestionId(secondId);
-                    questionRepeatedBean.setSimilarity(result);
-                    questionRepeatedBean.setSimilarityDesc(resultDesc);
-                    questionRepeatedBeanService.saveEntity(questionRepeatedBean);
-                    System.out.print(".");
-                }
+                double result = Similarity.morphoSimilarity(firstStem, secondStem);
+                String resultDesc = "词形词序句子相似度" + new DecimalFormat("0.0000").format(result);
+
+                QuestionRepeatedBean questionRepeatedBean = new QuestionRepeatedBean();
+                questionRepeatedBean.setQuestionType(questionType);
+                questionRepeatedBean.setQuestionTypeName(questionTypeName);
+                questionRepeatedBean.setQuestionBeans(questionBeans);
+                questionRepeatedBean.setSubType(subType);
+                questionRepeatedBean.setSubTypeName(subTypeName);
+                questionRepeatedBean.setFirstQuestionId(firstId);
+                questionRepeatedBean.setSecondQuestionId(secondId);
+                questionRepeatedBean.setSimilarity(result);
+                questionRepeatedBean.setSimilarityDesc(resultDesc);
+                questionRepeatedBeanService.saveEntity(questionRepeatedBean);
+
+                questionRepeatedBean = new QuestionRepeatedBean();
+                questionRepeatedBean.setQuestionType(questionType);
+                questionRepeatedBean.setQuestionTypeName(questionTypeName);
+                questionRepeatedBean.setQuestionBeans(questionBeans);
+                questionRepeatedBean.setSubType(subType);
+                questionRepeatedBean.setSubTypeName(subTypeName);
+                questionRepeatedBean.setFirstQuestionId(secondId);
+                questionRepeatedBean.setSecondQuestionId(firstId);
+                questionRepeatedBean.setSimilarity(result);
+                questionRepeatedBean.setSimilarityDesc(resultDesc);
+                questionRepeatedBeanService.saveEntity(questionRepeatedBean);
+                System.out.print(".");
             }
-            /*if (deleteEntity != null) {
-                referenceList.remove(deleteEntity);
-            }*/
         }
         jsonStatus.setSuccess(true);
         return jsonStatus;

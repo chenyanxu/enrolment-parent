@@ -10,6 +10,12 @@ import com.kalix.framework.core.api.persistence.JsonStatus;
 public interface IQuestionCommonBizService extends IService {
 
     /**
+     * 比较全库试题相似度
+     * @return
+     */
+    JsonStatus compareAllSimilarity();
+
+    /**
      * 查询题库试题，获取试题检测需要的试题
      */
     JsonData getAllQuestionTestings(Integer page, Integer limit, String jsonStr, String sort);

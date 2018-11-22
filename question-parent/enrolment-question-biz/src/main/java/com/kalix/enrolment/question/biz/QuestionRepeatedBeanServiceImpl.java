@@ -14,8 +14,11 @@ import com.kalix.framework.core.util.JNDIHelper;
 import com.kalix.framework.core.util.SerializeUtil;
 import com.kalix.framework.core.util.StringUtils;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -123,6 +126,47 @@ public class QuestionRepeatedBeanServiceImpl
             e.printStackTrace();
         }
         return jsonData;
+    }
+
+    @Override
+    @Transactional
+    public JsonStatus saveSimilarity(QuestionRepeatedBean entity) {
+        JsonStatus jsonStatus = new JsonStatus();
+        try {
+            String userName = shiroService.getCurrentUserRealName();
+            Long userId = -1L;
+            if (StringUtils.isEmpty(userName)) {
+                userId = -1L;
+                userName = "admin";
+            } else {
+                userId = shiroService.getCurrentUserId();
+            }
+            String sql = "select * from " + this.dao.getTableName() +
+                    " where questionType = '" + entity.getQuestionType() + "' and firstQuestionId =" + entity.getFirstQuestionId() +
+                    " and secondQuestionId = " + entity.getSecondQuestionId();
+            List list = this.dao.findByNativeSql(sql, QuestionRepeatedBean.class);
+            if (list != null && list.size() > 0) {
+                entity.setId(((QuestionRepeatedBean) list.get(0)).getId());
+                entity.setUpdateBy(userName);
+                entity.setUpdateById(userId);
+                entity.setUpdateDate(new Date());
+            } else {
+                entity.setId(0);
+                entity.setCreateBy(userName);
+                entity.setCreateById(userId);
+                entity.setCreationDate(new Date());
+                entity.setUpdateBy(userName);
+                entity.setUpdateById(userId);
+                entity.setUpdateDate(new Date());
+            }
+            this.dao.save(entity);
+            jsonStatus.setSuccess(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            jsonStatus.setSuccess(false);
+            jsonStatus.setMsg(e.getMessage());
+        }
+        return jsonStatus;
     }
 
     public void setEnrolmentDictBeanService(IEnrolmentDictBeanService enrolmentDictBeanService) {

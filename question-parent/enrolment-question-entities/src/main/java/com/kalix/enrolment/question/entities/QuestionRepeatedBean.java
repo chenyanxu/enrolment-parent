@@ -22,16 +22,16 @@ public class QuestionRepeatedBean extends PersistentEntity {
     private String subType;          // 题型子类
     private String subTypeName;      // 题型子类名称
     @Index(name = "index_first_question_id", columnNames = "firstQuestionId")
-    private Long firstQuestionId;    // 试题1id
+    private Long firstQuestionId;    // 排重试题id
     @Index(name = "index_second_question_id", columnNames = "secondQuestionId")
-    private Long secondQuestionId;   // 试题2id
+    private Long secondQuestionId;   // 重复试题id
     @Index(name = "index_similarity", columnNames = "similarity")
     private Double similarity;       // 试题相似度
     private String similarityDesc;   // 试题相似度描述
 
     @Transient
-    private String firstStem;  // 试题1题干
-    private String secondStem; // 试题2题干
+    private String firstStem;  // 排重试题题干
+    private String secondStem; // 重复试题题干
 
     public String getQuestionType() {
         return questionType;

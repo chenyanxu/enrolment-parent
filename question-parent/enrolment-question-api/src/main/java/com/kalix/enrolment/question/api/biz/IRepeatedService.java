@@ -11,6 +11,12 @@ import java.util.List;
  */
 public interface IRepeatedService {
 
+    /**
+     * 比较试题单一题型相似度
+     * @return
+     */
+    JsonStatus compareAllSimilarity(String subType);
+
     // 新增或编辑题型数据时验证排重(前台需要传递题干)
     JsonData validateRepeates(BaseQuestionDTO baseQuestionDTO);
 

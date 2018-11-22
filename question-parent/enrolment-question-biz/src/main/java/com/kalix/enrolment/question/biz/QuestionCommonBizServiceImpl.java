@@ -45,6 +45,40 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
     private IQuestionService questionService;
     private IQuestionRepeatedBeanService questionRepeatedBeanService;
 
+    @Override
+    public JsonStatus compareAllSimilarity() {
+        JsonStatus jsonStatus = new JsonStatus();
+        try {
+            List<EnrolmentDictBean> dictBeans = enrolmentDictBeanService.getDictBeanByType(DICT_QUESTIONTYPE);
+            for (int i = 0; i < dictBeans.size(); i++) {
+                EnrolmentDictBean enrolmentDictBean = dictBeans.get(i);
+                String subTypeDictType = enrolmentDictBean.getSubType();
+                String beanName = enrolmentDictBean.getDescription();
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("beanName", beanName);
+                try {
+                    repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
+                    if (StringUtils.isEmpty(subTypeDictType)) {
+                        repeatedService.initAllRepeated("");
+                    } else {
+                        List<EnrolmentDictBean> subDictBeans = enrolmentDictBeanService.getDictBeanByType(subTypeDictType);
+                        for (int j = 0; j < subDictBeans.size(); j++) {
+                            EnrolmentDictBean subDictBean = subDictBeans.get(j);
+                            String subType = subDictBean.getValue();
+                            repeatedService.initAllRepeated(subType);
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            jsonStatus.setSuccess(true);
+        } catch (Exception e) {
+            jsonStatus.setSuccess(false);
+            jsonStatus.setMsg(e.getMessage());
+        }
+        return jsonStatus;
+    }
 
     @Override
     public JsonData getAllQuestionTestings(Integer page, Integer limit, String jsonStr, String sort) {
