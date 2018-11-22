@@ -9,6 +9,7 @@ import com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService;
 import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
 import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
+import com.kalix.framework.core.api.system.IDictBeanService;
 import com.kalix.framework.core.util.ConfigUtil;
 import com.kalix.framework.core.util.JNDIHelper;
 import com.kalix.framework.core.util.SerializeUtil;
@@ -33,6 +34,7 @@ import java.util.*;
 public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, IWebsocketService {
 
     protected static String DICT_QUESTIONTYPE = "题型";
+    protected static String DICT_KSKM = "考试科目";
     private ICouchdbService couchdbService;
     private IEnrolmentDictBeanService enrolmentDictBeanService;
     private IAttachmentBeanService attachmentBeanService;
@@ -42,6 +44,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
     private IRepeatedService repeatedService;
     private IQuestionService questionService;
     private IQuestionRepeatedBeanService questionRepeatedBeanService;
+
 
     @Override
     public JsonData getAllQuestionTestings(Integer page, Integer limit, String jsonStr, String sort) {
@@ -163,7 +166,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
     @Override
     public JsonStatus autoCreateTestPaper(Long paperId) {
         JsonStatus jsonStatus = new JsonStatus();
-
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
         try {
             int copies = 1;
             int total = 0;
@@ -173,7 +176,11 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             Map tempMap = new HashMap<>();
             PaperBean paperBean = paperBeanService.getEntity(paperId);
             Date year = paperBean.getYear();
+            String year_str = simpleDateFormat.format(year);
             int paperTotal = paperBean.getTotalMark();
+            String kskmValue=paperBean.getKskm();
+            EnrolmentDictBean enrolmentDictBean =enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_KSKM,kskmValue);
+            String kskm=enrolmentDictBean.getLabel();
             List<RuleDto> list_rule = ruleBeanService.findByPaperId(paperId);
             for (RuleDto rule1Bean : list_rule) {
                 total += rule1Bean.getQuesTotalscore();
@@ -217,6 +224,8 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                         jsonStatus.setMsg("试题数量不足，成卷失败，已生成" + j + "套卷!");
                         break;
                     } else {
+                        tempMap.put("kskm",kskm);
+                        tempMap.put("year",year_str);
                         tempMap.put("quesList", quesList);
                         jsonStatus = produceTestPaper("testPaper.ftl", tempMap, paperId);
                     }
@@ -330,6 +339,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
     public void setAttachmentBeanService(IAttachmentBeanService attachmentBeanService) {
         this.attachmentBeanService = attachmentBeanService;
     }
+
 
     public void setPaperBeanService(IPaperBeanService paperBeanService) {
         this.paperBeanService = paperBeanService;
