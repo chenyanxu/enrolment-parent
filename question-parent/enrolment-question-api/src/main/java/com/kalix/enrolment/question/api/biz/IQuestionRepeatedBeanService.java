@@ -9,5 +9,7 @@ import com.kalix.framework.core.api.persistence.JsonData;
  */
 public interface IQuestionRepeatedBeanService extends IBizService<QuestionRepeatedBean> {
 
-    JsonData getAllRepeatedCountDTO(String jsonStr);
+    JsonData getAllRepeatedByQuery(Integer page, Integer limit, String jsonStr, String sort);
+
+    JsonData getRepeatedByQuery(Integer page, Integer limit, String jsonStr, String sort);
 }

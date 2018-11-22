@@ -29,6 +29,7 @@
         <property name="questionSettingBeanService" ref="questionSettingBeanServiceImpl"/>
         <property name="enrolmentDictBeanService" ref="enrolmentDictBeanService"/>
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
+        <property name="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"/>
     </bean>
     <service ref="completionBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IQuestionService">
@@ -65,6 +66,7 @@
         <property name="questionSettingBeanService" ref="questionSettingBeanServiceImpl"/>
         <property name="enrolmentDictBeanService" ref="enrolmentDictBeanService"/>
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
+        <property name="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"/>
     </bean>
     <service ref="choiceBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IQuestionService">
@@ -101,6 +103,7 @@
         <property name="questionSettingBeanService" ref="questionSettingBeanServiceImpl"/>
         <property name="enrolmentDictBeanService" ref="enrolmentDictBeanService"/>
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
+        <property name="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"/>
     </bean>
     <service ref="verseBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IQuestionService">
@@ -137,6 +140,7 @@
         <property name="questionSettingBeanService" ref="questionSettingBeanServiceImpl"/>
         <property name="enrolmentDictBeanService" ref="enrolmentDictBeanService"/>
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
+        <property name="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"/>
     </bean>
     <service ref="musicBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IQuestionService">
@@ -173,6 +177,7 @@
         <property name="questionSettingBeanService" ref="questionSettingBeanServiceImpl"/>
         <property name="enrolmentDictBeanService" ref="enrolmentDictBeanService"/>
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
+        <property name="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"/>
     </bean>
     <service ref="subjectBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IQuestionService">
@@ -209,6 +214,7 @@
         <property name="questionSettingBeanService" ref="questionSettingBeanServiceImpl"/>
         <property name="enrolmentDictBeanService" ref="enrolmentDictBeanService"/>
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
+        <property name="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"/>
     </bean>
     <service ref="interviewIssueBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IQuestionService">
@@ -246,6 +252,7 @@
         <property name="paperBeanService" ref="paperBeanServiceImpl"/>
         <property name="ruleBeanService" ref="ruleBeanServiceImpl"/>
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
+        <property name="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"/>
     </bean>
     <service id="questionCommonBizService" ref="questionCommonBizServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IQuestionCommonBizService"/>
@@ -288,6 +295,7 @@
     <!-- 题库排重服务 -->
     <bean id="questionRepeatedBeanServiceImpl" class="com.kalix.enrolment.question.biz.QuestionRepeatedBeanServiceImpl">
         <property name="dao" ref="questionRepeatedBeanDao"/>
+        <property name="enrolmentDictBeanService" ref="enrolmentDictBeanService"/>
     </bean>
     <service id="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IQuestionRepeatedBeanService"/>
@@ -298,4 +306,15 @@
             <entry key="wsMessage" value="QuestionRepeatedMessage"/>
         </service-properties>
     </service>
+
+    <bean id="timeJob" class="com.kalix.enrolment.question.biz.quartz.TimeJob">
+    </bean>
+    <camelContext trace="false" xmlns="http://camel.apache.org/schema/blueprint">
+        <route id="clusteredRoute">
+            <!--<from uri="direct:route"/>-->
+            <from uri="quartz2://clustergroup/clusterTimerName?job.name=demoQuartzCluster&amp;cron=0+*/30+*+*+*+?"/>
+            <!--<log message="Hello World!"/>-->
+            <to uri="bean:timeJob?method=initData"/>
+        </route>
+    </camelContext>
 </blueprint>

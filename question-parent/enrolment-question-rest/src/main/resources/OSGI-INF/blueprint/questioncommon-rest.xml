@@ -26,7 +26,7 @@
             <!-- this is a rest GET to find all repeates -->
             <get id="route-getAllRepeates" outType="com.kalix.framework.core.api.persistence.JsonData">
                 <description>Find all repeates</description>
-                <to uri="bean:questionCommonBizService?method=getAllRepeates(${header.jsonStr}, ${header.isAll})"/>
+                <to uri="bean:questionCommonBizService?method=getAllRepeates(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
             </get>
         </rest>
 

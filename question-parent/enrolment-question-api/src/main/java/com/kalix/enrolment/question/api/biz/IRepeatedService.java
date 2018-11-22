@@ -28,4 +28,6 @@ public interface IRepeatedService {
 
     // 删除重复
     JsonStatus doDeleteRepeate(Long questionId);
+
+    JsonStatus initAllRepeated(String subType);
 }

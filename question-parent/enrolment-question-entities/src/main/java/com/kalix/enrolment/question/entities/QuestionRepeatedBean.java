@@ -6,6 +6,7 @@ import org.apache.openjpa.persistence.jdbc.Index;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import java.util.Date;
 
@@ -26,7 +27,11 @@ public class QuestionRepeatedBean extends PersistentEntity {
     private Long secondQuestionId;   // 试题2id
     @Index(name = "index_similarity", columnNames = "similarity")
     private Double similarity;       // 试题相似度
-    private Double similarityDesc;   // 试题相似度描述
+    private String similarityDesc;   // 试题相似度描述
+
+    @Transient
+    private String firstStem;  // 试题1题干
+    private String secondStem; // 试题2题干
 
     public String getQuestionType() {
         return questionType;
@@ -92,11 +97,27 @@ public class QuestionRepeatedBean extends PersistentEntity {
         this.similarity = similarity;
     }
 
-    public Double getSimilarityDesc() {
+    public String getSimilarityDesc() {
         return similarityDesc;
     }
 
-    public void setSimilarityDesc(Double similarityDesc) {
+    public void setSimilarityDesc(String similarityDesc) {
         this.similarityDesc = similarityDesc;
+    }
+
+    public String getFirstStem() {
+        return firstStem;
+    }
+
+    public void setFirstStem(String firstStem) {
+        this.firstStem = firstStem;
+    }
+
+    public String getSecondStem() {
+        return secondStem;
+    }
+
+    public void setSecondStem(String secondStem) {
+        this.secondStem = secondStem;
     }
 }
