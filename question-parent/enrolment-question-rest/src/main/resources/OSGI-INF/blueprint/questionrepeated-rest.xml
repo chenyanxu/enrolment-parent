@@ -15,7 +15,7 @@
 
                     <property name="getDescription" value="查询题库重复试题列表数据"/>
                     <property name="getOutType" value="com.kalix.framework.core.api.persistence.JsonData"/>
-                    <property name="getToUri" value="bean:questionrepeatedService?method=getAllRepeatedCountDTO(${header.jsonStr})"/>
+                    <property name="getToUri" value="bean:questionrepeatedService?method=getAllRepeatedByQuery(${header.page}, ${header.limit}, ${header.jsonStr},${header.sort})"/>
                 </bean>
             </list>
         </property>

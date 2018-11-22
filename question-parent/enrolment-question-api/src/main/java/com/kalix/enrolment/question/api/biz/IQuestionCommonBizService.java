@@ -10,6 +10,12 @@ import com.kalix.framework.core.api.persistence.JsonStatus;
 public interface IQuestionCommonBizService extends IService {
 
     /**
+     * 比较全库试题相似度
+     * @return
+     */
+    JsonStatus compareAllSimilarity();
+
+    /**
      * 查询题库试题，获取试题检测需要的试题
      */
     JsonData getAllQuestionTestings(Integer page, Integer limit, String jsonStr, String sort);
@@ -19,7 +25,9 @@ public interface IQuestionCommonBizService extends IService {
      *
      * @return
      */
-    JsonData getAllRepeates(String jsonStr, boolean isAll);
+    JsonData getAllRepeates(Integer page, Integer limit, String jsonStr, String sort);
+
+    JsonStatus initAllRepeated();
 
     /**
      * 根据试卷及试卷规则参数自动生成试卷
@@ -30,6 +38,4 @@ public interface IQuestionCommonBizService extends IService {
     JsonStatus autoCreateTestPaper(Long paperId);
 
     JsonStatus deletePaper(String ids);
-
-
 }

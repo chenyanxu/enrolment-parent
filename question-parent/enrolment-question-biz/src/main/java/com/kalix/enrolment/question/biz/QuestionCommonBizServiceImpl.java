@@ -43,7 +43,42 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
     private IPaperQuesBeanService paperQuesBeanService;
     private IRepeatedService repeatedService;
     private IQuestionService questionService;
+    private IQuestionRepeatedBeanService questionRepeatedBeanService;
 
+    @Override
+    public JsonStatus compareAllSimilarity() {
+        JsonStatus jsonStatus = new JsonStatus();
+        try {
+            List<EnrolmentDictBean> dictBeans = enrolmentDictBeanService.getDictBeanByType(DICT_QUESTIONTYPE);
+            for (int i = 0; i < dictBeans.size(); i++) {
+                EnrolmentDictBean enrolmentDictBean = dictBeans.get(i);
+                String subTypeDictType = enrolmentDictBean.getSubType();
+                String beanName = enrolmentDictBean.getDescription();
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("beanName", beanName);
+                try {
+                    repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
+                    if (StringUtils.isEmpty(subTypeDictType)) {
+                        repeatedService.initAllRepeated("");
+                    } else {
+                        List<EnrolmentDictBean> subDictBeans = enrolmentDictBeanService.getDictBeanByType(subTypeDictType);
+                        for (int j = 0; j < subDictBeans.size(); j++) {
+                            EnrolmentDictBean subDictBean = subDictBeans.get(j);
+                            String subType = subDictBean.getValue();
+                            repeatedService.initAllRepeated(subType);
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            jsonStatus.setSuccess(true);
+        } catch (Exception e) {
+            jsonStatus.setSuccess(false);
+            jsonStatus.setMsg(e.getMessage());
+        }
+        return jsonStatus;
+    }
 
     @Override
     public JsonData getAllQuestionTestings(Integer page, Integer limit, String jsonStr, String sort) {
@@ -109,10 +144,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
     }
 
     @Override
-    public JsonData getAllRepeates(String jsonStr, boolean isAll) {
-        System.out.println("=====start");
-        System.out.println("=====isAll:" + isAll);
-        System.out.println(new Date().toString());
+    public JsonData getAllRepeates(Integer page, Integer limit, String jsonStr, String sort) {
         JsonData jsonData = new JsonData();
         try {
             if (StringUtils.isEmpty(jsonStr)) {
@@ -123,45 +155,49 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             if (StringUtils.isEmpty(questionType)) {
                 return jsonData;
             }
-
-            List list = new ArrayList();
-            EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_QUESTIONTYPE, questionType);
-            String subTypeDictType = enrolmentDictBean.getSubType();
-            String beanName = enrolmentDictBean.getDescription();
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("beanName", beanName);
-
-            List result = new ArrayList<>();
-            repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
-            if (StringUtils.isEmpty(subTypeDictType)) {
-                result = repeatedService.getSingleRepeates("", isAll);
-                if (result != null && result.size() > 0) {
-                    list.addAll(result);
-                }
-            } else {
-                List<EnrolmentDictBean> subDictBeans = enrolmentDictBeanService.getDictBeanByType(subTypeDictType);
-                for (int j = 0; j < subDictBeans.size(); j++) {
-                    EnrolmentDictBean subDictBean = subDictBeans.get(j);
-                    result = repeatedService.getSingleRepeates(subDictBean.getValue(), isAll);
-                    if (result != null && result.size() > 0) {
-                        list.addAll(result);
-                    }
-                }
-            }
-            jsonData.setData(list);
-            jsonData.setTotalCount((long) list.size());
-        } catch (IOException e) {
-            e.printStackTrace();
+            jsonData = questionRepeatedBeanService.getRepeatedByQuery(page, limit, jsonStr, sort);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(new Date().toString());
-        System.out.println("=====end");
         return jsonData;
     }
 
     @Override
+    public JsonStatus initAllRepeated() {
+        JsonStatus jsonStatus = new JsonStatus();
+        try {
+            List<EnrolmentDictBean> dictBeans = enrolmentDictBeanService.getDictBeanByType(DICT_QUESTIONTYPE);
+            for (int i = 0; i < dictBeans.size(); i++) {
+                EnrolmentDictBean enrolmentDictBean = dictBeans.get(i);
+                String subTypeDictType = enrolmentDictBean.getSubType();
+                String beanName = enrolmentDictBean.getDescription();
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("beanName", beanName);
+                try {
+                    repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
+                    if (StringUtils.isEmpty(subTypeDictType)) {
+                        repeatedService.initAllRepeated("");
+                    } else {
+                        List<EnrolmentDictBean> subDictBeans = enrolmentDictBeanService.getDictBeanByType(subTypeDictType);
+                        for (int j = 0; j < subDictBeans.size(); j++) {
+                            EnrolmentDictBean subDictBean = subDictBeans.get(j);
+                            String subType = subDictBean.getValue();
+                            repeatedService.initAllRepeated(subType);
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            jsonStatus.setSuccess(true);
+        } catch (Exception e) {
+            jsonStatus.setSuccess(false);
+            jsonStatus.setMsg(e.getMessage());
+        }
+        return jsonStatus;
+    }
 
+    @Override
     public JsonStatus autoCreateTestPaper(Long paperId) {
         JsonStatus jsonStatus = new JsonStatus();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
@@ -345,6 +381,10 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
 
     public void setRuleBeanService(IRuleBeanService ruleBeanService) {
         this.ruleBeanService = ruleBeanService;
+    }
+
+    public void setQuestionRepeatedBeanService(IQuestionRepeatedBeanService questionRepeatedBeanService) {
+        this.questionRepeatedBeanService = questionRepeatedBeanService;
     }
 
     @Override

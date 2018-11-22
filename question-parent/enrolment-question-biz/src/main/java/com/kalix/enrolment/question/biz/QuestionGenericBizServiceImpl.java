@@ -2,13 +2,11 @@ package com.kalix.enrolment.question.biz;
 
 import com.kalix.admin.core.api.biz.IRoleBeanService;
 import com.kalix.admin.core.entities.RoleBean;
-import com.kalix.enrolment.question.api.biz.IQuestionAuditService;
-import com.kalix.enrolment.question.api.biz.IQuestionService;
-import com.kalix.enrolment.question.api.biz.IQuestionSettingBeanService;
-import com.kalix.enrolment.question.api.biz.IRepeatedService;
+import com.kalix.enrolment.question.api.biz.*;
 import com.kalix.enrolment.question.dto.model.BaseQuestionDTO;
 import com.kalix.enrolment.question.dto.model.RepeatedCountDTO;
 import com.kalix.enrolment.question.entities.BaseQuestionEntity;
+import com.kalix.enrolment.question.entities.QuestionRepeatedBean;
 import com.kalix.enrolment.question.entities.QuestionSettingBean;
 import com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService;
 import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
@@ -28,7 +26,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hqj at 2018-10-31
@@ -41,6 +42,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     protected IEnrolmentDictBeanService enrolmentDictBeanService;
     private IRoleBeanService roleBeanService;
     private IQuestionSettingBeanService questionSettingBeanService;
+    private IQuestionRepeatedBeanService questionRepeatedBeanService;
 
     protected static int MAX_REPEATED_RECORD = 1;
 
@@ -246,6 +248,70 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         jsonStatus.setSuccess(true);
         jsonStatus.setMsg("试题审核成功");
 
+        return jsonStatus;
+    }
+
+    @Override
+    public JsonStatus compareAllSimilarity(String subType) {
+        JsonStatus jsonStatus = new JsonStatus();
+        String questionType = this.getQuestionType();
+        String questionTypeName = this.getQuestionTypeName();
+        String questionBeans = this.getQuestionBeans();
+        String subTypeName = this.getSubTypeName(subType);
+        String sql = "";
+        if (StringUtils.isEmpty(subType)) {
+            sql = "select t.* from " + dao.getTableName() + " t "
+                    + " where t.delFlag = '0' and t.checkFlag <> '2'";
+        } else {
+            sql = "select t.* from " + dao.getTableName() + " t "
+                    + " where t.delFlag = '0' and t.checkFlag <> '2'"
+                    + " and t.subType = '" + subType + "'";
+        }
+        Class cls = null;
+        try {
+            cls = Class.forName(this.entityClassName);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        List list = dao.findByNativeSql(sql, cls);
+        for (int i = 0; i < list.size(); i++) {
+            TP firstEntity = (TP) list.get(i);
+            long firstId = firstEntity.getId();
+            String firstStem = firstEntity.getStem();
+            for (int j = i + 1; j < list.size(); j++) {
+                TP secondEntity = (TP) list.get(j);
+                long secondId = secondEntity.getId();
+                String secondStem = secondEntity.getStem();
+                double result = Similarity.morphoSimilarity(firstStem, secondStem);
+                String resultDesc = "词形词序句子相似度" + new DecimalFormat("0.0000").format(result);
+
+                QuestionRepeatedBean questionRepeatedBean = new QuestionRepeatedBean();
+                questionRepeatedBean.setQuestionType(questionType);
+                questionRepeatedBean.setQuestionTypeName(questionTypeName);
+                questionRepeatedBean.setQuestionBeans(questionBeans);
+                questionRepeatedBean.setSubType(subType);
+                questionRepeatedBean.setSubTypeName(subTypeName);
+                questionRepeatedBean.setFirstQuestionId(firstId);
+                questionRepeatedBean.setSecondQuestionId(secondId);
+                questionRepeatedBean.setSimilarity(result);
+                questionRepeatedBean.setSimilarityDesc(resultDesc);
+                questionRepeatedBeanService.saveSimilarity(questionRepeatedBean);
+
+                questionRepeatedBean = new QuestionRepeatedBean();
+                questionRepeatedBean.setQuestionType(questionType);
+                questionRepeatedBean.setQuestionTypeName(questionTypeName);
+                questionRepeatedBean.setQuestionBeans(questionBeans);
+                questionRepeatedBean.setSubType(subType);
+                questionRepeatedBean.setSubTypeName(subTypeName);
+                questionRepeatedBean.setFirstQuestionId(secondId);
+                questionRepeatedBean.setSecondQuestionId(firstId);
+                questionRepeatedBean.setSimilarity(result);
+                questionRepeatedBean.setSimilarityDesc(resultDesc);
+                questionRepeatedBeanService.saveSimilarity(questionRepeatedBean);
+                System.out.print(".");
+            }
+        }
+        jsonStatus.setSuccess(true);
         return jsonStatus;
     }
 
@@ -623,6 +689,71 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         return jsonStatus;
     }
 
+    @Override
+    @Transactional
+    public JsonStatus initAllRepeated(String subType) {
+        JsonStatus jsonStatus = new JsonStatus();
+        String questionType = this.getQuestionType();
+        String questionTypeName = this.getQuestionTypeName();
+        String questionBeans = this.getQuestionBeans();
+        String subTypeName = this.getSubTypeName(subType);
+        String sql = "";
+        if (StringUtils.isEmpty(subType)) {
+            sql = "select t.* from " + dao.getTableName() + " t "
+                    + " where t.delFlag = '0' and t.checkFlag <> '2'";
+        } else {
+            sql = "select t.* from " + dao.getTableName() + " t "
+                    + " where t.delFlag = '0' and t.checkFlag <> '2'"
+                    + " and t.subType = '" + subType + "'";
+        }
+        Class cls = null;
+        try {
+            cls = Class.forName(this.entityClassName);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        List list = dao.findByNativeSql(sql, cls);
+        for (int i = 0; i < list.size(); i++) {
+            TP firstEntity = (TP) list.get(i);
+            long firstId = firstEntity.getId();
+            String firstStem = firstEntity.getStem();
+            for (int j = i + 1; j < list.size(); j++) {
+                TP secondEntity = (TP) list.get(j);
+                long secondId = secondEntity.getId();
+                String secondStem = secondEntity.getStem();
+                double result = Similarity.morphoSimilarity(firstStem, secondStem);
+                String resultDesc = "词形词序句子相似度" + new DecimalFormat("0.0000").format(result);
+
+                QuestionRepeatedBean questionRepeatedBean = new QuestionRepeatedBean();
+                questionRepeatedBean.setQuestionType(questionType);
+                questionRepeatedBean.setQuestionTypeName(questionTypeName);
+                questionRepeatedBean.setQuestionBeans(questionBeans);
+                questionRepeatedBean.setSubType(subType);
+                questionRepeatedBean.setSubTypeName(subTypeName);
+                questionRepeatedBean.setFirstQuestionId(firstId);
+                questionRepeatedBean.setSecondQuestionId(secondId);
+                questionRepeatedBean.setSimilarity(result);
+                questionRepeatedBean.setSimilarityDesc(resultDesc);
+                questionRepeatedBeanService.saveEntity(questionRepeatedBean);
+
+                questionRepeatedBean = new QuestionRepeatedBean();
+                questionRepeatedBean.setQuestionType(questionType);
+                questionRepeatedBean.setQuestionTypeName(questionTypeName);
+                questionRepeatedBean.setQuestionBeans(questionBeans);
+                questionRepeatedBean.setSubType(subType);
+                questionRepeatedBean.setSubTypeName(subTypeName);
+                questionRepeatedBean.setFirstQuestionId(secondId);
+                questionRepeatedBean.setSecondQuestionId(firstId);
+                questionRepeatedBean.setSimilarity(result);
+                questionRepeatedBean.setSimilarityDesc(resultDesc);
+                questionRepeatedBeanService.saveEntity(questionRepeatedBean);
+                System.out.print(".");
+            }
+        }
+        jsonStatus.setSuccess(true);
+        return jsonStatus;
+    }
+
     private double getSimilarity() {
         double defaultSimilarity = 0.5d;
         QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
@@ -840,5 +971,9 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
 
     public void setQuestionSettingBeanService(IQuestionSettingBeanService questionSettingBeanService) {
         this.questionSettingBeanService = questionSettingBeanService;
+    }
+
+    public void setQuestionRepeatedBeanService(IQuestionRepeatedBeanService questionRepeatedBeanService) {
+        this.questionRepeatedBeanService = questionRepeatedBeanService;
     }
 }
