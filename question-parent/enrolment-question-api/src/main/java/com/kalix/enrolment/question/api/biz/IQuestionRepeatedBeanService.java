@@ -14,5 +14,5 @@ public interface IQuestionRepeatedBeanService extends IBizService<QuestionRepeat
 
     JsonData getRepeatedByQuery(Integer page, Integer limit, String jsonStr, String sort);
 
-    JsonStatus saveSimilarity(QuestionRepeatedBean entity);
+    int saveSimilarity(QuestionRepeatedBean entity);
 }

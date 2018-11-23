@@ -5,6 +5,7 @@ import com.kalix.enrolment.question.api.biz.IVerseBeanService;
 import com.kalix.enrolment.question.api.dao.IVerseBeanDao;
 import com.kalix.enrolment.question.biz.util.Constants;
 import com.kalix.enrolment.question.entities.PaperQuesBean;
+import com.kalix.enrolment.question.entities.QuestionSettingBean;
 import com.kalix.enrolment.question.entities.VerseBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 
@@ -40,6 +41,23 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
     }
 
     @Override
+    public String getQuestionTableName() {
+        return this.dao.getTableName();
+    }
+
+    @Override
+    public boolean getCompareStatus() {
+        QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
+        boolean compareStatus = questionSettingBean.getCompareVerse() == null ? true : questionSettingBean.getCompareVerse();
+        return compareStatus;
+    }
+
+    @Override
+    public int updateCompareStatus(Long id, Boolean compareStatus) {
+        return questionSettingBeanService.updateCompareVerse(id, compareStatus);
+    }
+
+    @Override
     public Map<String, Object> createSingleTestPaper(Map paperMap) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
         String pattern = "(?<=\\[#).*?(?=\\])";
@@ -58,7 +76,7 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
         int quesNum = total / perScore;
-        String uuid=paperMap.get("uuid").toString();
+        String uuid = paperMap.get("uuid").toString();
         Date year = (Date) paperMap.get("year");
         String year_str = simpleDateFormat.format(year);
         String questype = paperMap.get("questype").toString();

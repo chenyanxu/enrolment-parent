@@ -4,6 +4,7 @@ import com.kalix.enrolment.question.api.biz.IMusicBeanService;
 import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
 import com.kalix.enrolment.question.api.dao.IMusicBeanDao;
 import com.kalix.enrolment.question.entities.MusicBean;
+import com.kalix.enrolment.question.entities.QuestionSettingBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 
 import java.util.HashMap;
@@ -33,6 +34,23 @@ public class MusicBeanServiceImpl extends QuestionGenericBizServiceImpl<IMusicBe
     @Override
     public String getTempName(String subType) {
         return TEMP_NAME;
+    }
+
+    @Override
+    public String getQuestionTableName() {
+        return this.dao.getTableName();
+    }
+
+    @Override
+    public boolean getCompareStatus() {
+        QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
+        boolean compareStatus = questionSettingBean.getCompareMusic() == null ? true : questionSettingBean.getCompareMusic();
+        return compareStatus;
+    }
+
+    @Override
+    public int updateCompareStatus(Long id, Boolean compareStatus) {
+        return questionSettingBeanService.updateCompareMusic(id, compareStatus);
     }
 
     @Override

@@ -31,12 +31,18 @@ public interface IQuestionService<T extends BaseQuestionEntity> extends ILogicDe
      */
     String getTempName(String subType);
 
+    String getQuestionTableName();
+
     /**
      * 生成试卷单项题型试题结果
      *
      * @return
      */
     Map<String, Object> createSingleTestPaper(Map paperMap) throws ParseException;
+
+    boolean getCompareStatus();
+
+    int updateCompareStatus(Long id, Boolean compareStatus);
 
     int updateCompareFlag(Long id, String compareFlag);
 }

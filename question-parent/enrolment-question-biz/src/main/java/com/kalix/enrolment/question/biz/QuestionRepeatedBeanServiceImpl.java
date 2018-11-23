@@ -105,16 +105,18 @@ public class QuestionRepeatedBeanServiceImpl
             if (StringUtils.isEmpty(questionType)) {
                 return jsonData;
             }
-            String sql = "select r.* from enrolment_question_repeated r, enrolment_question_completion y " +
-                    " where r.firstquestionid = y.id and y.delflag = '0' and y.repeatedflag = '0' and " +
-                    " r.similarity > (select s.similarity from enrolment_question_setting s where s.id = 1) " +
-                    " order by r.subType, r.firstQuestionId, r.similarity desc";
-            jsonData = this.dao.findByNativeSql(sql, page, limit, QuestionRepeatedBean.class);
             EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_QUESTIONTYPE, questionType);
             String beanName = enrolmentDictBean.getDescription();
             Map<String, String> map = new HashMap<String, String>();
             map.put("beanName", beanName);
             questionService = JNDIHelper.getJNDIServiceForName(IQuestionService.class.getName(), map);
+            String questionTableName = questionService.getQuestionTableName();
+            String sql = "select r.* from enrolment_question_repeated r, " + questionTableName + " y " +
+                    " where r.firstquestionid = y.id and y.delflag = '0' and y.repeatedflag = '0' and " +
+                    " r.similarity > (select s.similarity from enrolment_question_setting s where s.id = 1) " +
+                    " order by r.subType, r.firstQuestionId, r.similarity desc";
+            jsonData = this.dao.findByNativeSql(sql, page, limit, QuestionRepeatedBean.class);
+
             for (int i = 0; i < jsonData.getData().size(); i++) {
                 QuestionRepeatedBean questionRepeatedBean = (QuestionRepeatedBean) jsonData.getData().get(i);
                 BaseQuestionEntity firstEntity = (BaseQuestionEntity) questionService.getEntity(questionRepeatedBean.getFirstQuestionId());
@@ -130,8 +132,8 @@ public class QuestionRepeatedBeanServiceImpl
 
     @Override
     @Transactional
-    public JsonStatus saveSimilarity(QuestionRepeatedBean entity) {
-        JsonStatus jsonStatus = new JsonStatus();
+    public int saveSimilarity(QuestionRepeatedBean entity) {
+        int rtn = 0;
         try {
             String userName = shiroService.getCurrentUserRealName();
             Long userId = -1L;
@@ -160,13 +162,12 @@ public class QuestionRepeatedBeanServiceImpl
                 entity.setUpdateDate(new Date());
             }
             this.dao.save(entity);
-            jsonStatus.setSuccess(true);
+            rtn = 1;
         } catch (Exception e) {
             e.printStackTrace();
-            jsonStatus.setSuccess(false);
-            jsonStatus.setMsg(e.getMessage());
+            rtn = 0;
         }
-        return jsonStatus;
+        return rtn;
     }
 
     public void setEnrolmentDictBeanService(IEnrolmentDictBeanService enrolmentDictBeanService) {

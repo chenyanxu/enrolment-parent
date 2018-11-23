@@ -4,6 +4,7 @@ import com.kalix.enrolment.question.api.biz.IInterviewIssueBeanService;
 import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
 import com.kalix.enrolment.question.api.dao.IInterviewIssueBeanDao;
 import com.kalix.enrolment.question.entities.InterviewIssueBean;
+import com.kalix.enrolment.question.entities.QuestionSettingBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 
 import java.util.HashMap;
@@ -33,6 +34,23 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
     @Override
     public String getTempName(String subType) {
         return TEMP_NAME;
+    }
+
+    @Override
+    public String getQuestionTableName() {
+        return this.dao.getTableName();
+    }
+
+    @Override
+    public boolean getCompareStatus() {
+        QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
+        boolean compareStatus = questionSettingBean.getCompareInterview() == null ? true : questionSettingBean.getCompareInterview();
+        return compareStatus;
+    }
+
+    @Override
+    public int updateCompareStatus(Long id, Boolean compareStatus) {
+        return questionSettingBeanService.updateCompareInterview(id, compareStatus);
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.kalix.enrolment.question.api.dao.IChoiceBeanDao;
 import com.kalix.enrolment.question.biz.util.Constants;
 import com.kalix.enrolment.question.entities.ChoiceBean;
 import com.kalix.enrolment.question.entities.PaperQuesBean;
+import com.kalix.enrolment.question.entities.QuestionSettingBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 
 import java.text.ParseException;
@@ -39,6 +40,23 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
     }
 
     @Override
+    public String getQuestionTableName() {
+        return this.dao.getTableName();
+    }
+
+    @Override
+    public boolean getCompareStatus() {
+        QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
+        boolean compareStatus = questionSettingBean.getCompareChoice() == null ? true : questionSettingBean.getCompareChoice();
+        return compareStatus;
+    }
+
+    @Override
+    public int updateCompareStatus(Long id, Boolean compareStatus) {
+        return questionSettingBeanService.updateCompareChoice(id, compareStatus);
+    }
+
+    @Override
     public Map<String, Object> createSingleTestPaper(Map paperMap) throws ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
 
@@ -51,7 +69,7 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
         String titleName = paperMap.get("questypename").toString();
         int perScore = Integer.parseInt(paperMap.get("score").toString());
         int total = Integer.parseInt(paperMap.get("totalscore").toString());
-        String uuid=paperMap.get("uuid").toString();
+        String uuid = paperMap.get("uuid").toString();
         String questype = paperMap.get("questype").toString();
         String subtype = paperMap.get("subtype") == null ? "" : paperMap.get("subtype").toString();
 
