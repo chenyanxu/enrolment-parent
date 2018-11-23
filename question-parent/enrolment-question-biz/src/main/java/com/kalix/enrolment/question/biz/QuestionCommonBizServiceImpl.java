@@ -99,6 +99,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             Map<String, String> map = new HashMap<String, String>();
             String beanName = "Subject";
             map.put("beanName", beanName);
+            repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
             List<EnrolmentDictBean> subDictBeans = enrolmentDictBeanService.getDictBeanByType("主观题类型");
             for (int j = 0; j < subDictBeans.size(); j++) {
                 EnrolmentDictBean subDictBean = subDictBeans.get(j);
@@ -108,14 +109,17 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             map = new HashMap<String, String>();
             beanName = "Choice";
             map.put("beanName", beanName);
+            repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
             repeatedService.compareAllSimilarity("");
             map = new HashMap<String, String>();
             beanName = "Completion";
             map.put("beanName", beanName);
+            repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
             repeatedService.compareAllSimilarity("");
             map = new HashMap<String, String>();
             beanName = "InterviewIssue";
             map.put("beanName", beanName);
+            repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
             subDictBeans = enrolmentDictBeanService.getDictBeanByType("面试题类型");
             for (int j = 0; j < subDictBeans.size(); j++) {
                 EnrolmentDictBean subDictBean = subDictBeans.get(j);
