@@ -25,6 +25,14 @@ public class QuestionSettingBean extends PersistentEntity {
     private Double phraseSimilarity = 0.5; // 题库去重短语相似度参数
     private Boolean repeated = false;      // 题库排重状态
 
+    private Boolean compare = false;       // 题库试题比对状态
+    private Boolean compareCompletion = false;
+    private Boolean compareChoice = false;
+    private Boolean compareVerse = false;
+    private Boolean compareMusic = false;
+    private Boolean compareSubject = false;
+    private Boolean compareInterview = false;
+
     public Boolean getAvailable() {
         return available;
     }
@@ -87,5 +95,61 @@ public class QuestionSettingBean extends PersistentEntity {
 
     public void setRepeated(Boolean repeated) {
         this.repeated = repeated;
+    }
+
+    public Boolean getCompare() {
+        return compare;
+    }
+
+    public void setCompare(Boolean compare) {
+        this.compare = compare;
+    }
+
+    public Boolean getCompareCompletion() {
+        return compareCompletion;
+    }
+
+    public void setCompareCompletion(Boolean compareCompletion) {
+        this.compareCompletion = compareCompletion;
+    }
+
+    public Boolean getCompareChoice() {
+        return compareChoice;
+    }
+
+    public void setCompareChoice(Boolean compareChoice) {
+        this.compareChoice = compareChoice;
+    }
+
+    public Boolean getCompareVerse() {
+        return compareVerse;
+    }
+
+    public void setCompareVerse(Boolean compareVerse) {
+        this.compareVerse = compareVerse;
+    }
+
+    public Boolean getCompareMusic() {
+        return compareMusic;
+    }
+
+    public void setCompareMusic(Boolean compareMusic) {
+        this.compareMusic = compareMusic;
+    }
+
+    public Boolean getCompareSubject() {
+        return compareSubject;
+    }
+
+    public void setCompareSubject(Boolean compareSubject) {
+        this.compareSubject = compareSubject;
+    }
+
+    public Boolean getCompareInterview() {
+        return compareInterview;
+    }
+
+    public void setCompareInterview(Boolean compareInterview) {
+        this.compareInterview = compareInterview;
     }
 }

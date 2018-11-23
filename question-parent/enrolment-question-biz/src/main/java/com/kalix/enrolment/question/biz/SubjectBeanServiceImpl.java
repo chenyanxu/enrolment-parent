@@ -5,6 +5,7 @@ import com.kalix.enrolment.question.api.biz.ISubjectBeanService;
 import com.kalix.enrolment.question.api.dao.ISubjectBeanDao;
 import com.kalix.enrolment.question.biz.util.Constants;
 import com.kalix.enrolment.question.entities.PaperQuesBean;
+import com.kalix.enrolment.question.entities.QuestionSettingBean;
 import com.kalix.enrolment.question.entities.SubjectBean;
 import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
@@ -39,6 +40,23 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
     }
 
     @Override
+    public String getQuestionTableName() {
+        return this.dao.getTableName();
+    }
+
+    @Override
+    public boolean getCompareStatus() {
+        QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
+        boolean compareStatus = questionSettingBean.getCompareSubject() == null ? true : questionSettingBean.getCompareSubject();
+        return compareStatus;
+    }
+
+    @Override
+    public int updateCompareStatus(Long id, Boolean compareStatus) {
+        return questionSettingBeanService.updateCompareSubject(id, compareStatus);
+    }
+
+    @Override
     public Map<String, Object> createSingleTestPaper(Map paperMap) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
 
@@ -53,7 +71,7 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
         int total = Integer.parseInt(paperMap.get("totalscore").toString());
 
         String questype = paperMap.get("questype").toString();
-        String uuid=paperMap.get("uuid").toString();
+        String uuid = paperMap.get("uuid").toString();
         String subtype = paperMap.get("subtype") == null ? "" : paperMap.get("subtype").toString();
         EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_SUBTYPE, subtype);
         String titleName = enrolmentDictBean.getLabel();

@@ -252,6 +252,7 @@
         <property name="paperBeanService" ref="paperBeanServiceImpl"/>
         <property name="ruleBeanService" ref="ruleBeanServiceImpl"/>
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
+        <property name="questionSettingBeanService" ref="questionSettingBeanServiceImpl"/>
         <property name="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"/>
     </bean>
     <service id="questionCommonBizService" ref="questionCommonBizServiceImpl"
@@ -310,11 +311,28 @@
     <bean id="timeJob" class="com.kalix.enrolment.question.biz.quartz.TimeJob">
     </bean>
     <camelContext trace="false" xmlns="http://camel.apache.org/schema/blueprint">
-        <route id="clusteredRoute">
+        <route id="clusteredRoute1">
             <!--<from uri="direct:route"/>-->
-            <from uri="quartz2://clustergroup/clusterTimerName?job.name=demoQuartzCluster&amp;cron=0+*/30+*+*+*+?"/>
+            <!--<from uri="quartz2://clustergroup/clusterTimerName?job.name=demoQuartzCluster&amp;cron=0+0+0,12+*+*+?"/>-->
+            <from uri="quartz2://clustergroup/clusterTimerName1?job.name=demoQuartzCluster1&amp;cron=0+*/5+*+*+*+?"/>
             <!--<log message="Hello World!"/>-->
-            <to uri="bean:timeJob?method=initData"/>
+            <to uri="bean:timeJob?method=compareCompletionSimilarity"/>
+        </route>
+        <route id="clusteredRoute2">
+            <from uri="quartz2://clustergroup/clusterTimerName2?job.name=demoQuartzCluster2&amp;cron=0+*/3+*+*+*+?"/>
+            <to uri="bean:timeJob?method=compareChoiceSimilarity"/>
+        </route>
+        <route id="clusteredRoute3">
+            <from uri="quartz2://clustergroup/clusterTimerName3?job.name=demoQuartzCluster3&amp;cron=0+0+0,12+*+*+?"/>
+            <to uri="bean:timeJob?method=compareVerseSimilarity"/>
+        </route>
+        <route id="clusteredRoute4">
+            <from uri="quartz2://clustergroup/clusterTimerName4?job.name=demoQuartzCluster4&amp;cron=0+0+0,12+*+*+?"/>
+            <to uri="bean:timeJob?method=compareSubjectSimilarity"/>
+        </route>
+        <route id="clusteredRoute5">
+            <from uri="quartz2://clustergroup/clusterTimerName5?job.name=demoQuartzCluster5&amp;cron=0+*/10+*+*+*+?"/>
+            <to uri="bean:timeJob?method=compareInterviewSimilarity"/>
         </route>
     </camelContext>
 </blueprint>

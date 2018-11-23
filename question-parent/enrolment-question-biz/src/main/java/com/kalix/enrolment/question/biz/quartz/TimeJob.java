@@ -1,13 +1,16 @@
 package com.kalix.enrolment.question.biz.quartz;
 
-import com.kalix.enrolment.question.api.biz.IQuestionCommonBizService;
-import com.kalix.enrolment.question.api.biz.IQuestionSettingBeanService;
-import com.kalix.enrolment.question.entities.QuestionSettingBean;
+import com.kalix.enrolment.question.api.biz.IRepeatedService;
+import com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService;
+import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
 import com.kalix.framework.core.util.JNDIHelper;
 import org.apache.camel.Handler;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hqj on 2018/11/21.
@@ -15,39 +18,104 @@ import java.util.Date;
 
 public class TimeJob {
 
-    private IQuestionSettingBeanService questionSettingBeanService;
-    private IQuestionCommonBizService questionCommonBizService;
+    private IRepeatedService repeatedService;
+    private IEnrolmentDictBeanService enrolmentDictBeanService;
 
     /**
      * 排重初始化比对数据
      */
     @Handler
-    public void initData() {
+    public void compareCompletionSimilarity() {
         try {
-            System.out.println("=====start" );
-            System.out.println(new Date());
-            questionSettingBeanService = JNDIHelper.getJNDIServiceForName(IQuestionSettingBeanService.class.getName());
-            QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
-            if (questionSettingBean.getRepeated()) {
-                System.out.println("排重初始化比对数据进行中,请等待!");
-                System.out.println(new Date());
-                System.out.println("=====end");
-                return;
-            }
-            questionCommonBizService = JNDIHelper.getJNDIServiceForName(IQuestionCommonBizService.class.getName());
-            questionSettingBeanService.updateRepeated(questionSettingBean.getId(), true);
-            questionCommonBizService.initAllRepeated();
-            System.out.println("排重初始化比对数据完成");
+            Map<String, String> map = new HashMap<String, String>();
+            String beanName = "Completion";
+            map.put("beanName", beanName);
+            repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
+            repeatedService.compareAllSimilarity("");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(new Date());
-        System.out.println("=====end");
+    }
+
+    /**
+     * 排重初始化比对数据
+     */
+    @Handler
+    public void compareChoiceSimilarity() {
+        try {
+            Map<String, String> map = new HashMap<String, String>();
+            String beanName = "Choice";
+            map.put("beanName", beanName);
+            repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
+            repeatedService.compareAllSimilarity("");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 排重初始化比对数据
+     */
+    @Handler
+    public void compareVerseSimilarity() {
+        try {
+            Map<String, String> map = new HashMap<String, String>();
+            String beanName = "Verse";
+            map.put("beanName", beanName);
+            repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
+            repeatedService.compareAllSimilarity("");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 排重初始化比对数据
+     */
+    @Handler
+    public void compareSubjectSimilarity() {
+        try {
+            Map<String, String> map = new HashMap<String, String>();
+            String beanName = "Subject";
+            map.put("beanName", beanName);
+            repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
+            enrolmentDictBeanService = JNDIHelper.getJNDIServiceForName(IEnrolmentDictBeanService.class.getName());
+            List<EnrolmentDictBean> subDictBeans = enrolmentDictBeanService.getDictBeanByType("主观题类型");
+            for (int j = 0; j < subDictBeans.size(); j++) {
+                EnrolmentDictBean subDictBean = subDictBeans.get(j);
+                String subType = subDictBean.getValue();
+                repeatedService.compareAllSimilarity(subType);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 排重初始化比对数据
+     */
+    @Handler
+    public void compareInterviewSimilarity() {
+        try {
+            Map<String, String> map = new HashMap<String, String>();
+            String beanName = "InterviewIssue";
+            map.put("beanName", beanName);
+            repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
+            enrolmentDictBeanService = JNDIHelper.getJNDIServiceForName(IEnrolmentDictBeanService.class.getName());
+            List<EnrolmentDictBean> subDictBeans = enrolmentDictBeanService.getDictBeanByType("面试题类型");
+            for (int j = 0; j < subDictBeans.size(); j++) {
+                EnrolmentDictBean subDictBean = subDictBeans.get(j);
+                String subType = subDictBean.getValue();
+                repeatedService.compareAllSimilarity(subType);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // @Handler
     public void test() {
-        System.out.println("=====start" );
+        System.out.println("=====start");
         System.out.println(new Date());
         System.out.println("hello test!");
         System.out.println(new Date());

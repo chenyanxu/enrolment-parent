@@ -6,6 +6,7 @@ import com.kalix.enrolment.question.api.dao.ICompletionBeanDao;
 import com.kalix.enrolment.question.biz.util.Constants;
 import com.kalix.enrolment.question.entities.CompletionBean;
 import com.kalix.enrolment.question.entities.PaperQuesBean;
+import com.kalix.enrolment.question.entities.QuestionSettingBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 import com.kalix.framework.core.api.persistence.JsonStatus;
 
@@ -27,9 +28,9 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
 
     @Override
     public void beforeSaveEntity(CompletionBean entity, JsonStatus status) {
-        int count=0;
+        int count = 0;
         int index = 0;
-        String stem=entity.getStem();
+        String stem = entity.getStem();
         while ((index = stem.indexOf("[#", index)) != -1) {
             index = index + "[#".length();
             count++;
@@ -56,6 +57,23 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
     }
 
     @Override
+    public String getQuestionTableName() {
+        return this.dao.getTableName();
+    }
+
+    @Override
+    public boolean getCompareStatus() {
+        QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
+        boolean compareStatus = questionSettingBean.getCompareCompletion() == null ? true : questionSettingBean.getCompareCompletion();
+        return compareStatus;
+    }
+
+    @Override
+    public int updateCompareStatus(Long id, Boolean compareStatus) {
+        return questionSettingBeanService.updateCompareCompletion(id, compareStatus);
+    }
+
+    @Override
     public Map<String, Object> createSingleTestPaper(Map paperMap) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
         String pattern = "(?<=\\[#).*?(?=\\])";
@@ -68,7 +86,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         String sql = "";
         // 创建试题标题
         String title = "";
-        int num=0;
+        int num = 0;
         int sumSpace = 0;
         //Map paperMap=new HashMap();
         //paperMap.put("titlenum","1");
@@ -79,7 +97,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         String titleName = paperMap.get("questypename").toString();
         int perScore = Integer.parseInt(paperMap.get("score").toString());
         int total = Integer.parseInt(paperMap.get("totalscore").toString());
-        String uuid=paperMap.get("uuid").toString();
+        String uuid = paperMap.get("uuid").toString();
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每空" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
         int quesNum = total / perScore;
@@ -169,17 +187,16 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
                     }
                 } else {
 
-                        list_completion.add(completionBean);
+                    list_completion.add(completionBean);
 
                 }
             } else {
-                if(num>5)
-                {
+                if (num > 5) {
                     JsonStatus jsonStatus = new JsonStatus();
                     jsonStatus.setMsg("试题数量不够，请补充试题！");
                     throw new Exception(jsonStatus.getMsg());
-                }else {
-                    getComletionList(spacenum, list_completion, year_str, questype, subtype, (num+1));
+                } else {
+                    getComletionList(spacenum, list_completion, year_str, questype, subtype, (num + 1));
                 }
             }
         }

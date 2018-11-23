@@ -17,17 +17,50 @@ public class QuestionSettingBeanServiceImpl
 
     @Override
     @Transactional
-    public JsonStatus updateRepeated(Long id, Boolean repeated) {
-        JsonStatus jsonStatus = new JsonStatus();
-        try {
-            String sql = "update " + this.dao.getTableName() + " set repeated = " + repeated + " where id = " + id;
-            this.dao.updateNativeQuery(sql);
-            jsonStatus.setSuccess(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-            jsonStatus.setSuccess(false);
-            jsonStatus.setMsg(e.getMessage());
-        }
-        return jsonStatus;
+    public int updateRepeated(Long id, Boolean repeated) {
+        String sql = "update " + this.dao.getTableName() + " set repeated = " + repeated + " where id = " + id;
+        return this.dao.updateNativeQuery(sql);
+    }
+
+    @Override
+    @Transactional
+    public int updateCompareCompletion(Long id, Boolean compareStatus) {
+        String sql = "update " + this.dao.getTableName() + " set compareCompletion = " + compareStatus + " where id = " + id;
+        return this.dao.updateNativeQuery(sql);
+    }
+
+    @Override
+    @Transactional
+    public int updateCompareChoice(Long id, Boolean compareStatus) {
+        String sql = "update " + this.dao.getTableName() + " set compareChoice = " + compareStatus + " where id = " + id;
+        return this.dao.updateNativeQuery(sql);
+    }
+
+    @Override
+    @Transactional
+    public int updateCompareVerse(Long id, Boolean compareStatus) {
+        String sql = "update " + this.dao.getTableName() + " set compareVerse = " + compareStatus + " where id = " + id;
+        return this.dao.updateNativeQuery(sql);
+    }
+
+    @Override
+    @Transactional
+    public int updateCompareMusic(Long id, Boolean compareStatus) {
+        String sql = "update " + this.dao.getTableName() + " set compareMusic = " + compareStatus + " where id = " + id;
+        return this.dao.updateNativeQuery(sql);
+    }
+
+    @Override
+    @Transactional
+    public int updateCompareSubject(Long id, Boolean compareStatus) {
+        String sql = "update " + this.dao.getTableName() + " set compareSubject = " + compareStatus + " where id = " + id;
+        return this.dao.updateNativeQuery(sql);
+    }
+
+    @Override
+    @Transactional
+    public int updateCompareInterview(Long id, Boolean compareStatus) {
+        String sql = "update " + this.dao.getTableName() + " set compareInterview = " + compareStatus + " where id = " + id;
+        return this.dao.updateNativeQuery(sql);
     }
 }
