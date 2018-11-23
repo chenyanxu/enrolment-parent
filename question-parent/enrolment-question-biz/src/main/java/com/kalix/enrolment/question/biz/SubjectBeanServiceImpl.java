@@ -75,6 +75,7 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
                 Map<String, Object> map = new HashMap<String, Object>();
                 SubjectBean subjectBean = list.get(i);
                 PaperQuesBean paperQuesBean = new PaperQuesBean();
+                map.put("answerConstraint",subjectBean.getAnswerConstraint());
                 map.put("type", "论述题");
                 map.put("stem", subjectBean.getStem());
                 paperQuesBean.setQuesid(subjectBean.getId());

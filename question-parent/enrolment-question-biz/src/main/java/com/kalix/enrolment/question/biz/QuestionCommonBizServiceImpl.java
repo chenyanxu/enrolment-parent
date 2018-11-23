@@ -209,6 +209,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             List<Map> quesList = null;
             Map tempMap = new HashMap<>();
             PaperBean paperBean = paperBeanService.getEntity(paperId);
+            String tempName=paperBean.getTempName();
             Date year = paperBean.getYear();
             String year_str = simpleDateFormat.format(year);
             int paperTotal = paperBean.getTotalMark();
@@ -258,10 +259,18 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                         jsonStatus.setMsg("试题数量不足，成卷失败，已生成" + j + "套卷!");
                         break;
                     } else {
+                        String tmp="";
                         tempMap.put("kskm",kskm);
                         tempMap.put("year",year_str);
                         tempMap.put("quesList", quesList);
-                        jsonStatus = produceTestPaper("testPaper.ftl", tempMap, paperId);
+                        if("1".equals(tempName)){
+                            tmp="testPaper.ftl";
+                        }else if("2".equals(tempName)){
+                            tmp="subject.ftl";
+                        }else {
+                            tmp="Interview.ftl";
+                        }
+                        jsonStatus = produceTestPaper(tmp, tempMap, paperId);
                     }
                 }
             } else {

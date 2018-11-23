@@ -36,7 +36,18 @@ public class PaperBean extends BaseLogicDeleteEntity {
      */
     private int copies;
 
-    private String kskm;
+    private String kskm; //考试科目
+
+    private String tempName; //模板名称
+
+
+    public String getTempName() {
+        return tempName;
+    }
+
+    public void setTempName(String tempName) {
+        this.tempName = tempName;
+    }
 
     public String getKskm() {
         return kskm;
