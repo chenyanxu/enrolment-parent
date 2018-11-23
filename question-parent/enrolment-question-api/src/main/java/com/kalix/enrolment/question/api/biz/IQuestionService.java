@@ -37,4 +37,6 @@ public interface IQuestionService<T extends BaseQuestionEntity> extends ILogicDe
      * @return
      */
     Map<String, Object> createSingleTestPaper(Map paperMap) throws ParseException;
+
+    int updateCompareFlag(Long id, String compareFlag);
 }

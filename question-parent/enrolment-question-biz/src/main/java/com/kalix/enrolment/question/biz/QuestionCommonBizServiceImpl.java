@@ -5,11 +5,11 @@ import com.kalix.enrolment.question.dto.model.BaseQuestionDTO;
 import com.kalix.enrolment.question.dto.model.RuleDto;
 import com.kalix.enrolment.question.entities.BaseQuestionEntity;
 import com.kalix.enrolment.question.entities.PaperBean;
+import com.kalix.enrolment.question.entities.QuestionSettingBean;
 import com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService;
 import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
 import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
-import com.kalix.framework.core.api.system.IDictBeanService;
 import com.kalix.framework.core.util.ConfigUtil;
 import com.kalix.framework.core.util.JNDIHelper;
 import com.kalix.framework.core.util.SerializeUtil;
@@ -35,48 +35,103 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
 
     protected static String DICT_QUESTIONTYPE = "题型";
     protected static String DICT_KSKM = "考试科目";
-    private ICouchdbService couchdbService;
+
     private IEnrolmentDictBeanService enrolmentDictBeanService;
+    private ICouchdbService couchdbService;
     private IAttachmentBeanService attachmentBeanService;
     private IPaperBeanService paperBeanService;
     private IRuleBeanService ruleBeanService;
     private IPaperQuesBeanService paperQuesBeanService;
-    private IRepeatedService repeatedService;
-    private IQuestionService questionService;
+    private IQuestionSettingBeanService questionSettingBeanService;
     private IQuestionRepeatedBeanService questionRepeatedBeanService;
 
+    private IRepeatedService repeatedService;
+    private IQuestionService questionService;
+
+    /**
+     * 比较全库试题相似度
+     * @return
+     */
     @Override
     public JsonStatus compareAllSimilarity() {
+        System.out.println("=====start");
+        System.out.println(new Date());
         JsonStatus jsonStatus = new JsonStatus();
         try {
-            List<EnrolmentDictBean> dictBeans = enrolmentDictBeanService.getDictBeanByType(DICT_QUESTIONTYPE);
-            for (int i = 0; i < dictBeans.size(); i++) {
-                EnrolmentDictBean enrolmentDictBean = dictBeans.get(i);
-                String subTypeDictType = enrolmentDictBean.getSubType();
-                String beanName = enrolmentDictBean.getDescription();
-                Map<String, String> map = new HashMap<String, String>();
-                map.put("beanName", beanName);
-                try {
-                    repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
-                    if (StringUtils.isEmpty(subTypeDictType)) {
-                        repeatedService.initAllRepeated("");
-                    } else {
-                        List<EnrolmentDictBean> subDictBeans = enrolmentDictBeanService.getDictBeanByType(subTypeDictType);
-                        for (int j = 0; j < subDictBeans.size(); j++) {
-                            EnrolmentDictBean subDictBean = subDictBeans.get(j);
-                            String subType = subDictBean.getValue();
-                            repeatedService.initAllRepeated(subType);
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            // 获取比对参数设置
+            QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
+            if (questionSettingBean.getRepeated()) {
+                String msg = "排重比对数据进行中,请等待!";
+                System.out.println(msg);
+                System.out.println(new Date());
+                System.out.println("=====end");
+                jsonStatus.setSuccess(false);
+                jsonStatus.setMsg(msg);
+                return jsonStatus;
             }
+            // 修改比对参数设置，防止多次并发执行
+            questionSettingBeanService.updateRepeated(questionSettingBean.getId(), true);
+            // 开始排重比对数据
+//            List<EnrolmentDictBean> dictBeans = enrolmentDictBeanService.getDictBeanByType(DICT_QUESTIONTYPE);
+//            for (int i = 0; i < dictBeans.size(); i++) {
+//                EnrolmentDictBean enrolmentDictBean = dictBeans.get(i);
+//                String subTypeDictType = enrolmentDictBean.getSubType();
+//                String beanName = enrolmentDictBean.getDescription();
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put("beanName", beanName);
+//                try {
+//                    repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
+//                    if (StringUtils.isEmpty(subTypeDictType)) {
+//                        repeatedService.compareAllSimilarity("");
+//                    } else {
+//                        List<EnrolmentDictBean> subDictBeans = enrolmentDictBeanService.getDictBeanByType(subTypeDictType);
+//                        for (int j = 0; j < subDictBeans.size(); j++) {
+//                            EnrolmentDictBean subDictBean = subDictBeans.get(j);
+//                            String subType = subDictBean.getValue();
+//                            repeatedService.compareAllSimilarity(subType);
+//                        }
+//                    }
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+
+            Map<String, String> map = new HashMap<String, String>();
+            String beanName = "Subject";
+            map.put("beanName", beanName);
+            List<EnrolmentDictBean> subDictBeans = enrolmentDictBeanService.getDictBeanByType("主观题类型");
+            for (int j = 0; j < subDictBeans.size(); j++) {
+                EnrolmentDictBean subDictBean = subDictBeans.get(j);
+                String subType = subDictBean.getValue();
+                repeatedService.compareAllSimilarity(subType);
+            }
+            map = new HashMap<String, String>();
+            beanName = "Choice";
+            map.put("beanName", beanName);
+            repeatedService.compareAllSimilarity("");
+            map = new HashMap<String, String>();
+            beanName = "Completion";
+            map.put("beanName", beanName);
+            repeatedService.compareAllSimilarity("");
+            map = new HashMap<String, String>();
+            beanName = "InterviewIssue";
+            map.put("beanName", beanName);
+            subDictBeans = enrolmentDictBeanService.getDictBeanByType("面试题类型");
+            for (int j = 0; j < subDictBeans.size(); j++) {
+                EnrolmentDictBean subDictBean = subDictBeans.get(j);
+                String subType = subDictBean.getValue();
+                repeatedService.compareAllSimilarity(subType);
+            }
+
             jsonStatus.setSuccess(true);
+            // 比对成功，修改比对参数设置，可以进行下一次比对
+            questionSettingBeanService.updateRepeated(questionSettingBean.getId(), false);
         } catch (Exception e) {
             jsonStatus.setSuccess(false);
             jsonStatus.setMsg(e.getMessage());
         }
+        System.out.println(new Date());
+        System.out.println("=====end");
         return jsonStatus;
     }
 
@@ -212,9 +267,9 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             Date year = paperBean.getYear();
             String year_str = simpleDateFormat.format(year);
             int paperTotal = paperBean.getTotalMark();
-            String kskmValue=paperBean.getKskm();
-            EnrolmentDictBean enrolmentDictBean =enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_KSKM,kskmValue);
-            String kskm=enrolmentDictBean.getLabel();
+            String kskmValue = paperBean.getKskm();
+            EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_KSKM, kskmValue);
+            String kskm = enrolmentDictBean.getLabel();
             List<RuleDto> list_rule = ruleBeanService.findByPaperId(paperId);
             for (RuleDto rule1Bean : list_rule) {
                 total += rule1Bean.getQuesTotalscore();
@@ -258,8 +313,8 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                         jsonStatus.setMsg("试题数量不足，成卷失败，已生成" + j + "套卷!");
                         break;
                     } else {
-                        tempMap.put("kskm",kskm);
-                        tempMap.put("year",year_str);
+                        tempMap.put("kskm", kskm);
+                        tempMap.put("year", year_str);
                         tempMap.put("quesList", quesList);
                         jsonStatus = produceTestPaper("testPaper.ftl", tempMap, paperId);
                     }
@@ -357,7 +412,6 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
         return jsonStatus;
     }
 
-
     public void setPaperQuesBeanService(IPaperQuesBeanService paperQuesBeanService) {
         this.paperQuesBeanService = paperQuesBeanService;
     }
@@ -374,13 +428,16 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
         this.attachmentBeanService = attachmentBeanService;
     }
 
-
     public void setPaperBeanService(IPaperBeanService paperBeanService) {
         this.paperBeanService = paperBeanService;
     }
 
     public void setRuleBeanService(IRuleBeanService ruleBeanService) {
         this.ruleBeanService = ruleBeanService;
+    }
+
+    public void setQuestionSettingBeanService(IQuestionSettingBeanService questionSettingBeanService) {
+        this.questionSettingBeanService = questionSettingBeanService;
     }
 
     public void setQuestionRepeatedBeanService(IQuestionRepeatedBeanService questionRepeatedBeanService) {

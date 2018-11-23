@@ -9,5 +9,5 @@ import com.kalix.framework.core.api.persistence.JsonStatus;
  */
 public interface IQuestionSettingBeanService extends IBizService<QuestionSettingBean> {
 
-    JsonStatus updateRepeated(Long id, Boolean repeated);
+    int updateRepeated(Long id, Boolean repeated);
 }

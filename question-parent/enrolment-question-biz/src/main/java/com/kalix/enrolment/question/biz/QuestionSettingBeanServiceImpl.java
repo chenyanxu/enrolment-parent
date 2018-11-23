@@ -17,17 +17,8 @@ public class QuestionSettingBeanServiceImpl
 
     @Override
     @Transactional
-    public JsonStatus updateRepeated(Long id, Boolean repeated) {
-        JsonStatus jsonStatus = new JsonStatus();
-        try {
-            String sql = "update " + this.dao.getTableName() + " set repeated = " + repeated + " where id = " + id;
-            this.dao.updateNativeQuery(sql);
-            jsonStatus.setSuccess(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-            jsonStatus.setSuccess(false);
-            jsonStatus.setMsg(e.getMessage());
-        }
-        return jsonStatus;
+    public int updateRepeated(Long id, Boolean repeated) {
+        String sql = "update " + this.dao.getTableName() + " set repeated = " + repeated + " where id = " + id;
+        return this.dao.updateNativeQuery(sql);
     }
 }
