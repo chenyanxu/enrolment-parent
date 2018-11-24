@@ -9,6 +9,8 @@ import com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService;
 import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
 import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
+import com.kalix.framework.core.api.security.IDataAuthService;
+import com.kalix.framework.core.api.security.model.EnumDataAuth;
 import com.kalix.framework.core.impl.biz.ShiroGenericBizServiceImpl;
 import com.kalix.framework.core.util.JNDIHelper;
 import com.kalix.framework.core.util.SerializeUtil;
@@ -72,6 +74,7 @@ public class QuestionRepeatedBeanServiceImpl
             if (StringUtils.isEmpty(questionType)) {
                 return jsonData;
             }
+            // 默认排序
             if (StringUtils.isEmpty(sort)) {
                 sort = "[{'property': 'subType', 'direction': 'ASC'}," +
                         "{'property': 'firstQuestionId', 'direction': 'ASC'}," +
@@ -111,12 +114,32 @@ public class QuestionRepeatedBeanServiceImpl
             map.put("beanName", beanName);
             questionService = JNDIHelper.getJNDIServiceForName(IQuestionService.class.getName(), map);
             String questionTableName = questionService.getQuestionTableName();
-            String sql = "select r.* from enrolment_question_repeated r, " + questionTableName + " y " +
-                    " where r.firstquestionid = y.id and y.delflag = '0' and y.repeatedflag = '0' and " +
-                    " r.similarity > (select s.similarity from enrolment_question_setting s where s.id = 1) " +
-                    " order by r.subType, r.firstQuestionId, r.similarity desc";
+            String sql = "";
+            // 增加数据权限
+            Long userId = shiroService.getCurrentUserId();
+            if (this.dataAuthService == null) {
+                this.dataAuthService = JNDIHelper.getJNDIServiceForName(IDataAuthService.class.getName());
+            }
+            EnumDataAuth enumDataAuth = dataAuthService.getDataAuth(userId);
+            switch (enumDataAuth) {
+                // 本人数据
+                case SELF:
+                    sql = "select r.* from enrolment_question_repeated r, " + questionTableName + " y " +
+                            " where r.firstquestionid = y.id and y.delflag = '0' and y.repeatedflag = '0' and " +
+                            " y.createbyid = " + userId + " and " +
+                            " r.similarity > (select s.similarity from enrolment_question_setting s where s.id = 1) " +
+                            " order by r.subType, r.firstQuestionId, r.similarity desc";
+                    break;
+                // 所有数据
+                case ALL:
+                    sql = "select r.* from enrolment_question_repeated r, " + questionTableName + " y " +
+                            " where r.firstquestionid = y.id and y.delflag = '0' and y.repeatedflag = '0' and " +
+                            " r.similarity > (select s.similarity from enrolment_question_setting s where s.id = 1) " +
+                            " order by r.subType, r.firstQuestionId, r.similarity desc";
+                    break;
+            }
             jsonData = this.dao.findByNativeSql(sql, page, limit, QuestionRepeatedBean.class);
-
+            // 字段翻译
             for (int i = 0; i < jsonData.getData().size(); i++) {
                 QuestionRepeatedBean questionRepeatedBean = (QuestionRepeatedBean) jsonData.getData().get(i);
                 BaseQuestionEntity firstEntity = (BaseQuestionEntity) questionService.getEntity(questionRepeatedBean.getFirstQuestionId());

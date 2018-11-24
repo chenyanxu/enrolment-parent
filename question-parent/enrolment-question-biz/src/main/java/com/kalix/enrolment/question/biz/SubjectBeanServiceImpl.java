@@ -1,6 +1,8 @@
 package com.kalix.enrolment.question.biz;
 
 import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
+import com.kalix.enrolment.question.api.biz.IQuestionAuditService;
+import com.kalix.enrolment.question.api.biz.IRepeatedService;
 import com.kalix.enrolment.question.api.biz.ISubjectBeanService;
 import com.kalix.enrolment.question.api.dao.ISubjectBeanDao;
 import com.kalix.enrolment.question.biz.util.Constants;
@@ -17,7 +19,7 @@ import java.util.*;
  * Created by zangyanming at 2018-09-13
  */
 public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubjectBeanDao, SubjectBean>
-        implements ISubjectBeanService, IDownloadService {
+        implements ISubjectBeanService, IQuestionAuditService, IRepeatedService, IDownloadService {
 
     private static String DICT_QUESTIONVALUE = "5";
     private static String DICT_SUBTYPE = "主观题类型";
@@ -35,25 +37,13 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
     }
 
     @Override
-    public String getTempName(String subType) {
-        return TEMP_NAME;
-    }
-
-    @Override
     public String getQuestionTableName() {
         return this.dao.getTableName();
     }
 
     @Override
-    public boolean getCompareStatus() {
-        QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
-        boolean compareStatus = questionSettingBean.getCompareSubject() == null ? true : questionSettingBean.getCompareSubject();
-        return compareStatus;
-    }
-
-    @Override
-    public int updateCompareStatus(Long id, Boolean compareStatus) {
-        return questionSettingBeanService.updateCompareSubject(id, compareStatus);
+    public String getTempName(String subType) {
+        return TEMP_NAME;
     }
 
     @Override
@@ -93,7 +83,7 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
                 Map<String, Object> map = new HashMap<String, Object>();
                 SubjectBean subjectBean = list.get(i);
                 PaperQuesBean paperQuesBean = new PaperQuesBean();
-                map.put("answerConstraint",subjectBean.getAnswerConstraint());
+                map.put("answerConstraint", subjectBean.getAnswerConstraint());
                 map.put("type", "论述题");
                 map.put("stem", subjectBean.getStem());
                 paperQuesBean.setQuesid(subjectBean.getId());
@@ -108,6 +98,18 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
 
         singleTestPaper.put("question", question);
         return singleTestPaper;
+    }
+
+    @Override
+    public boolean getCompareStatus() {
+        QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
+        boolean compareStatus = questionSettingBean.getCompareSubject() == null ? true : questionSettingBean.getCompareSubject();
+        return compareStatus;
+    }
+
+    @Override
+    public int updateCompareStatus(Long id, Boolean compareStatus) {
+        return questionSettingBeanService.updateCompareSubject(id, compareStatus);
     }
 
     @Override

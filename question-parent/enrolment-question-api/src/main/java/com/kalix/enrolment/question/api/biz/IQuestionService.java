@@ -11,17 +11,42 @@ import java.util.Map;
  */
 public interface IQuestionService<T extends BaseQuestionEntity> extends ILogicDeleteService<T> {
 
+    /**
+     * 获取题型代码
+     * @return
+     */
     String getQuestionType();
 
+    /**
+     * 获取题型名称
+     * @return
+     */
     String getQuestionTypeName();
 
+    /**
+     * 获取题型beans
+     * @return
+     */
     String getQuestionBeans();
 
+    /**
+     * 获取题型子类字典type
+     * @return
+     */
     String getSubTypeDictType();
 
+    /**
+     * 获取题型子类名称
+     * @param subType
+     * @return
+     */
     String getSubTypeName(String subType);
 
-    String getAuditRoleName(String subType);
+    /**
+     * 获取试题表名
+     * @return
+     */
+    String getQuestionTableName();
 
     /**
      * 获取题库单项题型预览模板文件名
@@ -31,18 +56,10 @@ public interface IQuestionService<T extends BaseQuestionEntity> extends ILogicDe
      */
     String getTempName(String subType);
 
-    String getQuestionTableName();
-
     /**
      * 生成试卷单项题型试题结果
      *
      * @return
      */
     Map<String, Object> createSingleTestPaper(Map paperMap) throws ParseException;
-
-    boolean getCompareStatus();
-
-    int updateCompareStatus(Long id, Boolean compareStatus);
-
-    int updateCompareFlag(Long id, String compareFlag);
 }

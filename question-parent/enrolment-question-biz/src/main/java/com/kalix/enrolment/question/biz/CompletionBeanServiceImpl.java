@@ -2,6 +2,8 @@ package com.kalix.enrolment.question.biz;
 
 import com.kalix.enrolment.question.api.biz.ICompletionBeanService;
 import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
+import com.kalix.enrolment.question.api.biz.IQuestionAuditService;
+import com.kalix.enrolment.question.api.biz.IRepeatedService;
 import com.kalix.enrolment.question.api.dao.ICompletionBeanDao;
 import com.kalix.enrolment.question.biz.util.Constants;
 import com.kalix.enrolment.question.entities.CompletionBean;
@@ -19,7 +21,7 @@ import java.util.regex.Pattern;
  * Created by Administrator_ on 2018/9/6.
  */
 public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICompletionBeanDao, CompletionBean>
-        implements ICompletionBeanService, IDownloadService {
+        implements ICompletionBeanService, IQuestionAuditService, IRepeatedService, IDownloadService {
 
     private static String DICT_QUESTIONVALUE = "1";
     private static String DICT_SUBTYPE = "";
@@ -52,25 +54,13 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
     }
 
     @Override
-    public String getTempName(String subType) {
-        return TEMP_NAME;
-    }
-
-    @Override
     public String getQuestionTableName() {
         return this.dao.getTableName();
     }
 
     @Override
-    public boolean getCompareStatus() {
-        QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
-        boolean compareStatus = questionSettingBean.getCompareCompletion() == null ? true : questionSettingBean.getCompareCompletion();
-        return compareStatus;
-    }
-
-    @Override
-    public int updateCompareStatus(Long id, Boolean compareStatus) {
-        return questionSettingBeanService.updateCompareCompletion(id, compareStatus);
+    public String getTempName(String subType) {
+        return TEMP_NAME;
     }
 
     @Override
@@ -143,6 +133,18 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         }
 
         return singleTestPaper;
+    }
+
+    @Override
+    public boolean getCompareStatus() {
+        QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
+        boolean compareStatus = questionSettingBean.getCompareCompletion() == null ? true : questionSettingBean.getCompareCompletion();
+        return compareStatus;
+    }
+
+    @Override
+    public int updateCompareStatus(Long id, Boolean compareStatus) {
+        return questionSettingBeanService.updateCompareCompletion(id, compareStatus);
     }
 
     @Override

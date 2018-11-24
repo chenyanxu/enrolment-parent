@@ -15,12 +15,12 @@ public class QuestionSettingBeanServiceImpl
         extends ShiroGenericBizServiceImpl<IQuestionSettingBeanDao, QuestionSettingBean>
         implements IQuestionSettingBeanService {
 
-    @Override
+    /*@Override
     @Transactional
     public int updateRepeated(Long id, Boolean repeated) {
         String sql = "update " + this.dao.getTableName() + " set repeated = " + repeated + " where id = " + id;
         return this.dao.updateNativeQuery(sql);
-    }
+    }*/
 
     @Override
     @Transactional

@@ -74,12 +74,12 @@
 
         <rest path="/interviewissues/repeated/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <description>interviewIssue rest service</description>
-            <get id="route-getAllInterviewIssueRepeates" outType="com.kalix.framework.core.api.persistence.JsonData">
+            <!--<get id="route-getAllInterviewIssueRepeates" outType="com.kalix.framework.core.api.persistence.JsonData">
                 <description>Find all repeates</description>
                 <to uri="bean:interviewIssueRepeatedService?method=getRepeates(${header.jsonStr}, ${header.isAll})"/>
-            </get>
+            </get>-->
 
-            <post id="route-getRepeatedInterviewIssues" type="com.kalix.enrolment.question.dto.model.BaseQuestionDTO"
+            <post id="route-getRepeatedInterviewIssues" type="com.kalix.enrolment.question.dto.model.CompareQuestionDTO"
                  outType="com.kalix.framework.core.api.persistence.JsonData">
                 <description>Find all repeated interviewIssues</description>
                 <to uri="bean:interviewIssueRepeatedService?method=validateRepeates(${body})"/>
@@ -87,10 +87,10 @@
         </rest>
 
         <rest path="/interviewissues/repeated/list/{questionId}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
-            <get id="route-getRepeatedInterviewIssuesById">
-                <description>Find all repeated by id</description>
-                <to uri="bean:interviewIssueRepeatedService?method=getRepeates(${header.questionId})"/>
-            </get>
+            <!--<get id="route-getRepeatedInterviewIssuesById">-->
+                <!--<description>Find all repeated by id</description>-->
+                <!--<to uri="bean:interviewIssueRepeatedService?method=getRepeates(${header.questionId})"/>-->
+            <!--</get>-->
 
             <put id="route-update-RepeatedInterviewIssue" outType="com.kalix.framework.core.api.persistence.JsonStatus">
                 <description>Updates a RepeatedInterviewIssue</description>
@@ -101,6 +101,15 @@
                 <description>Logic Delete a repeated interviewIssue</description>
                 <to uri="bean:interviewIssueRepeatedService?method=doDeleteRepeate(${header.questionId})"/>
             </delete>
+        </rest>
+
+        <rest path="/interviewissues/repeated/compare/{questionId}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>interviewIssue repeated compare rest service</description>
+            <post id="route-compareRepeatedInterviewIssues"
+                  outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>compare interviewIssue</description>
+                <to uri="bean:interviewIssueRepeatedService?method=compareSingleSimilarity(${header.questionId})"/>
+            </post>
         </rest>
 
         <rest path="/interviewissues/check/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">

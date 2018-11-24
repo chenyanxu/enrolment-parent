@@ -1,6 +1,8 @@
 package com.kalix.enrolment.question.biz;
 
 import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
+import com.kalix.enrolment.question.api.biz.IQuestionAuditService;
+import com.kalix.enrolment.question.api.biz.IRepeatedService;
 import com.kalix.enrolment.question.api.biz.IVerseBeanService;
 import com.kalix.enrolment.question.api.dao.IVerseBeanDao;
 import com.kalix.enrolment.question.biz.util.Constants;
@@ -18,7 +20,7 @@ import java.util.regex.Pattern;
  * Created by zangyanming at 2018-09-13
  */
 public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBeanDao, VerseBean>
-        implements IVerseBeanService, IDownloadService {
+        implements IVerseBeanService, IQuestionAuditService, IRepeatedService, IDownloadService {
 
     private static String DICT_QUESTIONVALUE = "3";
     private static String DICT_SUBTYPE = "";
@@ -36,25 +38,13 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
     }
 
     @Override
-    public String getTempName(String subType) {
-        return TEMP_NAME;
-    }
-
-    @Override
     public String getQuestionTableName() {
         return this.dao.getTableName();
     }
 
     @Override
-    public boolean getCompareStatus() {
-        QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
-        boolean compareStatus = questionSettingBean.getCompareVerse() == null ? true : questionSettingBean.getCompareVerse();
-        return compareStatus;
-    }
-
-    @Override
-    public int updateCompareStatus(Long id, Boolean compareStatus) {
-        return questionSettingBeanService.updateCompareVerse(id, compareStatus);
+    public String getTempName(String subType) {
+        return TEMP_NAME;
     }
 
     @Override
@@ -109,6 +99,18 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
         singleTestPaper.put("question", question);
 
         return singleTestPaper;
+    }
+
+    @Override
+    public boolean getCompareStatus() {
+        QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
+        boolean compareStatus = questionSettingBean.getCompareVerse() == null ? true : questionSettingBean.getCompareVerse();
+        return compareStatus;
+    }
+
+    @Override
+    public int updateCompareStatus(Long id, Boolean compareStatus) {
+        return questionSettingBeanService.updateCompareVerse(id, compareStatus);
     }
 
     @Override

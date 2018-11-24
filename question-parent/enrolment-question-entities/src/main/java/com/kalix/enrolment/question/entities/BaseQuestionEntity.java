@@ -26,9 +26,14 @@ public abstract class BaseQuestionEntity extends BaseLogicDeleteEntity {
     private Date checkDate;            // 审核时间
     private String checkReason;        // 审核不通过原因
     private String repeatedFlag = "0"; // 题库排重标识
-    private String compareFlag = "0";  // 排重标识
+    private String compareFlag = "0";  // 题库排重比对标识
 
     private String subType;            // 试题子类类型,字典（可以为空）
+
+    @Transient
+    private double similarity;         // 试题相似度
+    @Transient
+    private String similarityDesc;     // 试题相似度描述
 
     public String getStem() {
         return stem;
@@ -108,5 +113,21 @@ public abstract class BaseQuestionEntity extends BaseLogicDeleteEntity {
 
     public void setCompareFlag(String compareFlag) {
         this.compareFlag = compareFlag;
+    }
+
+    public double getSimilarity() {
+        return similarity;
+    }
+
+    public void setSimilarity(double similarity) {
+        this.similarity = similarity;
+    }
+
+    public String getSimilarityDesc() {
+        return similarityDesc;
+    }
+
+    public void setSimilarityDesc(String similarityDesc) {
+        this.similarityDesc = similarityDesc;
     }
 }

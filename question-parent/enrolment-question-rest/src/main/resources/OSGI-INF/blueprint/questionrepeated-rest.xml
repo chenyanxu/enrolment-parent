@@ -17,6 +17,14 @@
                     <property name="getOutType" value="com.kalix.framework.core.api.persistence.JsonData"/>
                     <property name="getToUri" value="bean:questionrepeatedService?method=getAllRepeatedByQuery(${header.page}, ${header.limit}, ${header.jsonStr},${header.sort})"/>
                 </bean>
+
+                <bean class="com.kalix.framework.core.api.camel.CustomRest">
+                    <property name="path" value="/repeates"/>
+
+                    <property name="getDescription" value="查询题库重复试题列表数据"/>
+                    <property name="getOutType" value="com.kalix.framework.core.api.persistence.JsonData"/>
+                    <property name="getToUri" value="bean:questionrepeatedService?method=getRepeatedByQuery(${header.page}, ${header.limit}, ${header.jsonStr},${header.sort})"/>
+                </bean>
             </list>
         </property>
     </bean>

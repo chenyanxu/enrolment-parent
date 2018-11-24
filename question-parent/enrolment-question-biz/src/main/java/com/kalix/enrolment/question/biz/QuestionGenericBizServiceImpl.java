@@ -4,6 +4,7 @@ import com.kalix.admin.core.api.biz.IRoleBeanService;
 import com.kalix.admin.core.entities.RoleBean;
 import com.kalix.enrolment.question.api.biz.*;
 import com.kalix.enrolment.question.dto.model.BaseQuestionDTO;
+import com.kalix.enrolment.question.dto.model.CompareQuestionDTO;
 import com.kalix.enrolment.question.dto.model.RepeatedCountDTO;
 import com.kalix.enrolment.question.entities.BaseQuestionEntity;
 import com.kalix.enrolment.question.entities.QuestionRepeatedBean;
@@ -26,10 +27,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by hqj at 2018-10-31
@@ -46,6 +44,15 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
 
     protected static int MAX_REPEATED_RECORD = 1;
 
+    /**
+     * 查询试题默认排序
+     *
+     * @param page
+     * @param limit
+     * @param jsonStr
+     * @param sort
+     * @return
+     */
     @Override
     public JsonData getAllEntityByQuery(Integer page, Integer limit, String jsonStr, String sort) {
         if (StringUtils.isEmpty(sort)) {
@@ -54,6 +61,23 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         return super.getAllEntityByQuery(page, limit, jsonStr, sort);
     }
 
+    /**
+     * 单条试题保存成功后，进行排重比对
+     *
+     * @param entity
+     * @param status
+     */
+    @Override
+    public void afterSaveEntity(TP entity, JsonStatus status) {
+        super.afterSaveEntity(entity, status);
+        this.compareSingleSimilarity(entity, status);
+    }
+
+    /**
+     * 获取题型名称
+     *
+     * @return
+     */
     @Override
     public String getQuestionTypeName() {
         String questionType = this.getQuestionType();
@@ -61,6 +85,11 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         return enrolmentDictBean.getLabel();
     }
 
+    /**
+     * 获取题型beans
+     *
+     * @return
+     */
     @Override
     public String getQuestionBeans() {
         String questionType = this.getQuestionType();
@@ -68,6 +97,12 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         return enrolmentDictBean.getDescription() == null ? "" : enrolmentDictBean.getDescription().toLowerCase() + "s";
     }
 
+    /**
+     * 获取题型子类名称
+     *
+     * @param subType
+     * @return
+     */
     @Override
     public String getSubTypeName(String subType) {
         String subTypeName = "";
@@ -80,6 +115,12 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         return subTypeName;
     }
 
+    /**
+     * 获取试题审核角色名称
+     *
+     * @param subType
+     * @return
+     */
     @Override
     public String getAuditRoleName(String subType) {
         String auditRoleName = "";
@@ -91,13 +132,14 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         return auditRoleName;
     }
 
-    @Override
-    @Transactional
-    public int updateCompareFlag(Long id, String compareFlag) {
-        String sql = "update " + this.dao.getTableName() + " set compareFlag = " + compareFlag + " where id = " + id;
-        return this.dao.updateNativeQuery(sql);
-    }
-
+    /**
+     * 试题审核查询
+     *
+     * @param page
+     * @param limit
+     * @param subType
+     * @return
+     */
     @Override
     public JsonData getAllAuditEntityByQuery(Integer page, Integer limit, String subType) {
 
@@ -229,6 +271,14 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         return dao.findByNativeSql(sql, page, limit, cls);
     }
 
+    /**
+     * 试题审核结果批量处理
+     *
+     * @param entityIds
+     * @param checkFlag
+     * @param reason
+     * @return
+     */
     @Override
     @Transactional
     public JsonStatus batchAudit(String entityIds, String checkFlag, String reason) {
@@ -258,6 +308,11 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         return jsonStatus;
     }
 
+    /**
+     * 试题排重比较相似度
+     *
+     * @return
+     */
     @Override
     public JsonStatus compareAllSimilarity(String subType) {
         System.out.println("=====start");
@@ -330,18 +385,6 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                             questionRepeatedBean.setSimilarity(result);
                             questionRepeatedBean.setSimilarityDesc(resultDesc);
                             questionRepeatedBeanService.saveSimilarity(questionRepeatedBean);
-
-                        /*questionRepeatedBean = new QuestionRepeatedBean();
-                        questionRepeatedBean.setQuestionType(questionType);
-                        questionRepeatedBean.setQuestionTypeName(questionTypeName);
-                        questionRepeatedBean.setQuestionBeans(questionBeans);
-                        questionRepeatedBean.setSubType(subType);
-                        questionRepeatedBean.setSubTypeName(subTypeName);
-                        questionRepeatedBean.setFirstQuestionId(secondId);
-                        questionRepeatedBean.setSecondQuestionId(firstId);
-                        questionRepeatedBean.setSimilarity(result);
-                        questionRepeatedBean.setSimilarityDesc(resultDesc);
-                        questionRepeatedBeanService.saveSimilarity(questionRepeatedBean);*/
                         }
                     }
                     System.out.print(".");
@@ -360,158 +403,374 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         return jsonStatus;
     }
 
+    /**
+     * 更新试题排重比较相似度结果状态（0未比较，1比较完成）
+     *
+     * @param id
+     * @param compareFlag
+     * @return
+     */
     @Override
-    public JsonData validateRepeates(BaseQuestionDTO baseQuestionDTO) {
+    @Transactional
+    public int updateCompareFlag(Long id, String compareFlag) {
+        String sql = "update " + this.dao.getTableName() + " set compareFlag = " + compareFlag + " where id = " + id;
+        return this.dao.updateNativeQuery(sql);
+    }
+
+    /**
+     * 新增或编辑题型数据时验证排重(前台需要传递题干)
+     *
+     * @param compareQuestionDTO
+     * @return
+     */
+    @Override
+    public JsonData validateRepeates(CompareQuestionDTO compareQuestionDTO) {
         JsonData jsonData = new JsonData();
-        List<RepeatedCountDTO> repeateList = new ArrayList<RepeatedCountDTO>();
-
-        Long questionId = baseQuestionDTO.getQuestionId() == null ? 0 : baseQuestionDTO.getQuestionId();
-        String stem = baseQuestionDTO.getStem();
-        String subType = baseQuestionDTO.getSubType();
-
-        Class cls = null;
-        TP entity = null;
-        try {
-            cls = Class.forName(this.entityClassName);
-            entity = (TP) cls.newInstance();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        entity.setId(questionId.longValue());
-        entity.setStem(stem);
-
+        Long questionId = compareQuestionDTO.getQuestionId() == null ? 0 : compareQuestionDTO.getQuestionId();
+        String stem = compareQuestionDTO.getStem();
+        String subType = compareQuestionDTO.getSubType();
         String sql = "";
         if (StringUtils.isEmpty(subType)) {
-            if (entity.getId() > 0) {
-                sql = "select t.* from " + dao.getTableName() + " t "
-                        + " where t.delFlag = '0' and t.checkFlag <> '2' and t.id <> " + entity.getId();
+            if (questionId > 0) {
+                sql = "select t.* from " + dao.getTableName() + " t " +
+                        " where t.delFlag = '0' and t.checkFlag <> '2' and t.id <> " + questionId;
             } else {
-                sql = "select t.* from " + dao.getTableName() + " t "
-                        + " where t.delFlag = '0' and t.checkFlag <> '2'";
+                sql = "select t.* from " + dao.getTableName() + " t " +
+                        " where t.delFlag = '0' and t.checkFlag <> '2'";
             }
         } else {
-            if (entity.getId() > 0) {
-                sql = "select t.* from " + dao.getTableName() + " t "
-                        + " where t.delFlag = '0' and t.checkFlag <> '2' and t.subType = '" + subType + "' and t.id <> " + entity.getId();
+            if (questionId > 0) {
+                sql = "select t.* from " + dao.getTableName() + " t " +
+                        " where t.delFlag = '0' and t.checkFlag <> '2' " +
+                        " and t.subType = '" + subType + "' and t.id <> " + questionId;
             } else {
-                sql = "select t.* from " + dao.getTableName() + " t "
-                        + " where t.delFlag = '0' and t.checkFlag <> '2' and t.subType = '" + subType + "'";
+                sql = "select t.* from " + dao.getTableName() + " t " +
+                        " where t.delFlag = '0' and t.checkFlag <> '2' " +
+                        " and t.subType = '" + subType + "'";
             }
+        }
+        Class cls = null;
+        try {
+            cls = Class.forName(this.entityClassName);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
         List list = dao.findByNativeSql(sql, cls);
-        List<TP> referenceList = new ArrayList<TP>();
-        referenceList.addAll(list);
-
         double similarity = this.getSimilarity();
-        List<BaseQuestionDTO> dtoList = this.doRepeat(entity, referenceList, similarity, subType);
-
-        RepeatedCountDTO repeatedCountDTO = new RepeatedCountDTO();
-        if (dtoList != null && dtoList.size() > 0) {
-            String name = "";
-            if (StringUtils.isEmpty(subType)) {
-                name = this.getQuestionTypeName() + "题目";
-            } else {
-                name = this.getQuestionTypeName() + "-" + this.getSubTypeName(subType) + "题目";
-            }
-            repeatedCountDTO.setName(name);
-            repeatedCountDTO.setRepeateList(dtoList);
-            repeateList.add(repeatedCountDTO);
-        }
+        List repeateList = this.doRepeat(stem, list, similarity);
 
         jsonData.setData(repeateList);
+        jsonData.setTotalCount((long) repeateList.size());
         return jsonData;
     }
 
+    /**
+     * 保留重复
+     *
+     * @param questionId
+     * @return
+     */
     @Override
-    public List getSingleRepeates(String subType, boolean isAll) {
-        List<RepeatedCountDTO> repeateList = new ArrayList<RepeatedCountDTO>();
-        String questionType = this.getQuestionType();
-        String questionTypeName = this.getQuestionTypeName();
-        String questionBeans = this.getQuestionBeans();
-        String subTypeName = this.getSubTypeName(subType);
-        String sql = "";
-        String sqlAll = "";
-        if (StringUtils.isEmpty(subType)) {
-            sql = "select t.* from " + dao.getTableName() + " t "
-                    + " where t.delFlag = '0' and t.repeatedFlag = '0' and t.checkFlag <> '2'";
-            sqlAll = "select t.* from " + dao.getTableName() + " t "
-                    + " where t.delFlag = '0' and t.checkFlag <> '2'";
-        } else {
-            sql = "select t.* from " + dao.getTableName() + " t "
-                    + " where t.delFlag = '0' and t.repeatedFlag = '0' and t.checkFlag <> '2'"
-                    + " and t.subType = '" + subType + "'";
-            sqlAll = "select t.* from " + dao.getTableName() + " t "
-                    + " where t.delFlag = '0' and t.checkFlag <> '2'"
-                    + " and t.subType = '" + subType + "'";
-        }
-        Class cls = null;
+    @Transactional
+    public JsonStatus doSaveRepeate(Long questionId) {
+        JsonStatus jsonStatus = new JsonStatus();
         try {
-            cls = Class.forName(this.entityClassName);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            TP entity = (TP) this.dao.get(questionId);
+            entity.setRepeatedFlag("1");
+            entity.setUpdateBy(shiroService.getCurrentUserLoginName());
+            entity.setUpdateById(shiroService.getCurrentUserId());
+            this.dao.save(entity);
+            jsonStatus.setSuccess(true);
+            jsonStatus.setMsg("试题保留成功！");
+        } catch (Exception e) {
+            jsonStatus.setSuccess(false);
+            jsonStatus.setMsg(e.getMessage());
         }
-        List list = dao.findByNativeSql(sql, cls);
-        List listAll = dao.findByNativeSql(sqlAll, cls);
-        List<TP> referenceList = new ArrayList<TP>();
-        referenceList.addAll(listAll);
+        return jsonStatus;
+    }
 
-        double similarity = this.getSimilarity();
-        int count = 0; // 记录比对重复结果个数
-        for (int i = 0; i < list.size(); i++) {
-            TP entity = (TP) list.get(i);
-            System.out.println(i + "id:=" + entity.getId());
-            List<BaseQuestionDTO> dtoList = this.doRepeat(entity, referenceList, similarity, subType);
+    /**
+     * 删除重复
+     *
+     * @param questionId
+     * @return
+     */
+    @Override
+    @Transactional
+    public JsonStatus doDeleteRepeate(Long questionId) {
+        JsonStatus jsonStatus = new JsonStatus();
+        try {
+            TP entity = (TP) this.dao.get(questionId);
+            entity.setDelFlag("1");
+            entity.setRepeatedFlag("1");
+            entity.setUpdateBy(shiroService.getCurrentUserLoginName());
+            entity.setUpdateById(shiroService.getCurrentUserId());
+            this.dao.save(entity);
+            jsonStatus.setSuccess(true);
+            jsonStatus.setMsg("试题删除成功！");
+        } catch (Exception e) {
+            jsonStatus.setSuccess(false);
+            jsonStatus.setMsg(e.getMessage());
+        }
+        return jsonStatus;
+    }
 
-            RepeatedCountDTO repeatedCountDTO = new RepeatedCountDTO();
-            if (dtoList != null && dtoList.size() > 0) {
-                // 有重复
-                BaseQuestionDTO baseQuestionDTO = new BaseQuestionDTO();
-                baseQuestionDTO.setQuestionId(entity.getId());
-                baseQuestionDTO.setStem(entity.getStem());
-                baseQuestionDTO.setSimilarity("");
+    @Override
+    public JsonStatus compareSingleSimilarity(Long questionId) {
+        JsonStatus jsonStatus = new JsonStatus();
+        // 获取比对参数设置
+        boolean compareStatus = this.getCompareStatus();
+        if (compareStatus) {
+            String msg = "排重比对进行中,请等待!";
+            jsonStatus.setSuccess(false);
+            jsonStatus.setMsg(msg);
+            return jsonStatus;
+        }
+        // 修改比对参数设置，防止多次并发执行
+        this.updateCompareStatus(1L, true);
+        // 开始排重比对数据
+        TP entity = this.getEntity(questionId);
+        this.compareSingleSimilarity(entity, jsonStatus);
+        // 比对成功，修改比对参数设置，可以进行下一次比对
+        this.updateCompareStatus(1L, false);
+        return jsonStatus;
+    }
 
-                baseQuestionDTO.setQuestionType(questionType);
-                baseQuestionDTO.setQuestionTypeName(questionTypeName);
-                baseQuestionDTO.setQuestionBeans(questionBeans);
-                baseQuestionDTO.setSubType(subType);
-                baseQuestionDTO.setSubTypeName(subTypeName);
+    protected double getSimilarity() {
+        double defaultSimilarity = 0.5d;
+        QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
+        if (questionSettingBean != null) {
+            defaultSimilarity = questionSettingBean.getSimilarity() == null ?
+                    defaultSimilarity : questionSettingBean.getSimilarity().doubleValue();
+        }
+        return defaultSimilarity;
+    }
 
-                baseQuestionDTO.setAnalysis(entity.getAnalysis());
-                baseQuestionDTO.setCheckFlag(entity.getCheckFlag());
-                baseQuestionDTO.setCheckerId(entity.getCheckerId());
-                baseQuestionDTO.setChecker(entity.getChecker());
-                baseQuestionDTO.setCheckDate(entity.getCheckDate());
-                baseQuestionDTO.setCreateBy(entity.getCreateBy());
-                baseQuestionDTO.setCreationDate(entity.getCreationDate());
-                dtoList.add(0, baseQuestionDTO);
-                count++;
-
-                String name = "";
-                if (StringUtils.isEmpty(subType)) {
-                    name = questionTypeName + "题目" + count;
-                } else {
-                    name = questionTypeName + "-" + subTypeName + "题目" + count;
+    protected List doRepeat(String compareStem, List<TP> list, double similarity) {
+        List rtn = new ArrayList<>();
+        list.stream().parallel().forEach(n -> {
+            String stem = n.getStem();
+            // 词林相似度
+            // double result = Similarity.cilinSimilarity(compareStem, stem);
+            // 短语相似度
+            // double result = Similarity.phraseSimilarity(compareStem, stem);
+            // 词形词序句子相似度
+            double result = Similarity.morphoSimilarity(compareStem, stem);
+            System.out.print(".");
+            // 优化的编辑距离句子相似度
+            // double result = Similarity.editDistanceSimilarity(compareStem, stem);
+            // 标准编辑距离句子相似度
+            // double result = Similarity.standardEditDistanceSimilarity(compareStem, stem);
+            // gregor编辑距离句子相似度
+            // double result = Similarity.gregorEditDistanceSimilarity(compareStem, stem);
+            // 拼音相似度
+            // double result = Similarity.pinyinSimilarity(compareStem, stem);
+            // 概念相似度
+            // double result = Similarity.conceptSimilarity(compareStem, stem);
+            // 字面相似度
+            // double result = Similarity.charBasedSimilarity(compareStem, stem);
+            // double result = 0.7;
+            if (result > similarity) {
+                String similarityDesc = "词形词序句子相似度" + new DecimalFormat("0.00").format(result);
+                n.setSimilarity(result);
+                n.setSimilarityDesc(similarityDesc);
+                rtn.add(n);
+            }
+        });
+//        for (int i = 0; i < list.size(); i++) {
+//            TP entity = list.get(i);
+//            String stem = entity.getStem();
+//            // 词林相似度
+//            // double result = Similarity.cilinSimilarity(compareStem, stem);
+//            // 短语相似度
+//            // double result = Similarity.phraseSimilarity(compareStem, stem);
+//            // 词形词序句子相似度
+//            double result = Similarity.morphoSimilarity(compareStem, stem);
+//            // 优化的编辑距离句子相似度
+//            // double result = Similarity.editDistanceSimilarity(compareStem, stem);
+//            // 标准编辑距离句子相似度
+//            // double result = Similarity.standardEditDistanceSimilarity(compareStem, stem);
+//            // gregor编辑距离句子相似度
+//            // double result = Similarity.gregorEditDistanceSimilarity(compareStem, stem);
+//            // 拼音相似度
+//            // double result = Similarity.pinyinSimilarity(compareStem, stem);
+//            // 概念相似度
+//            // double result = Similarity.conceptSimilarity(compareStem, stem);
+//            // 字面相似度
+//            // double result = Similarity.charBasedSimilarity(compareStem, stem);
+//            // double result = 0.7;
+//            if (result > similarity) {
+//                String similarityDesc = "词形词序句子相似度" + new DecimalFormat("0.00").format(result);
+//                entity.setSimilarity(result);
+//                entity.setSimilarityDesc(similarityDesc);
+//                rtn.add(entity);
+//            }
+//        }
+        // 排序
+        Collections.sort(rtn, new Comparator<TP>() {
+            public int compare(TP p1, TP p2) {
+                if (p1.getSimilarity() > p2.getSimilarity()) {
+                    return 1;
                 }
-                repeatedCountDTO.setName(name);
-                repeatedCountDTO.setRepeateList(dtoList);
-                repeateList.add(repeatedCountDTO);
+                if (p1.getSimilarity() == p2.getSimilarity()) {
+                    return 0;
+                }
+                return -1;
+            }
+        });
+        return rtn;
+    }
+
+    protected void compareSingleSimilarity(TP entity, JsonStatus jsonStatus) {
+        System.out.println("=====start");
+        System.out.println(new Date());
+        try {
+            String subType = entity.getSubType();
+            String questionType = this.getQuestionType();
+            String questionTypeName = this.getQuestionTypeName();
+            String questionBeans = this.getQuestionBeans();
+            String subTypeName = this.getSubTypeName(subType);
+            // 开始排重比对数据
+            String sqlAll = "";
+            if (StringUtils.isEmpty(subType)) {
+                sqlAll = "select t.* from " + dao.getTableName() + " t "
+                        + " where t.delFlag = '0' and t.checkFlag <> '2' and id <>" + entity.getId();
             } else {
-                // 无重复
-                entity.setRepeatedFlag("1");
-                this.dao.save(entity);
+                sqlAll = "select t.* from " + dao.getTableName() + " t "
+                        + " where t.delFlag = '0' and t.checkFlag <> '2'"
+                        + " and t.subType = '" + subType + "' and id <>" + entity.getId();
             }
-            if (!isAll) {
-                if (count >= MAX_REPEATED_RECORD) {
-                    break;
-                }
+            Class cls = null;
+            try {
+                cls = Class.forName(this.entityClassName);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
-        }
+            List listAll = dao.findByNativeSql(sqlAll, cls);
+            long firstId = entity.getId();
+            String firstStem = entity.getStem();
+            for (int j = 0; j < listAll.size(); j++) {
+                TP secondEntity = (TP) listAll.get(j);
+                long secondId = secondEntity.getId();
+                String secondStem = secondEntity.getStem();
+                double result = Similarity.morphoSimilarity(firstStem, secondStem);
+                if (result > 0.7) {
+                    String resultDesc = "词形词序句子相似度" + new DecimalFormat("0.0000").format(result);
 
-        return repeateList;
+                    QuestionRepeatedBean questionRepeatedBean = new QuestionRepeatedBean();
+                    questionRepeatedBean.setQuestionType(questionType);
+                    questionRepeatedBean.setQuestionTypeName(questionTypeName);
+                    questionRepeatedBean.setQuestionBeans(questionBeans);
+                    questionRepeatedBean.setSubType(subType);
+                    questionRepeatedBean.setSubTypeName(subTypeName);
+                    questionRepeatedBean.setFirstQuestionId(firstId);
+                    questionRepeatedBean.setSecondQuestionId(secondId);
+                    questionRepeatedBean.setSimilarity(result);
+                    questionRepeatedBean.setSimilarityDesc(resultDesc);
+                    questionRepeatedBeanService.saveSimilarity(questionRepeatedBean);
+                }
+                System.out.print(".");
+            }
+            this.updateCompareFlag(entity.getId(), "1");
+            jsonStatus.setSuccess(true);
+        } catch (Exception e) {
+            jsonStatus.setSuccess(false);
+            jsonStatus.setMsg(e.getMessage());
+        }
+        System.out.println(new Date());
+        System.out.println("=====end");
+    }
+
+    /**
+     * 生成题库单项题型预览结果
+     *
+     * @param tempMap
+     * @param subType
+     * @return
+     */
+    protected String createSinglePreview(Map tempMap, String subType) {
+
+        String htmlStr = "";
+
+        Configuration configuration = new Configuration();
+
+        // dataMap 要填入模本的数据文件
+        // 设置模本装置方法和路径,
+        Template t = null;
+        try {
+            String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
+            if (realPath.charAt(realPath.length() - 1) != '/') {
+                realPath += "/";
+            }
+            String reviewBaseDir = realPath + "reviewfiles";
+            String ftlPath = reviewBaseDir + "/ftl";
+            initReviewDir(reviewBaseDir, "ftl", "");
+            configuration.setDirectoryForTemplateLoading(new File(ftlPath));
+            // 获取要装载的模板
+            String fileName = this.getTempName(subType);
+            t = configuration.getTemplate(fileName, "utf-8");
+            StringWriter stringWriter = new StringWriter();
+            BufferedWriter writer = new BufferedWriter(stringWriter);
+            t.setEncoding("UTF-8");
+            t.process(tempMap, writer);
+            htmlStr = stringWriter.toString();
+
+            writer.flush();
+            writer.close();
+
+        } catch (Exception e) {
+            //logger.error("导出出错", e);
+            e.printStackTrace();
+            // throw new BusinessException(CommonResultEnum.COMMON_ERROR_637);
+        }
+        return htmlStr;
+    }
+
+    /**
+     * 初始化预览文件夹
+     * 不存在则创建文件夹
+     *
+     * @param reviewBaseDir
+     * @param fileTypeFolder
+     * @param folderName
+     * @return
+     */
+    private void initReviewDir(String reviewBaseDir, String fileTypeFolder, String folderName) {
+        String fileTypePath = reviewBaseDir + "/" + fileTypeFolder;
+        String filePath = "";
+        if (folderName.equals("")) {
+            filePath = fileTypePath;
+        } else {
+            filePath = fileTypePath + "/" + folderName;
+        }
+        File fileBaseDir = new File(reviewBaseDir);
+        if (!fileBaseDir.exists()) {
+            fileBaseDir.mkdir();
+        }
+        File fileTypeDir = new File(fileTypePath);
+        if (!fileTypeDir.exists()) {
+            fileTypeDir.mkdir();
+        }
+        File file = new File(filePath);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+    }
+
+    public void setEnrolmentDictBeanService(IEnrolmentDictBeanService enrolmentDictBeanService) {
+        this.enrolmentDictBeanService = enrolmentDictBeanService;
+    }
+
+    public void setRoleBeanService(IRoleBeanService roleBeanService) {
+        this.roleBeanService = roleBeanService;
+    }
+
+    public void setQuestionSettingBeanService(IQuestionSettingBeanService questionSettingBeanService) {
+        this.questionSettingBeanService = questionSettingBeanService;
+    }
+
+    public void setQuestionRepeatedBeanService(IQuestionRepeatedBeanService questionRepeatedBeanService) {
+        this.questionRepeatedBeanService = questionRepeatedBeanService;
     }
 
     @Override
@@ -695,120 +954,6 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         return jsonData;
     }
 
-    @Override
-    @Transactional
-    public JsonStatus doSaveRepeate(Long questionId) {
-        JsonStatus jsonStatus = new JsonStatus();
-        try {
-            TP entity = (TP) this.dao.get(questionId);
-            entity.setRepeatedFlag("1");
-            entity.setUpdateBy(shiroService.getCurrentUserLoginName());
-            entity.setUpdateById(shiroService.getCurrentUserId());
-            this.dao.save(entity);
-            jsonStatus.setSuccess(true);
-            jsonStatus.setMsg("试题保留成功！");
-        } catch (Exception e) {
-            jsonStatus.setSuccess(false);
-            jsonStatus.setMsg(e.getMessage());
-        }
-        return jsonStatus;
-    }
-
-    @Override
-    @Transactional
-    public JsonStatus doDeleteRepeate(Long questionId) {
-        JsonStatus jsonStatus = new JsonStatus();
-        try {
-            TP entity = (TP) this.dao.get(questionId);
-            entity.setDelFlag("1");
-            entity.setRepeatedFlag("1");
-            entity.setUpdateBy(shiroService.getCurrentUserLoginName());
-            entity.setUpdateById(shiroService.getCurrentUserId());
-            this.dao.save(entity);
-            jsonStatus.setSuccess(true);
-            jsonStatus.setMsg("试题删除成功！");
-        } catch (Exception e) {
-            jsonStatus.setSuccess(false);
-            jsonStatus.setMsg(e.getMessage());
-        }
-        return jsonStatus;
-    }
-
-    @Override
-    @Transactional
-    public JsonStatus initAllRepeated(String subType) {
-        JsonStatus jsonStatus = new JsonStatus();
-        String questionType = this.getQuestionType();
-        String questionTypeName = this.getQuestionTypeName();
-        String questionBeans = this.getQuestionBeans();
-        String subTypeName = this.getSubTypeName(subType);
-        String sql = "";
-        if (StringUtils.isEmpty(subType)) {
-            sql = "select t.* from " + dao.getTableName() + " t "
-                    + " where t.delFlag = '0' and t.checkFlag <> '2'";
-        } else {
-            sql = "select t.* from " + dao.getTableName() + " t "
-                    + " where t.delFlag = '0' and t.checkFlag <> '2'"
-                    + " and t.subType = '" + subType + "'";
-        }
-        Class cls = null;
-        try {
-            cls = Class.forName(this.entityClassName);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        List list = dao.findByNativeSql(sql, cls);
-        for (int i = 0; i < list.size(); i++) {
-            TP firstEntity = (TP) list.get(i);
-            long firstId = firstEntity.getId();
-            String firstStem = firstEntity.getStem();
-            for (int j = i + 1; j < list.size(); j++) {
-                TP secondEntity = (TP) list.get(j);
-                long secondId = secondEntity.getId();
-                String secondStem = secondEntity.getStem();
-                double result = Similarity.morphoSimilarity(firstStem, secondStem);
-                String resultDesc = "词形词序句子相似度" + new DecimalFormat("0.0000").format(result);
-
-                QuestionRepeatedBean questionRepeatedBean = new QuestionRepeatedBean();
-                questionRepeatedBean.setQuestionType(questionType);
-                questionRepeatedBean.setQuestionTypeName(questionTypeName);
-                questionRepeatedBean.setQuestionBeans(questionBeans);
-                questionRepeatedBean.setSubType(subType);
-                questionRepeatedBean.setSubTypeName(subTypeName);
-                questionRepeatedBean.setFirstQuestionId(firstId);
-                questionRepeatedBean.setSecondQuestionId(secondId);
-                questionRepeatedBean.setSimilarity(result);
-                questionRepeatedBean.setSimilarityDesc(resultDesc);
-                questionRepeatedBeanService.saveEntity(questionRepeatedBean);
-
-                questionRepeatedBean = new QuestionRepeatedBean();
-                questionRepeatedBean.setQuestionType(questionType);
-                questionRepeatedBean.setQuestionTypeName(questionTypeName);
-                questionRepeatedBean.setQuestionBeans(questionBeans);
-                questionRepeatedBean.setSubType(subType);
-                questionRepeatedBean.setSubTypeName(subTypeName);
-                questionRepeatedBean.setFirstQuestionId(secondId);
-                questionRepeatedBean.setSecondQuestionId(firstId);
-                questionRepeatedBean.setSimilarity(result);
-                questionRepeatedBean.setSimilarityDesc(resultDesc);
-                questionRepeatedBeanService.saveEntity(questionRepeatedBean);
-                System.out.print(".");
-            }
-        }
-        jsonStatus.setSuccess(true);
-        return jsonStatus;
-    }
-
-    private double getSimilarity() {
-        double defaultSimilarity = 0.5d;
-        QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
-        if (questionSettingBean != null) {
-            defaultSimilarity = questionSettingBean.getSimilarity() == null ?
-                    defaultSimilarity : questionSettingBean.getSimilarity().doubleValue();
-        }
-        return defaultSimilarity;
-    }
-
     private List doRepeat(TP entity, List<TP> list, double similarity, String subType) {
         long id = entity.getId();
         String stem = entity.getStem();
@@ -928,97 +1073,5 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
 //            }
 //        });
         return dtoList;
-    }
-
-    /**
-     * 生成题库单项题型预览结果
-     *
-     * @param tempMap
-     * @param subType
-     * @return
-     */
-    protected String createSinglePreview(Map tempMap, String subType) {
-
-        String htmlStr = "";
-
-        Configuration configuration = new Configuration();
-
-        // dataMap 要填入模本的数据文件
-        // 设置模本装置方法和路径,
-        Template t = null;
-        try {
-            String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
-            if (realPath.charAt(realPath.length() - 1) != '/') {
-                realPath += "/";
-            }
-            String reviewBaseDir = realPath + "reviewfiles";
-            String ftlPath = reviewBaseDir + "/ftl";
-            initReviewDir(reviewBaseDir, "ftl", "");
-            configuration.setDirectoryForTemplateLoading(new File(ftlPath));
-            // 获取要装载的模板
-            String fileName = this.getTempName(subType);
-            t = configuration.getTemplate(fileName, "utf-8");
-            StringWriter stringWriter = new StringWriter();
-            BufferedWriter writer = new BufferedWriter(stringWriter);
-            t.setEncoding("UTF-8");
-            t.process(tempMap, writer);
-            htmlStr = stringWriter.toString();
-
-            writer.flush();
-            writer.close();
-
-        } catch (Exception e) {
-            //logger.error("导出出错", e);
-            e.printStackTrace();
-            // throw new BusinessException(CommonResultEnum.COMMON_ERROR_637);
-        }
-        return htmlStr;
-    }
-
-    /**
-     * 初始化预览文件夹
-     * 不存在则创建文件夹
-     *
-     * @param reviewBaseDir
-     * @param fileTypeFolder
-     * @param folderName
-     * @return
-     */
-    private void initReviewDir(String reviewBaseDir, String fileTypeFolder, String folderName) {
-        String fileTypePath = reviewBaseDir + "/" + fileTypeFolder;
-        String filePath = "";
-        if (folderName.equals("")) {
-            filePath = fileTypePath;
-        } else {
-            filePath = fileTypePath + "/" + folderName;
-        }
-        File fileBaseDir = new File(reviewBaseDir);
-        if (!fileBaseDir.exists()) {
-            fileBaseDir.mkdir();
-        }
-        File fileTypeDir = new File(fileTypePath);
-        if (!fileTypeDir.exists()) {
-            fileTypeDir.mkdir();
-        }
-        File file = new File(filePath);
-        if (!file.exists()) {
-            file.mkdir();
-        }
-    }
-
-    public void setEnrolmentDictBeanService(IEnrolmentDictBeanService enrolmentDictBeanService) {
-        this.enrolmentDictBeanService = enrolmentDictBeanService;
-    }
-
-    public void setRoleBeanService(IRoleBeanService roleBeanService) {
-        this.roleBeanService = roleBeanService;
-    }
-
-    public void setQuestionSettingBeanService(IQuestionSettingBeanService questionSettingBeanService) {
-        this.questionSettingBeanService = questionSettingBeanService;
-    }
-
-    public void setQuestionRepeatedBeanService(IQuestionRepeatedBeanService questionRepeatedBeanService) {
-        this.questionRepeatedBeanService = questionRepeatedBeanService;
     }
 }

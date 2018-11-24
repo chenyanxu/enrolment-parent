@@ -9,7 +9,7 @@ import com.kalix.framework.core.api.persistence.JsonStatus;
  */
 public interface IQuestionSettingBeanService extends IBizService<QuestionSettingBean> {
 
-    int updateRepeated(Long id, Boolean repeated);
+    /*int updateRepeated(Long id, Boolean repeated);*/
 
     int updateCompareCompletion(Long id, Boolean compareStatus);
 

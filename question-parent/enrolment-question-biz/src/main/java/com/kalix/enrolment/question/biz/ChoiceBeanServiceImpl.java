@@ -2,12 +2,16 @@ package com.kalix.enrolment.question.biz;
 
 import com.kalix.enrolment.question.api.biz.IChoiceBeanService;
 import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
+import com.kalix.enrolment.question.api.biz.IQuestionAuditService;
+import com.kalix.enrolment.question.api.biz.IRepeatedService;
 import com.kalix.enrolment.question.api.dao.IChoiceBeanDao;
 import com.kalix.enrolment.question.biz.util.Constants;
+import com.kalix.enrolment.question.dto.model.CompareQuestionDTO;
 import com.kalix.enrolment.question.entities.ChoiceBean;
 import com.kalix.enrolment.question.entities.PaperQuesBean;
 import com.kalix.enrolment.question.entities.QuestionSettingBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
+import com.kalix.framework.core.api.persistence.JsonData;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,7 +21,7 @@ import java.util.*;
  * Created by zangyanming at 2018-09-13
  */
 public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoiceBeanDao, ChoiceBean>
-        implements IChoiceBeanService, IDownloadService {
+        implements IChoiceBeanService, IQuestionAuditService, IRepeatedService, IDownloadService {
 
     private static String DICT_QUESTIONVALUE = "2";
     private static String DICT_SUBTYPE = "";
@@ -35,25 +39,13 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
     }
 
     @Override
-    public String getTempName(String subType) {
-        return TEMP_NAME;
-    }
-
-    @Override
     public String getQuestionTableName() {
         return this.dao.getTableName();
     }
 
     @Override
-    public boolean getCompareStatus() {
-        QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
-        boolean compareStatus = questionSettingBean.getCompareChoice() == null ? true : questionSettingBean.getCompareChoice();
-        return compareStatus;
-    }
-
-    @Override
-    public int updateCompareStatus(Long id, Boolean compareStatus) {
-        return questionSettingBeanService.updateCompareChoice(id, compareStatus);
+    public String getTempName(String subType) {
+        return TEMP_NAME;
     }
 
     @Override
@@ -109,6 +101,40 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
         singleTestPaper.put("question", question);
 
         return singleTestPaper;
+    }
+
+    @Override
+    public boolean getCompareStatus() {
+        QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
+        boolean compareStatus = questionSettingBean.getCompareChoice() == null ? true : questionSettingBean.getCompareChoice();
+        return compareStatus;
+    }
+
+    @Override
+    public int updateCompareStatus(Long id, Boolean compareStatus) {
+        return questionSettingBeanService.updateCompareChoice(id, compareStatus);
+    }
+
+    @Override
+    public JsonData validateRepeates(CompareQuestionDTO compareQuestionDTO) {
+        JsonData jsonData = new JsonData();
+        Long questionId = compareQuestionDTO.getQuestionId() == null ? 0 : compareQuestionDTO.getQuestionId();
+        String stem = compareQuestionDTO.getStem();
+        String sql = "";
+        if (questionId > 0) {
+            sql = "select t.* from " + dao.getTableName() + " t " +
+                    " where t.delFlag = '0' and t.checkFlag <> '2' and t.id <> " + questionId;
+        } else {
+            sql = "select t.* from " + dao.getTableName() + " t " +
+                    " where t.delFlag = '0' and t.checkFlag <> '2'";
+        }
+        List list = dao.findByNativeSql(sql, ChoiceBean.class);
+        double similarity = this.getSimilarity();
+        List repeateList = this.doRepeat(stem, list, similarity);
+
+        jsonData.setData(repeateList);
+        jsonData.setTotalCount((long) repeateList.size());
+        return jsonData;
     }
 
     @Override

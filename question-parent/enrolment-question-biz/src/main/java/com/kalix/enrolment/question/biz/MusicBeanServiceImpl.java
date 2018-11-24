@@ -2,6 +2,8 @@ package com.kalix.enrolment.question.biz;
 
 import com.kalix.enrolment.question.api.biz.IMusicBeanService;
 import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
+import com.kalix.enrolment.question.api.biz.IQuestionAuditService;
+import com.kalix.enrolment.question.api.biz.IRepeatedService;
 import com.kalix.enrolment.question.api.dao.IMusicBeanDao;
 import com.kalix.enrolment.question.entities.MusicBean;
 import com.kalix.enrolment.question.entities.QuestionSettingBean;
@@ -14,7 +16,7 @@ import java.util.Map;
  * Created by zangyanming at 2018-09-13
  */
 public class MusicBeanServiceImpl extends QuestionGenericBizServiceImpl<IMusicBeanDao, MusicBean>
-        implements IMusicBeanService, IDownloadService {
+        implements IMusicBeanService, IQuestionAuditService, IRepeatedService, IDownloadService {
 
     private static String DICT_QUESTIONVALUE = "4";
     private static String DICT_SUBTYPE = "";
@@ -32,13 +34,18 @@ public class MusicBeanServiceImpl extends QuestionGenericBizServiceImpl<IMusicBe
     }
 
     @Override
+    public String getQuestionTableName() {
+        return this.dao.getTableName();
+    }
+
+    @Override
     public String getTempName(String subType) {
         return TEMP_NAME;
     }
 
     @Override
-    public String getQuestionTableName() {
-        return this.dao.getTableName();
+    public Map<String, Object> createSingleTestPaper(Map paperMap) {
+        return null;
     }
 
     @Override
@@ -51,11 +58,6 @@ public class MusicBeanServiceImpl extends QuestionGenericBizServiceImpl<IMusicBe
     @Override
     public int updateCompareStatus(Long id, Boolean compareStatus) {
         return questionSettingBeanService.updateCompareMusic(id, compareStatus);
-    }
-
-    @Override
-    public Map<String, Object> createSingleTestPaper(Map paperMap) {
-        return null;
     }
 
     @Override

@@ -8,6 +8,7 @@ Embed-Dependency:*;artifactId=!framework-core-api|framework-core-impl|framework-
 Import-Package: com.kalix.framework.core.util,\
                 com.kalix.framework.core.api.osgi,\
                 com.kalix.framework.core.api.security,\
+                com.kalix.framework.core.api.security.model,\
                 com.kalix.framework.core.api.system,\
                 com.kalix.framework.core.api.persistence,\
                 com.kalix.framework.core.api.web.model,\

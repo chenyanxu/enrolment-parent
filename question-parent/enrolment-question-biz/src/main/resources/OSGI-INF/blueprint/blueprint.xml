@@ -252,11 +252,16 @@
         <property name="paperBeanService" ref="paperBeanServiceImpl"/>
         <property name="ruleBeanService" ref="ruleBeanServiceImpl"/>
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
-        <property name="questionSettingBeanService" ref="questionSettingBeanServiceImpl"/>
         <property name="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"/>
     </bean>
     <service id="questionCommonBizService" ref="questionCommonBizServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IQuestionCommonBizService"/>
+    <service ref="questionCommonBizServiceImpl"
+             interface="com.kalix.middleware.websocket.api.biz.IWebsocketService">
+        <service-properties>
+            <entry key="wsMessage" value="QuestionRepeatedMessage"/>
+        </service-properties>
+    </service>
 
     <!-- 题库功能参数设置服务 -->
     <bean id="questionSettingBeanServiceImpl" class="com.kalix.enrolment.question.biz.QuestionSettingBeanServiceImpl">
@@ -301,37 +306,31 @@
     <service id="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IQuestionRepeatedBeanService"/>
 
-    <service interface="com.kalix.middleware.websocket.api.biz.IWebsocketService"
-             ref="questionCommonBizServiceImpl">
-        <service-properties>
-            <entry key="wsMessage" value="QuestionRepeatedMessage"/>
-        </service-properties>
-    </service>
-
+    <!-- 定时器，自动进行题库排重比对 -->
     <bean id="timeJob" class="com.kalix.enrolment.question.biz.quartz.TimeJob">
     </bean>
     <camelContext trace="false" xmlns="http://camel.apache.org/schema/blueprint">
         <route id="clusteredRoute1">
             <!--<from uri="direct:route"/>-->
             <!--<from uri="quartz2://clustergroup/clusterTimerName?job.name=demoQuartzCluster&amp;cron=0+0+0,12+*+*+?"/>-->
-            <from uri="quartz2://clustergroup/clusterTimerName1?job.name=demoQuartzCluster1&amp;cron=0+*/5+*+*+*+?"/>
+            <from uri="quartz2://clustergroup/clusterTimerName1?job.name=demoQuartzCluster1&amp;cron=0+0+*/1+*+*+?"/>
             <!--<log message="Hello World!"/>-->
             <to uri="bean:timeJob?method=compareCompletionSimilarity"/>
         </route>
         <route id="clusteredRoute2">
-            <from uri="quartz2://clustergroup/clusterTimerName2?job.name=demoQuartzCluster2&amp;cron=0+*/3+*+*+*+?"/>
+            <from uri="quartz2://clustergroup/clusterTimerName2?job.name=demoQuartzCluster2&amp;cron=0+30+*/1+*+*+?"/>
             <to uri="bean:timeJob?method=compareChoiceSimilarity"/>
         </route>
-        <route id="clusteredRoute3">
+        <!--<route id="clusteredRoute3">
             <from uri="quartz2://clustergroup/clusterTimerName3?job.name=demoQuartzCluster3&amp;cron=0+0+0,12+*+*+?"/>
             <to uri="bean:timeJob?method=compareVerseSimilarity"/>
-        </route>
+        </route>-->
         <route id="clusteredRoute4">
-            <from uri="quartz2://clustergroup/clusterTimerName4?job.name=demoQuartzCluster4&amp;cron=0+0+0,12+*+*+?"/>
+            <from uri="quartz2://clustergroup/clusterTimerName4?job.name=demoQuartzCluster4&amp;cron=0+10+*/1+*+*+?"/>
             <to uri="bean:timeJob?method=compareSubjectSimilarity"/>
         </route>
         <route id="clusteredRoute5">
-            <from uri="quartz2://clustergroup/clusterTimerName5?job.name=demoQuartzCluster5&amp;cron=0+*/10+*+*+*+?"/>
+            <from uri="quartz2://clustergroup/clusterTimerName5?job.name=demoQuartzCluster5&amp;cron=0+20+*/1+*+*+?"/>
             <to uri="bean:timeJob?method=compareInterviewSimilarity"/>
         </route>
     </camelContext>

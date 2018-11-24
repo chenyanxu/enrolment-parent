@@ -74,12 +74,12 @@
 
         <rest path="/choices/repeated/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <description>choice rest service</description>
-            <get id="route-getAllChoiceRepeates" outType="com.kalix.framework.core.api.persistence.JsonData">
+            <!--<get id="route-getAllChoiceRepeates" outType="com.kalix.framework.core.api.persistence.JsonData">
                 <description>Find all repeates</description>
                 <to uri="bean:choiceRepeatedService?method=getRepeates(${header.jsonStr}, ${header.isAll})"/>
-            </get>
+            </get>-->
 
-            <post id="route-getRepeatedChoices" type="com.kalix.enrolment.question.dto.model.BaseQuestionDTO"
+            <post id="route-getRepeatedChoices" type="com.kalix.enrolment.question.dto.model.CompareQuestionDTO"
                  outType="com.kalix.framework.core.api.persistence.JsonData">
                 <description>Find all repeated choices</description>
                 <to uri="bean:choiceRepeatedService?method=validateRepeates(${body})"/>
@@ -87,10 +87,10 @@
         </rest>
 
         <rest path="/choices/repeated/list/{questionId}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
-            <get id="route-getRepeatedChoicesById">
+            <!--<get id="route-getRepeatedChoicesById">
                 <description>Find all repeated by id</description>
                 <to uri="bean:choiceRepeatedService?method=getRepeates(${header.questionId})"/>
-            </get>
+            </get>-->
 
             <put id="route-update-RepeatedChoice" outType="com.kalix.framework.core.api.persistence.JsonStatus">
                 <description>Updates a RepeatedChoice</description>
@@ -101,6 +101,15 @@
                 <description>Logic Delete a repeated choice</description>
                 <to uri="bean:choiceRepeatedService?method=doDeleteRepeate(${header.questionId})"/>
             </delete>
+        </rest>
+
+        <rest path="/choices/repeated/compare/{questionId}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>choice repeated compare rest service</description>
+            <post id="route-compareRepeatedChoices"
+                  outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>compare choice</description>
+                <to uri="bean:choiceRepeatedService?method=compareSingleSimilarity(${header.questionId})"/>
+            </post>
         </rest>
 
         <rest path="/choices/check/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">

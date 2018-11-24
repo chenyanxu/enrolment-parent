@@ -74,12 +74,12 @@
 
         <rest path="/verses/repeated/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <description>verse rest service</description>
-            <get id="route-getAllVerseRepeates" outType="com.kalix.framework.core.api.persistence.JsonData">
+            <!--<get id="route-getAllVerseRepeates" outType="com.kalix.framework.core.api.persistence.JsonData">
                 <description>Find all repeates</description>
                 <to uri="bean:verseRepeatedService?method=getRepeates(${header.jsonStr}, ${header.isAll})"/>
-            </get>
+            </get>-->
 
-            <post id="route-getRepeatedVerses" type="com.kalix.enrolment.question.dto.model.BaseQuestionDTO"
+            <post id="route-getRepeatedVerses" type="com.kalix.enrolment.question.dto.model.CompareQuestionDTO"
                  outType="com.kalix.framework.core.api.persistence.JsonData">
                 <description>Find all repeated verses</description>
                 <to uri="bean:verseRepeatedService?method=validateRepeates(${body})"/>
@@ -87,10 +87,10 @@
         </rest>
 
         <rest path="/verses/repeated/list/{questionId}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
-            <get id="route-getRepeatedVersesById">
+            <!--<get id="route-getRepeatedVersesById">
                 <description>Find all repeated by id</description>
                 <to uri="bean:verseRepeatedService?method=getRepeates(${header.questionId})"/>
-            </get>
+            </get>-->
 
             <put id="route-update-RepeatedVerse" outType="com.kalix.framework.core.api.persistence.JsonStatus">
                 <description>Updates a RepeatedVerse</description>
@@ -101,6 +101,15 @@
                 <description>Logic Delete a repeated verse</description>
                 <to uri="bean:verseRepeatedService?method=doDeleteRepeate(${header.questionId})"/>
             </delete>
+        </rest>
+
+        <rest path="/verses/repeated/compare/{questionId}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>verse repeated compare rest service</description>
+            <post id="route-compareRepeatedVerses"
+                  outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>compare verse</description>
+                <to uri="bean:verseRepeatedService?method=compareSingleSimilarity(${header.questionId})"/>
+            </post>
         </rest>
 
         <rest path="/verses/check/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">

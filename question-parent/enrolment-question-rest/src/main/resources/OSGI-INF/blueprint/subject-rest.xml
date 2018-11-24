@@ -74,12 +74,12 @@
 
         <rest path="/subjects/repeated/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <description>subject rest service</description>
-            <get id="route-getAllSubjectRepeates" outType="com.kalix.framework.core.api.persistence.JsonData">
+            <!--<get id="route-getAllSubjectRepeates" outType="com.kalix.framework.core.api.persistence.JsonData">
                 <description>Find all repeates</description>
                 <to uri="bean:subjectRepeatedService?method=getRepeates(${header.jsonStr}, ${header.isAll})"/>
-            </get>
+            </get>-->
 
-            <post id="route-getRepeatedSubjects" type="com.kalix.enrolment.question.dto.model.BaseQuestionDTO"
+            <post id="route-getRepeatedSubjects" type="com.kalix.enrolment.question.dto.model.CompareQuestionDTO"
                  outType="com.kalix.framework.core.api.persistence.JsonData">
                 <description>Find all repeated subjects</description>
                 <to uri="bean:subjectRepeatedService?method=validateRepeates(${body})"/>
@@ -87,10 +87,10 @@
         </rest>
 
         <rest path="/subjects/repeated/list/{questionId}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
-            <get id="route-getRepeatedSubjectsById">
+            <!--<get id="route-getRepeatedSubjectsById">
                 <description>Find all repeated by id</description>
                 <to uri="bean:subjectRepeatedService?method=getRepeates(${header.questionId})"/>
-            </get>
+            </get>-->
 
             <put id="route-update-RepeatedSubject" outType="com.kalix.framework.core.api.persistence.JsonStatus">
                 <description>Updates a RepeatedSubject</description>
@@ -101,6 +101,15 @@
                 <description>Logic Delete a repeated subject</description>
                 <to uri="bean:subjectRepeatedService?method=doDeleteRepeate(${header.questionId})"/>
             </delete>
+        </rest>
+
+        <rest path="/subjects/repeated/compare/{questionId}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>subject repeated compare rest service</description>
+            <post id="route-compareRepeatedSubjects"
+                  outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>compare subject</description>
+                <to uri="bean:subjectRepeatedService?method=compareSingleSimilarity(${header.questionId})"/>
+            </post>
         </rest>
 
         <rest path="/subjects/check/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">

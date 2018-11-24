@@ -74,12 +74,12 @@
 
         <rest path="/musics/repeated/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <description>music rest service</description>
-            <get id="route-getAllMusicRepeates" outType="com.kalix.framework.core.api.persistence.JsonData">
+            <!--<get id="route-getAllMusicRepeates" outType="com.kalix.framework.core.api.persistence.JsonData">
                 <description>Find all repeates</description>
                 <to uri="bean:musicRepeatedService?method=getRepeates(${header.jsonStr}, ${header.isAll})"/>
-            </get>
+            </get>-->
 
-            <post id="route-getRepeatedMusics" type="com.kalix.enrolment.question.dto.model.BaseQuestionDTO"
+            <post id="route-getRepeatedMusics" type="com.kalix.enrolment.question.dto.model.CompareQuestionDTO"
                  outType="com.kalix.framework.core.api.persistence.JsonData">
                 <description>Find all repeated musics</description>
                 <to uri="bean:musicRepeatedService?method=validateRepeates(${body})"/>
@@ -87,10 +87,10 @@
         </rest>
 
         <rest path="/musics/repeated/list/{questionId}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
-            <get id="route-getRepeatedMusicsById">
+            <!--<get id="route-getRepeatedMusicsById">
                 <description>Find all repeated by id</description>
                 <to uri="bean:musicRepeatedService?method=getRepeates(${header.questionId})"/>
-            </get>
+            </get>-->
 
             <put id="route-update-RepeatedMusic" outType="com.kalix.framework.core.api.persistence.JsonStatus">
                 <description>Updates a RepeatedMusic</description>
@@ -101,6 +101,15 @@
                 <description>Logic Delete a repeated music</description>
                 <to uri="bean:musicRepeatedService?method=doDeleteRepeate(${header.questionId})"/>
             </delete>
+        </rest>
+
+        <rest path="/musics/repeated/compare/{questionId}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>music repeated compare rest service</description>
+            <post id="route-compareRepeatedMusics"
+                  outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>compare music</description>
+                <to uri="bean:musicRepeatedService?method=compareSingleSimilarity(${header.questionId})"/>
+            </post>
         </rest>
 
         <rest path="/musics/check/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">

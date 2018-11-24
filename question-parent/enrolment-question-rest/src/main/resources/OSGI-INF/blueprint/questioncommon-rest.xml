@@ -21,15 +21,6 @@
             </get>
         </rest>
 
-        <rest path="/repeates" consumes="application/json;charset=utf-8" produces="application/json">
-            <description>repeate rest service</description>
-            <!-- this is a rest GET to find all repeates -->
-            <get id="route-getAllRepeates" outType="com.kalix.framework.core.api.persistence.JsonData">
-                <description>Find all repeates</description>
-                <to uri="bean:questionCommonBizService?method=getAllRepeates(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
-            </get>
-        </rest>
-
         <rest path="/testPaper" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <description>question common biz rest service</description>
 
