@@ -42,6 +42,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     protected IQuestionSettingBeanService questionSettingBeanService;
     protected IQuestionRepeatedBeanService questionRepeatedBeanService;
 
+    protected static double DEFAULT_SIMILARITY = 0.7;
     protected static int MAX_REPEATED_RECORD = 1;
 
     /**
@@ -361,7 +362,11 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             }
             List list = dao.findByNativeSql(sql, cls);
             List listAll = dao.findByNativeSql(sqlAll, cls);
+            // 是否需要排重，默认1无重复
+            String repeatedFlag = "1";
+            double similarity = this.getSimilarity();
             for (int i = 0; i < list.size(); i++) {
+                repeatedFlag = "1";
                 TP firstEntity = (TP) list.get(i);
                 long firstId = firstEntity.getId();
                 String firstStem = firstEntity.getStem();
@@ -371,7 +376,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                     if (firstId != secondId) {
                         String secondStem = secondEntity.getStem();
                         double result = Similarity.morphoSimilarity(firstStem, secondStem);
-                        if (result > 0.7) {
+                        if (result > DEFAULT_SIMILARITY) {
                             String resultDesc = "词形词序句子相似度" + new DecimalFormat("0.0000").format(result);
 
                             QuestionRepeatedBean questionRepeatedBean = new QuestionRepeatedBean();
@@ -385,11 +390,14 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                             questionRepeatedBean.setSimilarity(result);
                             questionRepeatedBean.setSimilarityDesc(resultDesc);
                             questionRepeatedBeanService.saveSimilarity(questionRepeatedBean);
+                            if (result > similarity) {
+                                repeatedFlag = "0";
+                            }
                         }
                     }
                     System.out.print(".");
                 }
-                this.updateCompareFlag(firstEntity.getId(), "1");
+                this.updateCompareFlag(firstEntity.getId(), "1", repeatedFlag);
             }
             jsonStatus.setSuccess(true);
             // 比对成功，修改比对参数设置，可以进行下一次比对
@@ -412,8 +420,9 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
      */
     @Override
     @Transactional
-    public int updateCompareFlag(Long id, String compareFlag) {
-        String sql = "update " + this.dao.getTableName() + " set compareFlag = " + compareFlag + " where id = " + id;
+    public int updateCompareFlag(Long id, String compareFlag, String repeatedFlag) {
+        String sql = "update " + this.dao.getTableName() + " set compareFlag = '" +
+                compareFlag + "', repeatedFlag = '" + repeatedFlag + "' where id = " + id;
         return this.dao.updateNativeQuery(sql);
     }
 
@@ -537,7 +546,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     }
 
     protected double getSimilarity() {
-        double defaultSimilarity = 0.5d;
+        double defaultSimilarity = DEFAULT_SIMILARITY;
         QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
         if (questionSettingBean != null) {
             defaultSimilarity = questionSettingBean.getSimilarity() == null ?
@@ -649,12 +658,15 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             List listAll = dao.findByNativeSql(sqlAll, cls);
             long firstId = entity.getId();
             String firstStem = entity.getStem();
+            // 是否需要排重，默认1无重复
+            String repeatedFlag = "1";
+            double similarity = this.getSimilarity();
             for (int j = 0; j < listAll.size(); j++) {
                 TP secondEntity = (TP) listAll.get(j);
                 long secondId = secondEntity.getId();
                 String secondStem = secondEntity.getStem();
                 double result = Similarity.morphoSimilarity(firstStem, secondStem);
-                if (result > 0.7) {
+                if (result > DEFAULT_SIMILARITY) {
                     String resultDesc = "词形词序句子相似度" + new DecimalFormat("0.0000").format(result);
 
                     QuestionRepeatedBean questionRepeatedBean = new QuestionRepeatedBean();
@@ -668,10 +680,13 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                     questionRepeatedBean.setSimilarity(result);
                     questionRepeatedBean.setSimilarityDesc(resultDesc);
                     questionRepeatedBeanService.saveSimilarity(questionRepeatedBean);
+                    if (result > similarity) {
+                        repeatedFlag = "0";
+                    }
                 }
                 System.out.print(".");
             }
-            this.updateCompareFlag(entity.getId(), "1");
+            this.updateCompareFlag(entity.getId(), "1", repeatedFlag);
             jsonStatus.setSuccess(true);
         } catch (Exception e) {
             jsonStatus.setSuccess(false);

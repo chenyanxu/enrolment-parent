@@ -37,13 +37,14 @@ public interface IRepeatedService extends IService {
     int updateCompareStatus(Long id, Boolean compareStatus);
 
     /**
-     * 更新试题排重比较相似度结果状态（0未比较，1比较完成）
+     * 更新试题排重比较结果（包括比较状态和排重状态 0未比较，1比较完成；0有重复，1无重复）
      *
      * @param id
      * @param compareFlag
+     * @param repeatedFlag
      * @return
      */
-    int updateCompareFlag(Long id, String compareFlag);
+    int updateCompareFlag(Long id, String compareFlag, String repeatedFlag);
 
     /**
      * 新增或编辑题型数据时验证排重(前台需要传递题干)
