@@ -27,8 +27,9 @@ public class BaseQuestionDTO extends BaseDTO {
     private String repeatedFlag;     // 题库排重标识
     private String delFlag;          // 逻辑删除标识
     private String reason;           // 逻辑删除原因
-
-    private String similarity;       // 试题相似度说明
+    private String compareFlag;      // 试题排重比对标识
+    private double similarity;       // 试题相似度
+    private String similarityDesc;   // 试题相似度说明
 
     public String getQuestionType() {
         return questionType;
@@ -158,11 +159,27 @@ public class BaseQuestionDTO extends BaseDTO {
         this.reason = reason;
     }
 
-    public String getSimilarity() {
+    public String getCompareFlag() {
+        return compareFlag;
+    }
+
+    public void setCompareFlag(String compareFlag) {
+        this.compareFlag = compareFlag;
+    }
+
+    public double getSimilarity() {
         return similarity;
     }
 
-    public void setSimilarity(String similarity) {
+    public void setSimilarity(double similarity) {
         this.similarity = similarity;
+    }
+
+    public String getSimilarityDesc() {
+        return similarityDesc;
+    }
+
+    public void setSimilarityDesc(String similarityDesc) {
+        this.similarityDesc = similarityDesc;
     }
 }
