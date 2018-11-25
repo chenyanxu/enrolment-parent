@@ -29,6 +29,7 @@
         <property name="questionSettingBeanService" ref="questionSettingBeanServiceImpl"/>
         <property name="enrolmentDictBeanService" ref="enrolmentDictBeanService"/>
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
+        <property name="questionRepeatedBeanDao" ref="questionRepeatedBeanDao"/>
         <property name="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"/>
     </bean>
     <service ref="completionBeanServiceImpl"
@@ -66,6 +67,7 @@
         <property name="questionSettingBeanService" ref="questionSettingBeanServiceImpl"/>
         <property name="enrolmentDictBeanService" ref="enrolmentDictBeanService"/>
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
+        <property name="questionRepeatedBeanDao" ref="questionRepeatedBeanDao"/>
         <property name="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"/>
     </bean>
     <service ref="choiceBeanServiceImpl"
@@ -103,6 +105,7 @@
         <property name="questionSettingBeanService" ref="questionSettingBeanServiceImpl"/>
         <property name="enrolmentDictBeanService" ref="enrolmentDictBeanService"/>
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
+        <property name="questionRepeatedBeanDao" ref="questionRepeatedBeanDao"/>
         <property name="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"/>
     </bean>
     <service ref="verseBeanServiceImpl"
@@ -140,6 +143,7 @@
         <property name="questionSettingBeanService" ref="questionSettingBeanServiceImpl"/>
         <property name="enrolmentDictBeanService" ref="enrolmentDictBeanService"/>
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
+        <property name="questionRepeatedBeanDao" ref="questionRepeatedBeanDao"/>
         <property name="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"/>
     </bean>
     <service ref="musicBeanServiceImpl"
@@ -177,6 +181,7 @@
         <property name="questionSettingBeanService" ref="questionSettingBeanServiceImpl"/>
         <property name="enrolmentDictBeanService" ref="enrolmentDictBeanService"/>
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
+        <property name="questionRepeatedBeanDao" ref="questionRepeatedBeanDao"/>
         <property name="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"/>
     </bean>
     <service ref="subjectBeanServiceImpl"
@@ -214,6 +219,7 @@
         <property name="questionSettingBeanService" ref="questionSettingBeanServiceImpl"/>
         <property name="enrolmentDictBeanService" ref="enrolmentDictBeanService"/>
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
+        <property name="questionRepeatedBeanDao" ref="questionRepeatedBeanDao"/>
         <property name="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"/>
     </bean>
     <service ref="interviewIssueBeanServiceImpl"
@@ -244,7 +250,7 @@
         </service-properties>
     </service>
 
-    <!-- 题库试题公共服务(全库排重、自动成卷等) -->
+    <!-- 题库试题公共服务(试题排重、自动成卷等) -->
     <bean id="questionCommonBizServiceImpl" class="com.kalix.enrolment.question.biz.QuestionCommonBizServiceImpl">
         <property name="enrolmentDictBeanService" ref="enrolmentDictBeanService"/>
         <property name="couchdbService" ref="couchdbService"/>
@@ -298,10 +304,9 @@
     <service id="passwordBeanService" ref="passwordBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IPasswordBeanService"/>
 
-    <!-- 题库排重服务 -->
+    <!-- 题库排重比对服务 -->
     <bean id="questionRepeatedBeanServiceImpl" class="com.kalix.enrolment.question.biz.QuestionRepeatedBeanServiceImpl">
         <property name="dao" ref="questionRepeatedBeanDao"/>
-        <property name="enrolmentDictBeanService" ref="enrolmentDictBeanService"/>
     </bean>
     <service id="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IQuestionRepeatedBeanService"/>

@@ -3,9 +3,8 @@ package com.kalix.enrolment.question.biz;
 import com.kalix.admin.core.api.biz.IRoleBeanService;
 import com.kalix.admin.core.entities.RoleBean;
 import com.kalix.enrolment.question.api.biz.*;
-import com.kalix.enrolment.question.dto.model.BaseQuestionDTO;
+import com.kalix.enrolment.question.api.dao.IQuestionRepeatedBeanDao;
 import com.kalix.enrolment.question.dto.model.CompareQuestionDTO;
-import com.kalix.enrolment.question.dto.model.RepeatedCountDTO;
 import com.kalix.enrolment.question.entities.BaseQuestionEntity;
 import com.kalix.enrolment.question.entities.QuestionRepeatedBean;
 import com.kalix.enrolment.question.entities.QuestionSettingBean;
@@ -14,7 +13,10 @@ import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
 import com.kalix.framework.core.api.dao.IGenericDao;
 import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
+import com.kalix.framework.core.api.security.IDataAuthService;
+import com.kalix.framework.core.api.security.model.EnumDataAuth;
 import com.kalix.framework.core.util.ConfigUtil;
+import com.kalix.framework.core.util.JNDIHelper;
 import com.kalix.framework.core.util.SerializeUtil;
 import com.kalix.framework.core.util.StringUtils;
 import com.kalix.framework.extend.impl.biz.LogicDeleteGenericBizServiceImpl;
@@ -25,6 +27,7 @@ import org.xm.Similarity;
 import javax.transaction.Transactional;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -40,6 +43,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     protected IEnrolmentDictBeanService enrolmentDictBeanService;
     protected IRoleBeanService roleBeanService;
     protected IQuestionSettingBeanService questionSettingBeanService;
+    protected IQuestionRepeatedBeanDao questionRepeatedBeanDao;
     protected IQuestionRepeatedBeanService questionRepeatedBeanService;
 
     protected static double DEFAULT_SIMILARITY = 0.7;
@@ -545,6 +549,136 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         return jsonStatus;
     }
 
+    /**
+     * 查询试题排重比对情况
+     *
+     * @param page
+     * @param limit
+     * @param jsonStr
+     * @param sort
+     * @return
+     */
+    @Override
+    public JsonData getAllQuestionRepeateds(Integer page, Integer limit, String jsonStr, String sort) {
+        JsonData jsonData = new JsonData();
+        try {
+            Map queryMap = SerializeUtil.json2Map(jsonStr);
+            String similarity = (String) queryMap.get("similarity");
+            if (StringUtils.isEmpty(similarity)) {
+                return jsonData;
+            }
+            String questionType = this.getQuestionType();
+            String sql = "select y.* from " + this.dao.getTableName() + " y " +
+                    " where y.id in (select distinct r.firstquestionid from " + this.questionRepeatedBeanDao.getTableName() + " r " +
+                    " where r.questiontype = '" + questionType + "' and r.similarity > " + similarity + ") " +
+                    " order by y.subType, y.id";
+            Class cls = null;
+            try {
+                cls = Class.forName(this.entityClassName);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            jsonData = this.dao.findByNativeSql(sql, page, limit, cls);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonData;
+    }
+
+    /**
+     * 获取比对后有重复的试题
+     *
+     * @param page
+     * @param limit
+     * @param jsonStr
+     * @param sort
+     * @return
+     */
+    @Override
+    public JsonData getFirstQuestions(Integer page, Integer limit, String jsonStr, String sort) {
+        JsonData jsonData = new JsonData();
+        try {
+            String questionType = this.getQuestionType();
+            String sql = "";
+            // 增加数据权限
+            Long userId = shiroService.getCurrentUserId();
+            if (this.dataAuthService == null) {
+                this.dataAuthService = JNDIHelper.getJNDIServiceForName(IDataAuthService.class.getName());
+            }
+            EnumDataAuth enumDataAuth = dataAuthService.getDataAuth(userId);
+            switch (enumDataAuth) {
+                // 本人数据
+                case SELF:
+                    sql = "select y.* from " + this.dao.getTableName() + " y " +
+                            " where y.delflag = '0' and y.repeatedflag = '0' and y.compareflag = '0' and y.createbyid = " + userId +
+                            " and y.id in (select distinct r.firstquestionid from " + this.questionRepeatedBeanDao.getTableName() + " r " +
+                            " where r.questiontype = '" + questionType + "' and r.similarity > " +
+                            " (select s.similarity from enrolment_question_setting s where s.id = 1)) " +
+                            " order by y.subType, y.id";
+                    break;
+                // 所有数据
+                case ALL:
+                    sql = "select y.* from " + this.dao.getTableName() + " y " +
+                            " where y.delflag = '0' and y.repeatedflag = '0' and y.compareflag = '0'" +
+                            " and y.id in (select distinct r.firstquestionid from " + this.questionRepeatedBeanDao.getTableName() + " r " +
+                            " where r.questiontype = '" + questionType + "' and r.similarity > " +
+                            " (select s.similarity from enrolment_question_setting s where s.id = 1)) " +
+                            " order by y.subType, y.id";
+                    break;
+            }
+            Class cls = null;
+            try {
+                cls = Class.forName(this.entityClassName);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            jsonData = this.dao.findByNativeSql(sql, page, limit, cls);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonData;
+    }
+
+    /**
+     * 选择一道试题后，获取和该试题重复的所有试题
+     *
+     * @param page
+     * @param limit
+     * @param jsonStr
+     * @param sort
+     * @return
+     */
+    @Override
+    public JsonData getSecondQuestions(Integer page, Integer limit, String jsonStr, String sort) {
+        JsonData jsonData = new JsonData();
+        try {
+            Map queryMap = SerializeUtil.json2Map(jsonStr);
+            String firstQuestionId = (String) queryMap.get("firstQuestionId");
+            if (StringUtils.isEmpty(firstQuestionId)) {
+                return jsonData;
+            }
+            String questionType = this.getQuestionType();
+            String sql = "select y.* from " + this.dao.getTableName() + " y " +
+                    " where y.delflag = '0' and " +
+                    " y.id in (select r.secondquestionid from " + this.questionRepeatedBeanDao.getTableName() + " r " +
+                    " where r.questiontype = '" + questionType + "' and r.firstquestionid = " + firstQuestionId +
+                    " and r.similarity > (select s.similarity from enrolment_question_setting s where s.id = 1) " +
+                    " order by r.similarity desc)";
+            Class cls = null;
+            try {
+                cls = Class.forName(this.entityClassName);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            jsonData = this.dao.findByNativeSql(sql, page, limit, cls);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonData;
+    }
+
     protected double getSimilarity() {
         double defaultSimilarity = DEFAULT_SIMILARITY;
         QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
@@ -785,11 +919,15 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         this.questionSettingBeanService = questionSettingBeanService;
     }
 
+    public void setQuestionRepeatedBeanDao(IQuestionRepeatedBeanDao questionRepeatedBeanDao) {
+        this.questionRepeatedBeanDao = questionRepeatedBeanDao;
+    }
+
     public void setQuestionRepeatedBeanService(IQuestionRepeatedBeanService questionRepeatedBeanService) {
         this.questionRepeatedBeanService = questionRepeatedBeanService;
     }
 
-    @Override
+    /*@Override
     public JsonData getRepeates(String jsonStr, boolean isAll) {
         System.out.println("=====start");
         System.out.println("=====isall:" + isAll);
@@ -1089,5 +1227,5 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
 //            }
 //        });
         return dtoList;
-    }
+    }*/
 }

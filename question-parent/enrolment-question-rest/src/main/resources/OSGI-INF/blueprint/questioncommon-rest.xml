@@ -12,6 +12,33 @@
             <dataFormatProperty key="prettyPrint" value="${rest.pretty}"/>
         </restConfiguration>
 
+        <rest path="/questionrepeateds" consumes="application/json;charset=utf-8" produces="application/json">
+            <description>repeate rest service</description>
+            <!-- this is a rest GET to find all repeateds -->
+            <get id="route-getAllQuestionRepeateds" outType="com.kalix.framework.core.api.persistence.JsonData">
+                <description>Find all question repeateds</description>
+                <to uri="bean:questionCommonBizService?method=getAllQuestionRepeateds(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+            </get>
+        </rest>
+
+        <rest path="/firstquestions" consumes="application/json;charset=utf-8" produces="application/json">
+            <description>repeate rest service</description>
+            <!-- this is a rest GET to find all repeates -->
+            <get id="route-getFirstQuestions" outType="com.kalix.framework.core.api.persistence.JsonData">
+                <description>Find all repeates</description>
+                <to uri="bean:questionCommonBizService?method=getFirstQuestions(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+            </get>
+        </rest>
+
+        <rest path="/firstquestions/{firstQuestionId}" consumes="application/json;charset=utf-8" produces="application/json">
+            <description>repeate rest service</description>
+            <!-- this is a rest GET to find all repeates -->
+            <get id="route-getSecondQuestions" outType="com.kalix.framework.core.api.persistence.JsonData">
+                <description>Find all repeates by firstQuestionId</description>
+                <to uri="bean:questionCommonBizService?method=getSecondQuestions(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+            </get>
+        </rest>
+
         <rest path="/questiontestings" consumes="application/json;charset=utf-8" produces="application/json">
             <description>questionTesting rest service</description>
             <!-- this is a rest GET to find all questionTestings -->

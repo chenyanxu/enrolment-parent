@@ -1,27 +1,15 @@
 package com.kalix.enrolment.question.biz;
 
 import com.kalix.enrolment.question.api.biz.IQuestionRepeatedBeanService;
-import com.kalix.enrolment.question.api.biz.IQuestionService;
 import com.kalix.enrolment.question.api.dao.IQuestionRepeatedBeanDao;
-import com.kalix.enrolment.question.entities.BaseQuestionEntity;
 import com.kalix.enrolment.question.entities.QuestionRepeatedBean;
-import com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService;
-import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
-import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
-import com.kalix.framework.core.api.security.IDataAuthService;
-import com.kalix.framework.core.api.security.model.EnumDataAuth;
 import com.kalix.framework.core.impl.biz.ShiroGenericBizServiceImpl;
-import com.kalix.framework.core.util.JNDIHelper;
-import com.kalix.framework.core.util.SerializeUtil;
 import com.kalix.framework.core.util.StringUtils;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by hqj on 2018-10-25.
@@ -30,9 +18,9 @@ public class QuestionRepeatedBeanServiceImpl
         extends ShiroGenericBizServiceImpl<IQuestionRepeatedBeanDao, QuestionRepeatedBean>
         implements IQuestionRepeatedBeanService {
 
-    protected static String DICT_QUESTIONTYPE = "题型";
+    /*protected static String DICT_QUESTIONTYPE = "题型";
     protected IEnrolmentDictBeanService enrolmentDictBeanService;
-    protected IQuestionService questionService;
+    protected IQuestionService questionService;*/
 
     @Override
     public void beforeSaveEntity(QuestionRepeatedBean entity, JsonStatus status) {
@@ -65,7 +53,7 @@ public class QuestionRepeatedBeanServiceImpl
         entity.setUpdateById(userId);
     }
 
-    @Override
+    /*@Override
     public JsonData getAllRepeatedByQuery(Integer page, Integer limit, String jsonStr, String sort) {
         JsonData jsonData = new JsonData();
         try {
@@ -97,9 +85,9 @@ public class QuestionRepeatedBeanServiceImpl
             e.printStackTrace();
         }
         return jsonData;
-    }
+    }*/
 
-    @Override
+    /*@Override
     public JsonData getRepeatedByQuery(Integer page, Integer limit, String jsonStr, String sort) {
         JsonData jsonData = new JsonData();
         try {
@@ -151,7 +139,7 @@ public class QuestionRepeatedBeanServiceImpl
             e.printStackTrace();
         }
         return jsonData;
-    }
+    }*/
 
     @Override
     @Transactional
@@ -191,9 +179,5 @@ public class QuestionRepeatedBeanServiceImpl
             rtn = 0;
         }
         return rtn;
-    }
-
-    public void setEnrolmentDictBeanService(IEnrolmentDictBeanService enrolmentDictBeanService) {
-        this.enrolmentDictBeanService = enrolmentDictBeanService;
     }
 }

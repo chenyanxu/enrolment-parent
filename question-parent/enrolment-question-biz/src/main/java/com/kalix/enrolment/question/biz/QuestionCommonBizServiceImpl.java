@@ -46,6 +46,104 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
     private IRepeatedService repeatedService;
     private IQuestionService questionService;
 
+    /**
+     * 查询试题排重比对情况
+     *
+     * @param page
+     * @param limit
+     * @param jsonStr
+     * @param sort
+     * @return
+     */
+    @Override
+    public JsonData getAllQuestionRepeateds(Integer page, Integer limit, String jsonStr, String sort) {
+        JsonData jsonData = new JsonData();
+        try {
+            Map queryMap = SerializeUtil.json2Map(jsonStr);
+            String questionType = (String) queryMap.get("questionType");
+            if (StringUtils.isEmpty(questionType)) {
+                return jsonData;
+            }
+            EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_QUESTIONTYPE, questionType);
+            String beanName = enrolmentDictBean.getDescription();
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("beanName", beanName);
+            repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
+            jsonData = repeatedService.getAllQuestionRepeateds(page, limit, jsonStr, sort);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonData;
+    }
+
+    /**
+     * 获取比对后有重复的试题
+     *
+     * @param page
+     * @param limit
+     * @param jsonStr
+     * @param sort
+     * @return
+     */
+    @Override
+    public JsonData getFirstQuestions(Integer page, Integer limit, String jsonStr, String sort) {
+        JsonData jsonData = new JsonData();
+        try {
+            Map queryMap = SerializeUtil.json2Map(jsonStr);
+            String questionType = (String) queryMap.get("questionType");
+            if (StringUtils.isEmpty(questionType)) {
+                return jsonData;
+            }
+            queryMap.remove("questionType");
+            jsonStr = SerializeUtil.serializeJson(queryMap);
+            EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_QUESTIONTYPE, questionType);
+            String beanName = enrolmentDictBean.getDescription();
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("beanName", beanName);
+            repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
+            jsonData = repeatedService.getFirstQuestions(page, limit, jsonStr, sort);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonData;
+    }
+
+    /**
+     * 选择一道试题后，获取和该试题重复的所有试题
+     *
+     * @param page
+     * @param limit
+     * @param jsonStr
+     * @param sort
+     * @return
+     */
+    @Override
+    public JsonData getSecondQuestions(Integer page, Integer limit, String jsonStr, String sort) {
+        JsonData jsonData = new JsonData();
+        try {
+            Map queryMap = SerializeUtil.json2Map(jsonStr);
+            String questionType = (String) queryMap.get("questionType");
+            if (StringUtils.isEmpty(questionType)) {
+                return jsonData;
+            }
+            EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_QUESTIONTYPE, questionType);
+            String beanName = enrolmentDictBean.getDescription();
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("beanName", beanName);
+            repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
+            jsonData = repeatedService.getSecondQuestions(page, limit, jsonStr, sort);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonData;
+    }
+
     @Override
     public JsonData getAllQuestionTestings(Integer page, Integer limit, String jsonStr, String sort) {
         JsonData jsonData = new JsonData();

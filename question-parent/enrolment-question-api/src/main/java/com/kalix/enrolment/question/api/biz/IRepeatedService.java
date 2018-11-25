@@ -1,12 +1,9 @@
 package com.kalix.enrolment.question.api.biz;
 
-import com.kalix.enrolment.question.dto.model.BaseQuestionDTO;
 import com.kalix.enrolment.question.dto.model.CompareQuestionDTO;
 import com.kalix.framework.core.api.IService;
 import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
-
-import java.util.List;
 
 /**
  * Created by Administrator_ on 2018/9/17.
@@ -48,6 +45,7 @@ public interface IRepeatedService extends IService {
 
     /**
      * 新增或编辑题型数据时验证排重(前台需要传递题干)
+     *
      * @param compareQuestionDTO
      * @return
      */
@@ -55,6 +53,7 @@ public interface IRepeatedService extends IService {
 
     /**
      * 保留重复
+     *
      * @param questionId
      * @return
      */
@@ -62,6 +61,7 @@ public interface IRepeatedService extends IService {
 
     /**
      * 删除重复
+     *
      * @param questionId
      * @return
      */
@@ -69,13 +69,47 @@ public interface IRepeatedService extends IService {
 
     /**
      * 试题排重比较相似度，单题执行
+     *
      * @param questionId
      */
     JsonStatus compareSingleSimilarity(Long questionId);
 
-    // 重复情况查询(不处理)
+    /**
+     * 查询试题排重比对情况
+     *
+     * @param page
+     * @param limit
+     * @param jsonStr
+     * @param sort
+     * @return
+     */
+    JsonData getAllQuestionRepeateds(Integer page, Integer limit, String jsonStr, String sort);
+
+    /**
+     * 获取比对后有重复的试题
+     *
+     * @param page
+     * @param limit
+     * @param jsonStr
+     * @param sort
+     * @return
+     */
+    JsonData getFirstQuestions(Integer page, Integer limit, String jsonStr, String sort);
+
+    /**
+     * 选择一道试题后，获取和该试题重复的所有试题
+     *
+     * @param page
+     * @param limit
+     * @param jsonStr
+     * @param sort
+     * @return
+     */
+    JsonData getSecondQuestions(Integer page, Integer limit, String jsonStr, String sort);
+
+    /*// 重复情况查询(不处理)
     JsonData getRepeates(String jsonStr, boolean isAll);
 
     // 查询重复
-    JsonData getRepeates(Long questionId);
+    JsonData getRepeates(Long questionId);*/
 }

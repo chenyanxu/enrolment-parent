@@ -31,6 +31,7 @@ public class QuestionRepeatedBean extends PersistentEntity {
 
     @Transient
     private String firstStem;  // 排重试题题干
+    @Transient
     private String secondStem; // 重复试题题干
 
     public String getQuestionType() {

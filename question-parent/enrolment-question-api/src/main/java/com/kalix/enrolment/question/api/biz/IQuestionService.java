@@ -13,30 +13,35 @@ public interface IQuestionService<T extends BaseQuestionEntity> extends ILogicDe
 
     /**
      * 获取题型代码
+     *
      * @return
      */
     String getQuestionType();
 
     /**
      * 获取题型名称
+     *
      * @return
      */
     String getQuestionTypeName();
 
     /**
      * 获取题型beans
+     *
      * @return
      */
     String getQuestionBeans();
 
     /**
      * 获取题型子类字典type
+     *
      * @return
      */
     String getSubTypeDictType();
 
     /**
      * 获取题型子类名称
+     *
      * @param subType
      * @return
      */
@@ -44,6 +49,7 @@ public interface IQuestionService<T extends BaseQuestionEntity> extends ILogicDe
 
     /**
      * 获取试题表名
+     *
      * @return
      */
     String getQuestionTableName();

@@ -10,6 +10,39 @@ import com.kalix.framework.core.api.persistence.JsonStatus;
 public interface IQuestionCommonBizService extends IService {
 
     /**
+     * 查询试题排重比对情况
+     *
+     * @param page
+     * @param limit
+     * @param jsonStr
+     * @param sort
+     * @return
+     */
+    JsonData getAllQuestionRepeateds(Integer page, Integer limit, String jsonStr, String sort);
+
+    /**
+     * 获取比对后有重复的试题
+     *
+     * @param page
+     * @param limit
+     * @param jsonStr
+     * @param sort
+     * @return
+     */
+    JsonData getFirstQuestions(Integer page, Integer limit, String jsonStr, String sort);
+
+    /**
+     * 选择一道试题后，获取和该试题重复的所有试题
+     *
+     * @param page
+     * @param limit
+     * @param jsonStr
+     * @param sort
+     * @return
+     */
+    JsonData getSecondQuestions(Integer page, Integer limit, String jsonStr, String sort);
+
+    /**
      * 查询题库试题，获取试题检测需要的试题
      */
     JsonData getAllQuestionTestings(Integer page, Integer limit, String jsonStr, String sort);
