@@ -688,6 +688,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             }
             this.updateCompareFlag(entity.getId(), "1", repeatedFlag);
             jsonStatus.setSuccess(true);
+            jsonStatus.setMsg("试题排重比对完成");
         } catch (Exception e) {
             jsonStatus.setSuccess(false);
             jsonStatus.setMsg(e.getMessage());
