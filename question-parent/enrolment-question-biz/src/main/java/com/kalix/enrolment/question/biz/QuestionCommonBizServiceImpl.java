@@ -1,7 +1,7 @@
 package com.kalix.enrolment.question.biz;
 
 import com.kalix.enrolment.question.api.biz.*;
-import com.kalix.enrolment.question.dto.model.BaseQuestionDTO;
+import com.kalix.enrolment.question.dto.model.QuestionDTO;
 import com.kalix.enrolment.question.dto.model.RuleDto;
 import com.kalix.enrolment.question.entities.BaseQuestionEntity;
 import com.kalix.enrolment.question.entities.PaperBean;
@@ -173,7 +173,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                 if (resultList != null && resultList.size() > 0) {
                     for (int i = 0; i < resultList.size(); i++) {
                         BaseQuestionEntity entity = (BaseQuestionEntity) resultList.get(i);
-                        BaseQuestionDTO baseQuestionDTO = new BaseQuestionDTO();
+                        QuestionDTO baseQuestionDTO = new QuestionDTO();
                         baseQuestionDTO.setQuestionType(questionType);
                         baseQuestionDTO.setQuestionTypeName(questionTypeName);
                         baseQuestionDTO.setQuestionBeans(questionBeans);

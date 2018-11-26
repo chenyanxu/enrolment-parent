@@ -12,7 +12,7 @@
             <dataFormatProperty key="prettyPrint" value="${rest.pretty}"/>
         </restConfiguration>
 
-        <rest path="/questionrepeateds" consumes="application/json;charset=utf-8" produces="application/json">
+        <rest path="/repeatedinfos" consumes="application/json;charset=utf-8" produces="application/json">
             <description>repeate rest service</description>
             <!-- this is a rest GET to find all repeateds -->
             <get id="route-getAllQuestionRepeateds" outType="com.kalix.framework.core.api.persistence.JsonData">

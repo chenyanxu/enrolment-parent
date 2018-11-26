@@ -11,8 +11,6 @@ import javax.persistence.Table;
 @Table(name = "enrolment_question_verse")
 public class VerseBean extends BaseQuestionEntity {
     @Column(nullable = false)
-    private String type;               // 类别,字典（类别）
-    @Column(nullable = false)
     private String answerA;            // 空格A答案
     private String answerB;            // 空格B答案
     private String answerC;            // 空格C答案
@@ -20,14 +18,6 @@ public class VerseBean extends BaseQuestionEntity {
     private String answerE;            // 空格E答案
     private String answerF;            // 空格F答案
     private String answerG;            // 空格G答案
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public String getAnswerA() {
         return answerA;

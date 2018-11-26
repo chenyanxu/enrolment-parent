@@ -11,8 +11,6 @@ import javax.persistence.Table;
 @Table(name = "enrolment_question_choice")
 public class ChoiceBean extends BaseQuestionEntity {
     @Column(nullable = false)
-    private String type;               // 类别，字典[类别]
-    @Column(nullable = false)
     private String answerA;            // 选项A
     private String answerB;            // 选项B
     private String answerC;            // 选项C
@@ -21,14 +19,6 @@ public class ChoiceBean extends BaseQuestionEntity {
     private String answerF;            // 选项F
     private String answerG;            // 选项G
     private String answer;             // 正确选项
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public String getAnswerA() {
         return answerA;

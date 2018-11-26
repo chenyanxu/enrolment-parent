@@ -11,8 +11,6 @@ import javax.persistence.Table;
 @Table(name = "enrolment_question_completion")
 public class CompletionBean extends BaseQuestionEntity {
     @Column(nullable = false)
-    private String type;               // 类别，字典[类别]
-    @Column(nullable = false)
     private String answerA;            // 答案A
     private String answerB;            // 答案B
     private String answerC;            // 答案C
@@ -28,14 +26,6 @@ public class CompletionBean extends BaseQuestionEntity {
 
     public void setSpaceNum(int spaceNum) {
         this.spaceNum = spaceNum;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getAnswerA() {

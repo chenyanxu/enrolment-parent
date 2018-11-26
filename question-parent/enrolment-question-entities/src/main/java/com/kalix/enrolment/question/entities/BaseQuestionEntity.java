@@ -28,6 +28,7 @@ public abstract class BaseQuestionEntity extends BaseLogicDeleteEntity {
     private String repeatedFlag = "0"; // 题库排重标识
     private String compareFlag = "0";  // 题库排重比对标识
 
+    private String type;               // 试题类别,字典（可以为空）
     private String subType;            // 试题子类类型,字典（可以为空）
 
     @Transient
@@ -97,6 +98,14 @@ public abstract class BaseQuestionEntity extends BaseLogicDeleteEntity {
 
     public void setRepeatedFlag(String repeatedFlag) {
         this.repeatedFlag = repeatedFlag;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getSubType() {
