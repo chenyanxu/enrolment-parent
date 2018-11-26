@@ -573,7 +573,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                 }
             }
             String questionType = this.getQuestionType();
-            String sql = "select y.* from " + this.dao.getTableName() + " y " +
+            /*String sql = "select y.* from " + this.dao.getTableName() + " y " +
                     " where y.id in (select distinct r.firstquestionid from " + this.questionRepeatedBeanDao.getTableName() + " r " +
                     " where r.questiontype = '" + questionType + "' and r.similarity > " + similarity + ") " +
                     " order by y.subType, y.id";
@@ -583,7 +583,36 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-            jsonData = this.dao.findByNativeSql(sql, page, limit, cls);
+            jsonData = this.dao.findByNativeSql(sql, page, limit, cls);*/
+            String questionTypeName = this.getQuestionTypeName();
+            String questionBeans = this.getQuestionBeans();
+            String subTypeDictType = this.getSubTypeDictType();
+            String sql = "";
+            if (StringUtils.isEmpty(subTypeDictType)) {
+                sql = "select '" + questionType + "' as questiontype, '" + questionTypeName + "' as questiontypename, '" +
+                        questionBeans + "' as questionbeans, y.subtype, y.id, y.id as questionId, y.stem, y.analysis, " +
+                        " y.checkflag, y.checkerid, y.checker, y.checkdate, y.checkreason, y.repeatedflag, " +
+                        " y.delflag, y.reason, y.compareFlag, y.createby, y.creationdate, y.updateby, y.updatedate, " +
+                        " d.label as typename " +
+                        " from " + this.dao.getTableName() + " y " +
+                        " left join enrolment_dict d on d.type = '" + DICT_TYPE + "' and d.value = y.type " +
+                        " where y.id in (select distinct r.firstquestionid from " + this.questionRepeatedBeanDao.getTableName() + " r " +
+                        " where r.questiontype = '" + questionType + "' and r.similarity > " + similarity + ") " +
+                        " order by y.subType, y.type, y.id";
+            } else {
+                sql = "select '" + questionType + "' as questiontype, '" + questionTypeName + "' as questiontypename, '" +
+                        questionBeans + "' as questionbeans, y.subtype, y.id, y.id as questionId, y.stem, y.analysis, " +
+                        " y.checkflag, y.checkerid, y.checker, y.checkdate, y.checkreason, y.repeatedflag, " +
+                        " y.delflag, y.reason, y.compareFlag, y.createby, y.creationdate, y.updateby, y.updatedate, " +
+                        " d.label as typename, d2.label as subtypename " +
+                        " from " + this.dao.getTableName() + " y " +
+                        " left join enrolment_dict d on d.type = '" + DICT_TYPE + "' and d.value = y.type " +
+                        " left join enrolment_dict d2 on d2.type = '" + subTypeDictType + "' and d2.value = y.subtype " +
+                        " where y.id in (select distinct r.firstquestionid from " + this.questionRepeatedBeanDao.getTableName() + " r " +
+                        " where r.questiontype = '" + questionType + "' and r.similarity > " + similarity + ") " +
+                        " order by y.subtype, y.type, y.id";
+            }
+            jsonData = this.dao.findByNativeSql(sql, page, limit, QuestionDTO.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -614,6 +643,11 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                 this.dataAuthService = JNDIHelper.getJNDIServiceForName(IDataAuthService.class.getName());
             }
             EnumDataAuth enumDataAuth = dataAuthService.getDataAuth(userId);
+            if (userId != null && userId.longValue() == -1) {
+                enumDataAuth = EnumDataAuth.ALL;
+            } else {
+                enumDataAuth = EnumDataAuth.SELF;
+            }
             switch (enumDataAuth) {
                 // 本人数据
                 case SELF:

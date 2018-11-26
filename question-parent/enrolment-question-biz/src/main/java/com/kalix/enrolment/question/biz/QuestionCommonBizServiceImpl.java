@@ -151,50 +151,52 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
         try {
             Map queryMap = SerializeUtil.json2Map(jsonStr);
             String questionType = (String) queryMap.get("questionType");
-            if (StringUtils.isNotEmpty(questionType)) {
-                if (StringUtils.isEmpty(sort)) {
-                    sort = "[{'property': 'subType', 'direction': 'ASC'},{'property': 'creationDate', 'direction': 'DESC'}]";
-                }
-                queryMap.remove("questionType");
-                queryMap.put("delFlag", "0");
-                queryMap.put("checkFlag:in", "0,1");
-                jsonStr = SerializeUtil.serializeJson(queryMap);
-                EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_QUESTIONTYPE, questionType);
-                String questionTypeName = enrolmentDictBean.getLabel();
-                String questionBeans = enrolmentDictBean.getDescription() == null ? "" :
-                        enrolmentDictBean.getDescription().toLowerCase() + "s";
-                String subTypeDictType = enrolmentDictBean.getSubType();
-                String beanName = enrolmentDictBean.getDescription();
-                Map<String, String> map = new HashMap<String, String>();
-                map.put("beanName", beanName);
-                questionService = JNDIHelper.getJNDIServiceForName(IQuestionService.class.getName(), map);
-                JsonData resultData = questionService.getAllEntityByQuery(page, limit, jsonStr, sort);
-                List resultList = resultData.getData();
-                if (resultList != null && resultList.size() > 0) {
-                    for (int i = 0; i < resultList.size(); i++) {
-                        BaseQuestionEntity entity = (BaseQuestionEntity) resultList.get(i);
-                        QuestionDTO baseQuestionDTO = new QuestionDTO();
-                        baseQuestionDTO.setQuestionType(questionType);
-                        baseQuestionDTO.setQuestionTypeName(questionTypeName);
-                        baseQuestionDTO.setQuestionBeans(questionBeans);
-                        if (StringUtils.isNotEmpty(subTypeDictType)) {
-                            String dictValue = entity.getSubType();
-                            EnrolmentDictBean subDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(subTypeDictType, dictValue);
-                            baseQuestionDTO.setSubType(dictValue);
-                            baseQuestionDTO.setSubTypeName(subDictBean.getLabel());
-                        }
-                        baseQuestionDTO.setQuestionId(entity.getId());
-                        baseQuestionDTO.setStem(entity.getStem());
-                        baseQuestionDTO.setAnalysis(entity.getAnalysis());
-                        baseQuestionDTO.setCheckFlag(entity.getCheckFlag());
-                        baseQuestionDTO.setCheckerId(entity.getCheckerId());
-                        baseQuestionDTO.setChecker(entity.getChecker());
-                        baseQuestionDTO.setCheckDate(entity.getCheckDate());
-                        baseQuestionDTO.setCreateBy(entity.getCreateBy());
-                        baseQuestionDTO.setCreationDate(entity.getCreationDate());
-                        baseQuestionDTO.setRepeatedFlag(entity.getRepeatedFlag());
-                        list.add(baseQuestionDTO);
+            if (StringUtils.isEmpty(questionType)) {
+                return jsonData;
+            }
+            // 默认排序
+            if (StringUtils.isEmpty(sort)) {
+                sort = "[{'property': 'subType', 'direction': 'ASC'},{'property': 'type', 'direction': 'ASC'},{'property': 'creationDate', 'direction': 'DESC'}]";
+            }
+            queryMap.remove("questionType");
+            queryMap.put("delFlag", "0");
+            queryMap.put("checkFlag:in", "0,1");
+            jsonStr = SerializeUtil.serializeJson(queryMap);
+            EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_QUESTIONTYPE, questionType);
+            String questionTypeName = enrolmentDictBean.getLabel();
+            String questionBeans = enrolmentDictBean.getDescription() == null ? "" :
+                    enrolmentDictBean.getDescription().toLowerCase() + "s";
+            String subTypeDictType = enrolmentDictBean.getSubType();
+            String beanName = enrolmentDictBean.getDescription();
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("beanName", beanName);
+            questionService = JNDIHelper.getJNDIServiceForName(IQuestionService.class.getName(), map);
+            JsonData resultData = questionService.getAllEntityByQuery(page, limit, jsonStr, sort);
+            List resultList = resultData.getData();
+            if (resultList != null && resultList.size() > 0) {
+                for (int i = 0; i < resultList.size(); i++) {
+                    BaseQuestionEntity entity = (BaseQuestionEntity) resultList.get(i);
+                    QuestionDTO baseQuestionDTO = new QuestionDTO();
+                    baseQuestionDTO.setQuestionType(questionType);
+                    baseQuestionDTO.setQuestionTypeName(questionTypeName);
+                    baseQuestionDTO.setQuestionBeans(questionBeans);
+                    if (StringUtils.isNotEmpty(subTypeDictType)) {
+                        String dictValue = entity.getSubType();
+                        EnrolmentDictBean subDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(subTypeDictType, dictValue);
+                        baseQuestionDTO.setSubType(dictValue);
+                        baseQuestionDTO.setSubTypeName(subDictBean.getLabel());
                     }
+                    baseQuestionDTO.setQuestionId(entity.getId());
+                    baseQuestionDTO.setStem(entity.getStem());
+                    baseQuestionDTO.setAnalysis(entity.getAnalysis());
+                    baseQuestionDTO.setCheckFlag(entity.getCheckFlag());
+                    baseQuestionDTO.setCheckerId(entity.getCheckerId());
+                    baseQuestionDTO.setChecker(entity.getChecker());
+                    baseQuestionDTO.setCheckDate(entity.getCheckDate());
+                    baseQuestionDTO.setCreateBy(entity.getCreateBy());
+                    baseQuestionDTO.setCreationDate(entity.getCreationDate());
+                    baseQuestionDTO.setRepeatedFlag(entity.getRepeatedFlag());
+                    list.add(baseQuestionDTO);
                 }
             }
             jsonData.setData(list);
