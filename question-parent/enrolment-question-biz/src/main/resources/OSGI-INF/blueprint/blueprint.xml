@@ -21,6 +21,7 @@
     <reference id="enrolmentDictBeanService" interface="com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService"/>
     <reference id="passwordBeanDao" interface="com.kalix.enrolment.question.api.dao.IPasswordBeanDao"/>
     <reference id="questionRepeatedBeanDao" interface="com.kalix.enrolment.question.api.dao.IQuestionRepeatedBeanDao"/>
+    <reference id="dataAuthBeanService" interface="com.kalix.admin.duty.api.biz.IDataAuthBeanService"/>
 
     <!-- 填空题服务 -->
     <bean id="completionBeanServiceImpl" class="com.kalix.enrolment.question.biz.CompletionBeanServiceImpl">
@@ -31,6 +32,7 @@
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
         <property name="questionRepeatedBeanDao" ref="questionRepeatedBeanDao"/>
         <property name="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"/>
+        <property name="dataAuthBeanService" ref="dataAuthBeanService"/>
     </bean>
     <service ref="completionBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IQuestionService">
@@ -69,6 +71,7 @@
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
         <property name="questionRepeatedBeanDao" ref="questionRepeatedBeanDao"/>
         <property name="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"/>
+        <property name="dataAuthBeanService" ref="dataAuthBeanService"/>
     </bean>
     <service ref="choiceBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IQuestionService">
@@ -107,6 +110,7 @@
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
         <property name="questionRepeatedBeanDao" ref="questionRepeatedBeanDao"/>
         <property name="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"/>
+        <property name="dataAuthBeanService" ref="dataAuthBeanService"/>
     </bean>
     <service ref="verseBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IQuestionService">
@@ -145,6 +149,7 @@
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
         <property name="questionRepeatedBeanDao" ref="questionRepeatedBeanDao"/>
         <property name="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"/>
+        <property name="dataAuthBeanService" ref="dataAuthBeanService"/>
     </bean>
     <service ref="musicBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IQuestionService">
@@ -183,6 +188,7 @@
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
         <property name="questionRepeatedBeanDao" ref="questionRepeatedBeanDao"/>
         <property name="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"/>
+        <property name="dataAuthBeanService" ref="dataAuthBeanService"/>
     </bean>
     <service ref="subjectBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IQuestionService">
@@ -221,6 +227,7 @@
         <property name="paperQuesBeanService" ref="paperQuesBeanServiceImpl"/>
         <property name="questionRepeatedBeanDao" ref="questionRepeatedBeanDao"/>
         <property name="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"/>
+        <property name="dataAuthBeanService" ref="dataAuthBeanService"/>
     </bean>
     <service ref="interviewIssueBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IQuestionService">

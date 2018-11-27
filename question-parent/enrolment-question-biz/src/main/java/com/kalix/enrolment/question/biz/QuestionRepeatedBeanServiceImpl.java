@@ -3,13 +3,16 @@ package com.kalix.enrolment.question.biz;
 import com.kalix.enrolment.question.api.biz.IQuestionRepeatedBeanService;
 import com.kalix.enrolment.question.api.dao.IQuestionRepeatedBeanDao;
 import com.kalix.enrolment.question.entities.QuestionRepeatedBean;
+import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
 import com.kalix.framework.core.impl.biz.ShiroGenericBizServiceImpl;
+import com.kalix.framework.core.util.SerializeUtil;
 import com.kalix.framework.core.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hqj on 2018-10-25.
@@ -51,6 +54,33 @@ public class QuestionRepeatedBeanServiceImpl
         }
         entity.setUpdateBy(userName);
         entity.setUpdateById(userId);
+    }
+
+    @Override
+    public JsonData getAllEntityByQuery(Integer page, Integer limit, String jsonStr, String sort) {
+        JsonData jsonData = new JsonData();
+        try {
+            Map queryMap = SerializeUtil.json2Map(jsonStr);
+            String questionType = (String) queryMap.get("questionType");
+            if (StringUtils.isEmpty(questionType)) {
+                return jsonData;
+            }
+            String similarity = (String) queryMap.get("similarity");
+            if (StringUtils.isEmpty(similarity)) {
+                similarity = (String) queryMap.get("%similarity%");
+                if (StringUtils.isEmpty(similarity)) {
+                    return jsonData;
+                }
+            }
+            queryMap.remove("similarity");
+            queryMap.remove("%similarity%");
+            queryMap.put("similarity:gt", similarity);
+            jsonStr = SerializeUtil.serializeJson(queryMap);
+            jsonData = super.getAllEntityByQuery(page, limit, jsonStr, sort);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonData;
     }
 
     /*@Override

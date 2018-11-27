@@ -2,6 +2,8 @@ package com.kalix.enrolment.question.biz;
 
 import com.kalix.admin.core.api.biz.IRoleBeanService;
 import com.kalix.admin.core.entities.RoleBean;
+import com.kalix.admin.duty.api.biz.IDataAuthBeanService;
+import com.kalix.admin.duty.entities.DataAuthBean;
 import com.kalix.enrolment.question.api.biz.*;
 import com.kalix.enrolment.question.api.dao.IQuestionRepeatedBeanDao;
 import com.kalix.enrolment.question.dto.model.CompareQuestionDTO;
@@ -14,10 +16,8 @@ import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
 import com.kalix.framework.core.api.dao.IGenericDao;
 import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
-import com.kalix.framework.core.api.security.IDataAuthService;
 import com.kalix.framework.core.api.security.model.EnumDataAuth;
 import com.kalix.framework.core.util.ConfigUtil;
-import com.kalix.framework.core.util.JNDIHelper;
 import com.kalix.framework.core.util.SerializeUtil;
 import com.kalix.framework.core.util.StringUtils;
 import com.kalix.framework.extend.impl.biz.LogicDeleteGenericBizServiceImpl;
@@ -28,7 +28,6 @@ import org.xm.Similarity;
 import javax.transaction.Transactional;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.IOException;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -47,6 +46,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     protected IQuestionSettingBeanService questionSettingBeanService;
     protected IQuestionRepeatedBeanDao questionRepeatedBeanDao;
     protected IQuestionRepeatedBeanService questionRepeatedBeanService;
+    protected IDataAuthBeanService dataAuthBeanService;
 
     protected static double DEFAULT_SIMILARITY = 0.7;
     // protected static int MAX_REPEATED_RECORD = 1;
@@ -637,16 +637,17 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             String questionBeans = this.getQuestionBeans();
             String subTypeDictType = this.getSubTypeDictType();
             String sql = "";
-            // 增加数据权限
+            // 增加数据权限,默认为只能查看自己建立的数据
+            EnumDataAuth enumDataAuth = EnumDataAuth.SELF;
             Long userId = shiroService.getCurrentUserId();
-            if (this.dataAuthService == null) {
-                this.dataAuthService = JNDIHelper.getJNDIServiceForName(IDataAuthService.class.getName());
-            }
-            EnumDataAuth enumDataAuth = dataAuthService.getDataAuth(userId);
-            if (userId != null && userId.longValue() == -1) {
-                enumDataAuth = EnumDataAuth.ALL;
-            } else {
+            //根据appName查询具体的数据权限
+            String appName = "";
+            String menuIdToLower = "";
+            DataAuthBean authBean = dataAuthBeanService.getDataAuthBean(userId, appName, menuIdToLower);
+            if (authBean == null) {
                 enumDataAuth = EnumDataAuth.SELF;
+            } else {
+                enumDataAuth = EnumDataAuth.values()[authBean.getType()];
             }
             switch (enumDataAuth) {
                 // 本人数据
@@ -732,8 +733,6 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             }
             jsonData = this.dao.findByNativeSql(sql, page, limit, cls);*/
             jsonData = this.dao.findByNativeSql(sql, page, limit, QuestionDTO.class);
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1057,6 +1056,10 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
 
     public void setQuestionRepeatedBeanService(IQuestionRepeatedBeanService questionRepeatedBeanService) {
         this.questionRepeatedBeanService = questionRepeatedBeanService;
+    }
+
+    public void setDataAuthBeanService(IDataAuthBeanService dataAuthBeanService) {
+        this.dataAuthBeanService = dataAuthBeanService;
     }
 
     /*@Override

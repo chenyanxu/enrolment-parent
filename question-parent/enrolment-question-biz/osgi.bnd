@@ -4,7 +4,7 @@
 
 Bundle-Activator: ${bundle.namespace}.internal.InitActivator
 Bundle-Category: Kalix Enrolment Question
-Embed-Dependency:*;artifactId=!framework-core-api|framework-core-impl|framework-core-util|framework-extend-api|framework-extend-impl|admin-core-api|middleware-couchdb-api|enrolment-question-api|enrolment-system-dict-api|middleware-attachment-api|middleware-websocket-api
+Embed-Dependency:*;artifactId=!framework-core-api|framework-core-impl|framework-core-util|framework-extend-api|framework-extend-impl|admin-core-api|middleware-couchdb-api|enrolment-question-api|enrolment-system-dict-api|middleware-attachment-api|middleware-websocket-api|admin-duty-api
 Import-Package: com.kalix.framework.core.util,\
                 com.kalix.framework.core.api.osgi,\
                 com.kalix.framework.core.api.security,\
@@ -17,8 +17,10 @@ Import-Package: com.kalix.framework.core.util,\
                 com.kalix.framework.core.impl.biz,\
                 com.kalix.framework.extend.api.entities,\
                 com.kalix.framework.extend.impl.biz,\
-                com.kalix.admin.core.entities,\
                 com.kalix.admin.core.api.biz,\
+                com.kalix.admin.core.entities,\
+                com.kalix.admin.duty.api.biz,\
+                com.kalix.admin.duty.entities,\
                 org.lightcouch,\
                 org.apache.tools.*,\
                 org.osgi.framework,\
