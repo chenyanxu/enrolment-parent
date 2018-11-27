@@ -59,6 +59,7 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
         // 创建试题标题
         String title = "";
         // 以下需要通过参数动态获取
+        Long paperId=Long.parseLong(paperMap.get("paperid").toString());
         int titleNum = Integer.parseInt(paperMap.get("titlenum").toString());
         String titleName = paperMap.get("questypename").toString();
         int perScore = Integer.parseInt(paperMap.get("score").toString());
@@ -91,6 +92,7 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
                 paperQuesBean.setQuesType(questype);
                 paperQuesBean.setSubType(subtype);
                 paperQuesBean.setUuid(uuid);
+                paperQuesBean.setPaperId(paperId);
                 paperQuesBeanService.saveEntity(paperQuesBean);
                 question.add(map);
             }

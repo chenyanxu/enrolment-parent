@@ -1,70 +1,76 @@
 package com.kalix.enrolment.question.biz.util;
 
+import com.kalix.framework.core.util.StringUtils;
 import com.kalix.middleware.attachment.entities.AttachmentBean;
-import com.training.commons.file.FileUtils;
+import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
-import nochump.util.extend.ZipOutput;
+import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.util.Zip4jConstants;
+
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator_ on 2018/11/9.
  */
 public class doZipUtils {
 
-    public String doZip(List list,String path,String filename,String password) throws IOException, ZipException {
-
+    public String doZip(List list,Map map) throws IOException {
+        ArrayList filesToAdd = new ArrayList();
         String rtnUrl="";
         HttpURLConnection httpUrl = null;
         URL urlfile = null;
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
-       // parameters.setSourceExternalStream(true);
+        String path=map.get("path").toString();
+        String filename=map.get("filename").toString();
+        String password=map.get("password").toString();
         try {
             //如果路径为目录（文件夹）
             if(list!=null&&list.size()>0)
             {
+                ZipFile zipFile = new ZipFile(rtnUrl+".zip");
+                ZipParameters parameters = new ZipParameters();
+                // 压缩方式
+                parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+                // 压缩级别
+                parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
+                parameters.setSourceExternalStream(true);
+                if(!StringUtils.isEmpty(password)){
+                    parameters.setEncryptFiles(true);
+                    parameters.setEncryptionMethod(Zip4jConstants.ENC_METHOD_STANDARD);
+                    //parameters.setAesKeyStrength(Zip4jConstants.AES_STRENGTH_256);
+                    parameters.setPassword(password);
+                }
+
                 for(int i=0;i<list.size();i++)
                 {
                     AttachmentBean attachmentBean = (AttachmentBean)list.get(i);
                     urlfile = new URL(attachmentBean.getAttachmentPath());
-
                     httpUrl = (HttpURLConnection) urlfile.openConnection();
                     httpUrl.connect();
-                    File file = new File(path+File.separatorChar+filename);
-                    creatFile(path+File.separatorChar+filename+File.separatorChar,attachmentBean.getAttachmentName());
-                    bis = new BufferedInputStream(httpUrl.getInputStream());
-                    bos = new BufferedOutputStream(new FileOutputStream(path+File.separatorChar+filename+File.separatorChar+attachmentBean.getAttachmentName()));
-                    int len = 2048;
-                    byte[] b = new byte[len];
-                    while ((len = bis.read(b)) != -1) {
-                        bos.write(b, 0, len);
-                    }
-                    bos.flush();
-                }
+                    parameters.setFileNameInZip(attachmentBean.getAttachmentName());
+                    zipFile.addStream(httpUrl.getInputStream(), parameters);
 
-                rtnUrl=path+File.separatorChar+filename;
-                File file = new File(rtnUrl+File.separatorChar);
-                if(file.exists()&&file.isDirectory())
-                {
-
-                    byte[] zipByte= ZipOutput.getEncryptZipByte(file.listFiles(),password);
-                    FileUtils.writeByteFile(zipByte, new File(rtnUrl+".zip"));
                 }
 
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } catch (ZipException e) {
+            e.printStackTrace();
+        } finally {
+
             if (bis != null) bis.close();
             if (bos != null) bos.close();
             if (httpUrl != null) httpUrl.disconnect();
-            httpUrl.disconnect();
             delFolder(path+File.separatorChar+filename);
 
         }

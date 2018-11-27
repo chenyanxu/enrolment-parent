@@ -25,6 +25,20 @@ public class PaperQuesBean extends BaseLogicDeleteEntity {
 
     private String uuid;
 
+    /**
+     * 试卷id
+     */
+    private Long paperId;
+
+
+    public Long getPaperId() {
+        return paperId;
+    }
+
+    public void setPaperId(Long paperId) {
+        this.paperId = paperId;
+    }
+
     public String getUuid() {
         return uuid;
     }
