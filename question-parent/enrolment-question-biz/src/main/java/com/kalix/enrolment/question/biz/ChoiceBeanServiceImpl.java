@@ -1,5 +1,6 @@
 package com.kalix.enrolment.question.biz;
 
+import com.kalix.admin.duty.entities.DataAuthBean;
 import com.kalix.enrolment.question.api.biz.IChoiceBeanService;
 import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
 import com.kalix.enrolment.question.api.biz.IQuestionAuditService;
@@ -7,11 +8,15 @@ import com.kalix.enrolment.question.api.biz.IRepeatedService;
 import com.kalix.enrolment.question.api.dao.IChoiceBeanDao;
 import com.kalix.enrolment.question.biz.util.Constants;
 import com.kalix.enrolment.question.dto.model.CompareQuestionDTO;
+import com.kalix.enrolment.question.dto.model.QuestionDTO;
 import com.kalix.enrolment.question.entities.ChoiceBean;
 import com.kalix.enrolment.question.entities.PaperQuesBean;
 import com.kalix.enrolment.question.entities.QuestionSettingBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 import com.kalix.framework.core.api.persistence.JsonData;
+import com.kalix.framework.core.api.security.model.EnumDataAuth;
+import com.kalix.framework.core.util.SerializeUtil;
+import com.kalix.framework.core.util.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -134,6 +139,96 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
 
         jsonData.setData(repeateList);
         jsonData.setTotalCount((long) repeateList.size());
+        return jsonData;
+    }
+
+    @Override
+    public JsonData getFirstQuestions(Integer page, Integer limit, String jsonStr, String sort) {
+        JsonData jsonData = new JsonData();
+        try {
+            String questionType = this.getQuestionType();
+            String questionTypeName = this.getQuestionTypeName();
+            String questionBeans = this.getQuestionBeans();
+            String sql = "";
+            // 增加数据权限,默认为只能查看自己建立的数据
+            EnumDataAuth enumDataAuth = EnumDataAuth.SELF;
+            Long userId = shiroService.getCurrentUserId();
+            //根据appName查询具体的数据权限
+            String appName = "";
+            String menuIdToLower = "";
+            DataAuthBean authBean = dataAuthBeanService.getDataAuthBean(userId, appName, menuIdToLower);
+            if (authBean == null) {
+                enumDataAuth = EnumDataAuth.SELF;
+            } else {
+                enumDataAuth = EnumDataAuth.values()[authBean.getType()];
+            }
+            switch (enumDataAuth) {
+                // 本人数据
+                case SELF:
+                    sql = "select '" + questionType + "' as questiontype, '" + questionTypeName + "' as questiontypename, '" +
+                            questionBeans + "' as questionbeans, y.subtype, y.id, y.id as questionId, y.stem, y.analysis, " +
+                            " y.checkflag, y.checkerid, y.checker, y.checkdate, y.checkreason, y.repeatedflag, " +
+                            " y.delflag, y.reason, y.compareFlag, y.createby, y.creationdate, y.updateby, y.updatedate, " +
+                            " d.label as typename, y.answera, y.answerb, y.answerc, y.answerd " +
+                            " from " + this.dao.getTableName() + " y " +
+                            " left join enrolment_dict d on d.type = '" + DICT_TYPE + "' and d.value = y.type " +
+                            " where y.delflag = '0' and y.repeatedflag = '0' and y.compareflag = '1' and y.createbyid = " + userId +
+                            " and y.id in (select distinct r.firstquestionid from " + this.questionRepeatedBeanDao.getTableName() + " r " +
+                            " where r.questiontype = '" + questionType + "' and r.similarity > " +
+                            " (select s.similarity from enrolment_question_setting s where s.id = 1)) " +
+                            " order by y.subType, y.type, y.id";
+                    break;
+                // 所有数据
+                case ALL:
+                    sql = "select '" + questionType + "' as questiontype, '" + questionTypeName + "' as questiontypename, '" +
+                            questionBeans + "' as questionbeans, y.subtype, y.id, y.id as questionId, y.stem, y.analysis, " +
+                            " y.checkflag, y.checkerid, y.checker, y.checkdate, y.checkreason, y.repeatedflag, " +
+                            " y.delflag, y.reason, y.compareFlag, y.createby, y.creationdate, y.updateby, y.updatedate, " +
+                            " d.label as typename, y.answera, y.answerb, y.answerc, y.answerd " +
+                            " from " + this.dao.getTableName() + " y " +
+                            " left join enrolment_dict d on d.type = '" + DICT_TYPE + "' and d.value = y.type " +
+                            " where y.delflag = '0' and y.repeatedflag = '0' and y.compareflag = '1'" +
+                            " and y.id in (select distinct r.firstquestionid from " + this.questionRepeatedBeanDao.getTableName() + " r " +
+                            " where r.questiontype = '" + questionType + "' and r.similarity > " +
+                            " (select s.similarity from enrolment_question_setting s where s.id = 1)) " +
+                            " order by y.subType, y.type, y.id";
+                    break;
+            }
+            jsonData = this.dao.findByNativeSql(sql, page, limit, QuestionDTO.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonData;
+    }
+
+    @Override
+    public JsonData getSecondQuestions(Integer page, Integer limit, String jsonStr, String sort) {
+        JsonData jsonData = new JsonData();
+        try {
+            Map queryMap = SerializeUtil.json2Map(jsonStr);
+            String firstQuestionId = (String) queryMap.get("firstQuestionId");
+            if (StringUtils.isEmpty(firstQuestionId)) {
+                return jsonData;
+            }
+            String questionType = this.getQuestionType();
+            String questionTypeName = this.getQuestionTypeName();
+            String questionBeans = this.getQuestionBeans();
+            String sql = "select '" + questionType + "' as questiontype, '" + questionTypeName + "' as questiontypename, '" +
+                    questionBeans + "' as questionbeans, y.subtype, y.id, y.id as questionId, y.stem, y.analysis, " +
+                    " y.checkflag, y.checkerid, y.checker, y.checkdate, y.checkreason, y.repeatedflag, " +
+                    " y.delflag, y.reason, y.compareFlag, y.createby, y.creationdate, y.updateby, y.updatedate, " +
+                    " r.similarity, r.similaritydesc, d.label as typename " +
+                    " from " + this.dao.getTableName() + " y " +
+                    " left join enrolment_dict d on d.type = '" + DICT_TYPE + "' and d.value = y.type, " +
+                    this.questionRepeatedBeanDao.getTableName() + " r " +
+                    " where y.delflag = '0' and y.id = r.secondquestionid and r.questiontype = '" + questionType +
+                    "' and r.firstquestionid = " + firstQuestionId + " and r.similarity > " +
+                    " (select s.similarity from enrolment_question_setting s where s.id = 1) " +
+                    " order by r.similarity desc, y.subtype, y.type, y.id";
+            jsonData = this.dao.findByNativeSql(sql, page, limit, QuestionDTO.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return jsonData;
     }
 

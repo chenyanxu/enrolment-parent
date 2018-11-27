@@ -19,6 +19,10 @@ public class QuestionDTO extends BaseDTO {
     private String typeName;         // 试题类别名称
     private Long questionId;         // 试题id
     private String stem;             // 题干
+    private String answerA;          // 选择题选项A
+    private String answerB;          // 选择题选项B
+    private String answerC;          // 选择题选项C
+    private String answerD;          // 选择题选项D
     private String analysis;         // 试题解析
     private String checkFlag;        // 审核状态，字典[审核状态]
     private Long checkerId;          // 审核员id
@@ -199,5 +203,37 @@ public class QuestionDTO extends BaseDTO {
 
     public void setSimilarityDesc(String similarityDesc) {
         this.similarityDesc = similarityDesc;
+    }
+
+    public String getAnswerA() {
+        return answerA;
+    }
+
+    public void setAnswerA(String answerA) {
+        this.answerA = answerA;
+    }
+
+    public String getAnswerB() {
+        return answerB;
+    }
+
+    public void setAnswerB(String answerB) {
+        this.answerB = answerB;
+    }
+
+    public String getAnswerC() {
+        return answerC;
+    }
+
+    public void setAnswerC(String answerC) {
+        this.answerC = answerC;
+    }
+
+    public String getAnswerD() {
+        return answerD;
+    }
+
+    public void setAnswerD(String answerD) {
+        this.answerD = answerD;
     }
 }
