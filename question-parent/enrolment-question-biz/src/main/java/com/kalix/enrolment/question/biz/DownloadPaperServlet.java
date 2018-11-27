@@ -1,10 +1,12 @@
 package com.kalix.enrolment.question.biz;
 
 import com.kalix.enrolment.question.api.biz.IPaperBeanService;
+import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
 import com.kalix.enrolment.question.api.biz.IPasswordBeanService;
 import com.kalix.enrolment.question.biz.util.PassWordCreate;
 import com.kalix.enrolment.question.biz.util.doZipUtils;
 import com.kalix.enrolment.question.entities.PaperBean;
+import com.kalix.enrolment.question.entities.PaperQuesBean;
 import com.kalix.enrolment.question.entities.PasswordBean;
 import com.kalix.framework.core.impl.biz.CustomServlet;
 import com.kalix.framework.core.util.*;
@@ -17,10 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by hqj on 2018/10/22.
@@ -31,6 +30,7 @@ import java.util.Map;
 public class DownloadPaperServlet extends CustomServlet {
     private IPaperBeanService paperBeanService;
     private IAttachmentBeanService attachmentBeanService;
+    private IPaperQuesBeanService paperQuesBeanService;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -55,6 +55,7 @@ public class DownloadPaperServlet extends CustomServlet {
             paperBeanService = JNDIHelper.getJNDIServiceForName(IPaperBeanService.class.getName());
             PaperBean paperBean=paperBeanService.getEntity(Long.parseLong(paperId));
             fileName= paperBean.getTitle();
+            String tempName=paperBean.getTempName();
             // 预览文件真实路径地址
             String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
             if (realPath.charAt(realPath.length() - 1) != '/') {
@@ -83,11 +84,35 @@ public class DownloadPaperServlet extends CustomServlet {
                             for(String id: str){
                                 AttachmentBean attachmentBean= attachmentBeanService.getEntity(Long.parseLong(id));
                                 list.add(attachmentBean);
+                                if("2".equals(tempName)){
+                                    paperQuesBeanService=JNDIHelper.getJNDIServiceForName(IPaperQuesBeanService.class.getName());
+                                    List<PaperQuesBean> list1=paperQuesBeanService.findByPaperId(Long.parseLong(paperId));
+                                    for(PaperQuesBean paperQuesBean:list1){
+                                        Long quesId=  paperQuesBean.getQuesid();
+                                        List<AttachmentBean> attachmentBean_fujian= attachmentBeanService.findByMainId(quesId);
+                                        for(AttachmentBean attachment:attachmentBean_fujian){
+                                            list.add(attachment);
+                                        }
+
+                                    }
+                                }
                             }
 
                         }else {
                             AttachmentBean attachmentBean= attachmentBeanService.getEntity(Long.parseLong(ids));
                             list.add(attachmentBean);
+                            if("2".equals(tempName)){
+                                paperQuesBeanService=JNDIHelper.getJNDIServiceForName(IPaperQuesBeanService.class.getName());
+                                List<PaperQuesBean> list1=paperQuesBeanService.findByPaperId(Long.parseLong(paperId));
+                                for(PaperQuesBean paperQuesBean:list1){
+                                    Long quesId=  paperQuesBean.getQuesid();
+                                    List<AttachmentBean> attachmentBean_fujian= attachmentBeanService.findByMainId(quesId);
+                                    for(AttachmentBean attachment:attachmentBean_fujian){
+                                        list.add(attachment);
+                                    }
+
+                                }
+                            }
                         }
                     }
                     PassWordCreate passWordCreate = new PassWordCreate();
@@ -102,7 +127,11 @@ public class DownloadPaperServlet extends CustomServlet {
                     map.remove("version");
                     HttpClientUtil.shiroPost("/passwords", map, sessionId, access_token);
 
-                    String path=doZipUtils.doZip(list,reviewBaseDir,fileName+"_"+testPaperName,password);
+                    Map<String, String> map_str = new HashMap<>();
+                    map_str.put("path",reviewBaseDir);
+                    map_str.put("filename",fileName+"_"+testPaperName);
+                    map_str.put("password",password);
+                    String path=doZipUtils.doZip(list,map_str);
                     zipFile = new File(path);
                     zipInputStream = new FileInputStream(zipFile);
                     out_zip = resp.getOutputStream();

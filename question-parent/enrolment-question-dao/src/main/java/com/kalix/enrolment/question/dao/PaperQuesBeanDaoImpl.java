@@ -13,4 +13,11 @@ public class PaperQuesBeanDaoImpl extends BaseBeanDao<PaperQuesBean, Long> imple
         String sql = "delete  from " + super.getTableName() + " where uuid ='"+uuid+"' " ;
         this.updateNativeQuery(sql);
     }
+
+
+    @Override
+    public List findByPaperId(Long paperId)  {
+        String sql = "select *  from " + super.getTableName() + " where paperid =?1 " ;
+        return this.findByNativeSql(sql, PaperQuesBean.class, paperId);
+    }
 }
