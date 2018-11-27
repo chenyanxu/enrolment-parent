@@ -156,8 +156,8 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
             EnumDataAuth enumDataAuth = EnumDataAuth.SELF;
             Long userId = shiroService.getCurrentUserId();
             //根据appName查询具体的数据权限
-            String appName = "";
-            String menuIdToLower = "";
+            String appName = "enrolment";
+            String menuIdToLower = "questionsRepeatedMenu";
             DataAuthBean authBean = dataAuthBeanService.getDataAuthBean(userId, appName, menuIdToLower);
             if (authBean == null) {
                 enumDataAuth = EnumDataAuth.SELF;
