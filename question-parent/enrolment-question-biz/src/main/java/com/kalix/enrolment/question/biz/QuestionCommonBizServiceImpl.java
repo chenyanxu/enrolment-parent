@@ -150,19 +150,28 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
         JsonData jsonData = new JsonData();
         List list = new ArrayList<>();
         try {
+            // 解析并处理参数
             Map queryMap = SerializeUtil.json2Map(jsonStr);
             String questionType = (String) queryMap.get("questionType");
             if (StringUtils.isEmpty(questionType)) {
                 return jsonData;
             }
+            queryMap.remove("questionType");
+            //queryMap.put("delFlag", "0");
+            //queryMap.put("checkFlag:in", "0,1");
+            String subType = (String) queryMap.get("subType");
+            if (StringUtils.isEmpty(subType)) {
+                queryMap.remove("subType");
+            }
+            String type = (String) queryMap.get("type");
+            if (StringUtils.isEmpty(type)) {
+                queryMap.remove("type");
+            }
+            jsonStr = SerializeUtil.serializeJson(queryMap);
             // 默认排序
             if (StringUtils.isEmpty(sort)) {
                 sort = "[{'property': 'subType', 'direction': 'ASC'},{'property': 'type', 'direction': 'ASC'},{'property': 'creationDate', 'direction': 'DESC'}]";
             }
-            queryMap.remove("questionType");
-            //queryMap.put("delFlag", "0");
-            //queryMap.put("checkFlag:in", "0,1");
-            jsonStr = SerializeUtil.serializeJson(queryMap);
             EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_QUESTIONTYPE, questionType);
             String questionTypeName = enrolmentDictBean.getLabel();
             String questionBeans = enrolmentDictBean.getDescription() == null ? "" :
@@ -173,6 +182,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             map.put("beanName", beanName);
             questionService = JNDIHelper.getJNDIServiceForName(IQuestionService.class.getName(), map);
             JsonData resultData = questionService.getAllEntityByQuery(page, limit, jsonStr, sort);
+            // 转换结果
             List resultList = resultData.getData();
             if (resultList != null && resultList.size() > 0) {
                 for (int i = 0; i < resultList.size(); i++) {
@@ -213,7 +223,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                 }
             }
             jsonData.setData(list);
-            jsonData.setTotalCount((long) list.size());
+            jsonData.setTotalCount(resultData.getTotalCount());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
