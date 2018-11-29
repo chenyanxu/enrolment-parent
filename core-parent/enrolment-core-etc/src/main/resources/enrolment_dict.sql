@@ -37,6 +37,7 @@ INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updated
 INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (30, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '', '戏剧与影视类', '类别', '2', 1);
 INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (31, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '', '音乐基础', '类别', '3', 1);
 
+
 INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (32, 'admin', '2018-09-13 09:14:46.699000', 'admin', '2018-09-13 09:14:46.699000', '', '未审核', '审核状态', '0', 1);
 INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (33, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '', '已通过', '审核状态', '1', 1);
 INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (34, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '', '未通过', '审核状态', '2', 1);
@@ -67,6 +68,8 @@ INSERT INTO public.enrolment_dict ("id", "createby", "createbyid", "creationdate
 
 INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (55, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '', '视唱练耳', '面试题类型', '13', 1);
 
-INSERT INTO public.enrolment_dict ("id", "createby", "createbyid", "creationdate", "updateby", "updatebyid", "updatedate", "description", "label", "type", "value", "version_", "subtype") VALUES ('151058', '管理员', '-1', '2018-11-23 14:39:34.246', '管理员', '-1', '2018-11-23 14:39:34.235', '', '面试题模板', '模板名称', '3', '1', '');
-INSERT INTO public.enrolment_dict ("id", "createby", "createbyid", "creationdate", "updateby", "updatebyid", "updatedate", "description", "label", "type", "value", "version_", "subtype") VALUES ('151057', '管理员', '-1', '2018-11-23 14:39:19.603', '管理员', '-1', '2018-11-23 14:39:19.596', '', '主观题模板', '模板名称', '2', '1', '');
-INSERT INTO public.enrolment_dict ("id", "createby", "createbyid", "creationdate", "updateby", "updatebyid", "updatedate", "description", "label", "type", "value", "version_", "subtype") VALUES ('151056', '管理员', '-1', '2018-11-23 14:38:57.751', '管理员', '-1', '2018-11-23 14:38:57.744', '', '客观题模板', '模板名称', '1', '1', '');
+INSERT INTO public.enrolment_dict ("id", "createby", "createbyid", "creationdate", "updateby", "updatebyid", "updatedate", "description", "label", "type", "value", "version_", "subtype") VALUES ('56', '管理员', '-1', '2018-11-23 14:39:34.246', '管理员', '-1', '2018-11-23 14:39:34.235', '', '面试题模板', '模板名称', '3', '1', '');
+INSERT INTO public.enrolment_dict ("id", "createby", "createbyid", "creationdate", "updateby", "updatebyid", "updatedate", "description", "label", "type", "value", "version_", "subtype") VALUES ('57', '管理员', '-1', '2018-11-23 14:39:19.603', '管理员', '-1', '2018-11-23 14:39:19.596', '', '主观题模板', '模板名称', '2', '1', '');
+INSERT INTO public.enrolment_dict ("id", "createby", "createbyid", "creationdate", "updateby", "updatebyid", "updatedate", "description", "label", "type", "value", "version_", "subtype") VALUES ('58', '管理员', '-1', '2018-11-23 14:38:57.751', '管理员', '-1', '2018-11-23 14:38:57.744', '', '客观题模板', '模板名称', '1', '1', '');
+
+INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (59, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '', '历史及地理等相关类别', '类别', '4', 1);
