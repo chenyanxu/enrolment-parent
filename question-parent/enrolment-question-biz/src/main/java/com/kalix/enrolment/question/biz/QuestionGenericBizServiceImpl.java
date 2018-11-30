@@ -17,6 +17,7 @@ import com.kalix.framework.core.api.dao.IGenericDao;
 import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
 import com.kalix.framework.core.api.security.model.EnumDataAuth;
+import com.kalix.framework.core.api.web.model.QueryDTO;
 import com.kalix.framework.core.util.ConfigUtil;
 import com.kalix.framework.core.util.SerializeUtil;
 import com.kalix.framework.core.util.StringUtils;
@@ -66,6 +67,46 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             sort = "[{'property': 'delFlag', 'direction': 'ASC'},{'property': 'updateDate', 'direction': 'DESC'}]";
         }
         return super.getAllEntityByQuery(page, limit, jsonStr, sort);
+    }
+
+    /**
+     * 重写试题数据权限
+     * @param queryDTO
+     * @return
+     */
+    @Override
+    public QueryDTO addDataAuthQueryDTO(QueryDTO queryDTO) {
+        try {
+            Map<String, String> jsonMap = queryDTO.getJsonMap();
+            if (jsonMap == null) {
+                jsonMap = new HashMap<String, String>();
+            }
+            // 增加数据权限,默认为只能查看自己建立的数据
+            EnumDataAuth enumDataAuth = EnumDataAuth.SELF;
+            Long userId = shiroService.getCurrentUserId();
+            // 根据appName查询具体的数据权限
+            String appName = "enrolment";
+            String menuIdToLower = "completionMenu";
+            DataAuthBean authBean = dataAuthBeanService.getDataAuthBean(userId, appName, menuIdToLower);
+            if (authBean == null) {
+                enumDataAuth = EnumDataAuth.SELF;
+            } else {
+                enumDataAuth = EnumDataAuth.values()[authBean.getType()];
+            }
+            switch (enumDataAuth) {
+                // 本人数据
+                case SELF:
+                    jsonMap.put("createById", String.valueOf(userId));
+                    break;
+                // 所有数据
+                case ALL:
+                    break;
+            }
+            queryDTO.setJsonMap(jsonMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return queryDTO;
     }
 
     /**
