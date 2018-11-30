@@ -567,10 +567,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             Map queryMap = SerializeUtil.json2Map(jsonStr);
             String similarity = (String) queryMap.get("similarity");
             if (StringUtils.isEmpty(similarity)) {
-                similarity = (String) queryMap.get("%similarity%");
-                if (StringUtils.isEmpty(similarity)) {
-                    return jsonData;
-                }
+                return jsonData;
             }
             String subType = (String) queryMap.get("subType");
             String type = (String) queryMap.get("type");

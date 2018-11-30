@@ -159,14 +159,6 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             queryMap.remove("questionType");
             //queryMap.put("delFlag", "0");
             //queryMap.put("checkFlag:in", "0,1");
-            String subType = (String) queryMap.get("subType");
-            if (StringUtils.isEmpty(subType)) {
-                queryMap.remove("subType");
-            }
-            String type = (String) queryMap.get("type");
-            if (StringUtils.isEmpty(type)) {
-                queryMap.remove("type");
-            }
             jsonStr = SerializeUtil.serializeJson(queryMap);
             // 默认排序
             if (StringUtils.isEmpty(sort)) {
