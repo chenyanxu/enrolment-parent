@@ -32,10 +32,13 @@ public class doZipUtils {
         String path=map.get("path").toString();
         String filename=map.get("filename").toString();
         String password=map.get("password").toString();
+        rtnUrl=path+File.separatorChar+filename;
+       // parameters.setSourceExternalStream(true);
         try {
             //如果路径为目录（文件夹）
             if(list!=null&&list.size()>0)
             {
+
                 ZipFile zipFile = new ZipFile(rtnUrl+".zip");
                 ZipParameters parameters = new ZipParameters();
                 // 压缩方式
@@ -54,12 +57,43 @@ public class doZipUtils {
                 {
                     AttachmentBean attachmentBean = (AttachmentBean)list.get(i);
                     urlfile = new URL(attachmentBean.getAttachmentPath());
+
                     httpUrl = (HttpURLConnection) urlfile.openConnection();
                     httpUrl.connect();
                     parameters.setFileNameInZip(attachmentBean.getAttachmentName());
                     zipFile.addStream(httpUrl.getInputStream(), parameters);
 
                 }
+//                rtnUrl=path+File.separatorChar+filename;
+//                File file = new File(rtnUrl+File.separatorChar);
+//                if(file.exists()&&file.isDirectory())
+//                {
+//                    ZipFile zipFile = new ZipFile(rtnUrl+".zip");
+//                    ZipParameters parameters = new ZipParameters();
+//                    // 压缩方式
+//                    parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+//                    // 压缩级别
+//                    parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
+//                    if(!StringUtils.isEmpty(password)){
+//                        parameters.setEncryptFiles(true);
+//                        parameters.setEncryptionMethod(Zip4jConstants.ENC_METHOD_STANDARD);
+//                        //parameters.setAesKeyStrength(Zip4jConstants.AES_STRENGTH_256);
+//                        parameters.setPassword(password);
+//                    }
+//                    // 要打包的文件夹
+//                    File[] fs = file.listFiles();
+//                    // 遍历test文件夹下所有的文件、文件夹
+//                    for (File f : fs) {
+//                        if (f.isDirectory()) {
+//                          //  zipFile.addFolder(f.getPath(), parameters);
+//                        } else {
+//                           // zipFile.addFile(f, parameters);
+//                            filesToAdd.add(f);
+//                        }
+//                    }
+//                    zipFile.addFiles(filesToAdd, parameters);
+//
+//                }
 
             }
         } catch (IOException e) {
@@ -68,10 +102,10 @@ public class doZipUtils {
             e.printStackTrace();
         } finally {
 
-            if (bis != null) bis.close();
-            if (bos != null) bos.close();
+//            if (bis != null) bis.close();
+//            if (bos != null) bos.close();
             if (httpUrl != null) httpUrl.disconnect();
-            delFolder(path+File.separatorChar+filename);
+          //  delFolder(path+File.separatorChar+filename);
 
         }
         return rtnUrl+".zip";
