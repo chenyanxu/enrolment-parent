@@ -106,10 +106,4 @@ public interface IRepeatedService extends IService {
      * @return
      */
     JsonData getSecondQuestions(Integer page, Integer limit, String jsonStr, String sort);
-
-    /*// 重复情况查询(不处理)
-    JsonData getRepeates(String jsonStr, boolean isAll);
-
-    // 查询重复
-    JsonData getRepeates(Long questionId);*/
 }
