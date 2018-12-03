@@ -1,16 +1,21 @@
 package com.kalix.enrolment.question.biz;
 
 import com.kalix.enrolment.question.api.biz.IQuestionRepeatedBeanService;
+import com.kalix.enrolment.question.api.biz.IQuestionService;
 import com.kalix.enrolment.question.api.dao.IQuestionRepeatedBeanDao;
+import com.kalix.enrolment.question.entities.BaseQuestionEntity;
 import com.kalix.enrolment.question.entities.QuestionRepeatedBean;
 import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
 import com.kalix.framework.core.impl.biz.ShiroGenericBizServiceImpl;
+import com.kalix.framework.core.util.JNDIHelper;
 import com.kalix.framework.core.util.SerializeUtil;
 import com.kalix.framework.core.util.StringUtils;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +29,7 @@ public class QuestionRepeatedBeanServiceImpl
     /*protected static String DICT_QUESTIONTYPE = "题型";
     protected IEnrolmentDictBeanService enrolmentDictBeanService;
     protected IQuestionService questionService;*/
+    protected IQuestionService questionService;
 
     @Override
     public void beforeSaveEntity(QuestionRepeatedBean entity, JsonStatus status) {
@@ -75,8 +81,25 @@ public class QuestionRepeatedBeanServiceImpl
             queryMap.remove("similarity");
             queryMap.remove("%similarity%");
             queryMap.put("similarity:gt", similarity);
+            // String type = (String) queryMap.get("type");
+            queryMap.remove("type");
             jsonStr = SerializeUtil.serializeJson(queryMap);
             jsonData = super.getAllEntityByQuery(page, limit, jsonStr, sort);
+            // 字段翻译
+            for (int i = 0; i < jsonData.getData().size(); i++) {
+                QuestionRepeatedBean questionRepeatedBean = (QuestionRepeatedBean) jsonData.getData().get(i);
+                String questionBeans = questionRepeatedBean.getQuestionBeans();
+                String beanName = questionBeans.substring(0, 1).toUpperCase() + questionBeans.substring(1, questionBeans.length() - 1);
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("beanName", beanName);
+                questionService = JNDIHelper.getJNDIServiceForName(IQuestionService.class.getName(), map);
+                BaseQuestionEntity firstEntity = (BaseQuestionEntity) questionService.getEntity(questionRepeatedBean.getFirstQuestionId());
+                BaseQuestionEntity secondEntity = (BaseQuestionEntity) questionService.getEntity(questionRepeatedBean.getSecondQuestionId());
+                questionRepeatedBean.setFirstStem(firstEntity.getStem());
+                questionRepeatedBean.setSecondStem(secondEntity.getStem());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }

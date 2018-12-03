@@ -19,19 +19,19 @@ public class QuestionSettingBean extends PersistentEntity {
     private Date questionStartTime;        // 题库功能开启时间
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date questionCloseTime;        // 题库功能关闭时间
-    private Double similarity = 0.5;       // 题库去重相似度参数
-    private Double cilinSimilarity = 0.5;  // 题库去重词林相似度参数
-    private Double morphoSimilarity = 0.5; // 题库去重词形词序句子相似度参数
-    private Double phraseSimilarity = 0.5; // 题库去重短语相似度参数
+    private Double similarity = 0.8;       // 题库去重相似度参数
+    private Double cilinSimilarity = 0.7;  // 题库去重词林相似度参数
+    private Double morphoSimilarity = 0.7; // 题库去重词形词序句子相似度参数
+    private Double phraseSimilarity = 0.7; // 题库去重短语相似度参数
 
     private Boolean repeated = false;      // 题库排重是否进行自动比对状态
     private Boolean compare = false;       // 题库试题比对状态
-    private Boolean compareCompletion = false;
-    private Boolean compareChoice = false;
-    private Boolean compareVerse = false;
-    private Boolean compareMusic = false;
-    private Boolean compareSubject = false;
-    private Boolean compareInterview = false;
+    private Boolean compareCompletion = false; // 题库试题填空题比对状态
+    private Boolean compareChoice = false;     // 题库试题单项选择题比对状态
+    private Boolean compareVerse = false;      // 题库试题补全诗句比对状态
+    private Boolean compareMusic = false;      // 题库试题音乐基础比对状态
+    private Boolean compareSubject = false;    // 题库试题主观题比对状态
+    private Boolean compareInterview = false;  // 题库试题面试题比对状态
 
     public Boolean getAvailable() {
         return available;
