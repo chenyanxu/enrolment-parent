@@ -56,4 +56,6 @@ public interface IQuestionCommonBizService extends IService {
     JsonStatus autoCreateTestPaper(Long paperId);
 
     JsonStatus deletePaper(String ids);
+    JsonStatus reductionPaper(String ids);
+
 }

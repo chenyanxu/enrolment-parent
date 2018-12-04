@@ -88,9 +88,11 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         String titleName = paperMap.get("questypename").toString();
         int perScore = Integer.parseInt(paperMap.get("score").toString());
         int total = Integer.parseInt(paperMap.get("totalscore").toString());
+        String quesdesc=paperMap.get("quesdesc") == null ? "" : paperMap.get("quesdesc").toString();
         String uuid = paperMap.get("uuid").toString();
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每空" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
+        singleTestPaper.put("quesdesc", quesdesc);
         int quesNum = total / perScore;
 
 

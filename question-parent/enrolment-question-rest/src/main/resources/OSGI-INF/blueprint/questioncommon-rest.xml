@@ -68,6 +68,18 @@
             </post>
 
         </rest>
+        <rest path="/reductionPaper" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>reductionPaper rest service</description>
+
+            <!-- this is a rest GET to find all choices -->
+            <post id="route-reductionPaper">
+                <description>reductionPaper</description>
+                <to uri="bean:questionCommonBizService?method=reductionPaper(${header.id})"/>
+            </post>
+
+        </rest>
+
+
 
     </camelContext>
 </blueprint>

@@ -260,10 +260,10 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                         paper_map.put("year", year);
                         paper_map.put("score", ruleBean.getQuesScore());
                         paper_map.put("totalscore", ruleBean.getQuesTotalscore());
-                        paper_map.put("desc", ruleBean.getQuesDesc());
                         paper_map.put("titlenum", ruleBean.getTitleNum());
                         paper_map.put("paperid", ruleBean.getPaperId());
                         paper_map.put("questype", ruleBean.getQuesType());
+                        paper_map.put("quesdesc", ruleBean.getQuesDesc());
                         paper_map.put("subtype", ruleBean.getSubType());
                         paper_map.put("questypename", ruleBean.getQuesTypeName());
                         paper_map.put("uuid", uuid);
@@ -290,6 +290,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                         tempMap.put("kskm", kskm);
                         tempMap.put("year", year_str);
                         tempMap.put("quesList", quesList);
+                        tempMap.put("uuid", uuid);
                         if ("1".equals(tempName)) {
                             tmp = "testPaper.ftl";
                         } else if ("2".equals(tempName)) {
@@ -346,7 +347,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             //out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile)));
             out = new BufferedWriter(oWriter);
             t.process(tempMap, out);
-
+            String uuid =tempMap.get("uuid").toString();
             jsonStatus.setSuccess(true);
             jsonStatus.setMsg("试卷生成成功!");
             if (outFile.exists()) {
@@ -355,7 +356,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                         testPaperName + ".doc", "application/vnd.ms-word");
 
                 AttachmentBean attachmentBean = new AttachmentBean();
-                attachmentBean.setAttachmentId(response.getId());
+                attachmentBean.setAttachmentId(uuid);
                 attachmentBean.setAttachmentName(testPaperName + ".doc");
                 attachmentBean.setAttachmentPath(couchdbService.getDBUrl() + response.getId() + "/" + testPaperName + ".doc");
                 attachmentBean.setAttachmentRev(response.getRev());
@@ -382,14 +383,43 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             if (id.indexOf(":") > -1) {
                 String[] str = id.split(":");
                 for (String idStr : str) {
+                    AttachmentBean attachmentBean =  attachmentBeanService.getEntity(Long.parseLong(idStr));
+                    paperQuesBeanService.deleteByUuid(attachmentBean.getAttachmentId());
                     attachmentBeanService.deleteEntity(Long.parseLong(idStr));
                 }
 
             } else {
+                AttachmentBean attachmentBean =  attachmentBeanService.getEntity(Long.parseLong(id));
+                paperQuesBeanService.deleteByUuid(attachmentBean.getAttachmentId());
                 attachmentBeanService.deleteEntity(Long.parseLong(id));
             }
         }
+        jsonStatus.setMsg("删除成功！");
+        jsonStatus.setSuccess(true);
+        return jsonStatus;
+    }
 
+    @Override
+    public JsonStatus reductionPaper(String id) {
+        JsonStatus jsonStatus = new JsonStatus();
+
+        if (!StringUtils.isEmpty(id)) {
+            if (id.indexOf(":") > -1) {
+                String[] str = id.split(":");
+                for (String idStr : str) {
+                    AttachmentBean attachmentBean =  attachmentBeanService.getEntity(Long.parseLong(idStr));
+                    paperQuesBeanService.deleteByUuid(attachmentBean.getAttachmentId());
+                    attachmentBeanService.deleteEntity(Long.parseLong(idStr));
+                }
+
+            } else {
+                AttachmentBean attachmentBean =   attachmentBeanService.getEntity(Long.parseLong(id));
+                paperQuesBeanService.deleteByUuid(attachmentBean.getAttachmentId());
+                attachmentBeanService.deleteEntity(Long.parseLong(id));
+            }
+        }
+        jsonStatus.setMsg("还原成功！");
+        jsonStatus.setSuccess(true);
         return jsonStatus;
     }
 

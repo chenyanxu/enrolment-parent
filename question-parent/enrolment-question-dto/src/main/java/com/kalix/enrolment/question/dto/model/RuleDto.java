@@ -46,7 +46,7 @@ public class RuleDto extends BaseDTO {
     /**
      * 问题描述
      */
-    private Long quesDesc;
+    private String quesDesc;
 
     public int getTitleNum() {
         return titleNum;
@@ -88,11 +88,11 @@ public class RuleDto extends BaseDTO {
         this.paperId = paperId;
     }
 
-    public Long getQuesDesc() {
+    public String getQuesDesc() {
         return quesDesc;
     }
 
-    public void setQuesDesc(Long quesDesc) {
+    public void setQuesDesc(String quesDesc) {
         this.quesDesc = quesDesc;
     }
 

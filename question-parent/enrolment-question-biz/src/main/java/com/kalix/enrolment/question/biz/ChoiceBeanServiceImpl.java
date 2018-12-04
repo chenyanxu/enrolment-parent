@@ -67,10 +67,12 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
         int total = Integer.parseInt(paperMap.get("totalscore").toString());
         String uuid = paperMap.get("uuid").toString();
         String questype = paperMap.get("questype").toString();
+        String quesdesc=paperMap.get("quesdesc") == null ? "" : paperMap.get("quesdesc").toString();
         String subtype = paperMap.get("subtype") == null ? "" : paperMap.get("subtype").toString();
 
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
+        singleTestPaper.put("quesdesc", quesdesc);
         int quesNum = total / perScore;
 
         Date year = (Date) paperMap.get("year");

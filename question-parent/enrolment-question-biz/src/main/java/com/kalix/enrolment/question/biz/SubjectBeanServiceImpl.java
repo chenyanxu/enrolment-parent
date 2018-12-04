@@ -63,12 +63,14 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
 
         String questype = paperMap.get("questype").toString();
         String uuid = paperMap.get("uuid").toString();
+        String quesdesc=paperMap.get("quesdesc") == null ? "" : paperMap.get("quesdesc").toString();
         String subtype = paperMap.get("subtype") == null ? "" : paperMap.get("subtype").toString();
         EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_SUBTYPE, subtype);
         String titleName = enrolmentDictBean.getLabel();
         //  String titleName = "评述题";
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
+        singleTestPaper.put("quesdesc", quesdesc);
         int quesNum = total / perScore;
 
         Date year = (Date) paperMap.get("year");

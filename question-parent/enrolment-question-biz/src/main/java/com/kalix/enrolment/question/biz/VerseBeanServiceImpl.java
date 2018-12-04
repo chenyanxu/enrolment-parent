@@ -64,13 +64,17 @@ public class VerseBeanServiceImpl extends QuestionGenericBizServiceImpl<IVerseBe
         String titleName = paperMap.get("questypename").toString();
         int perScore = Integer.parseInt(paperMap.get("score").toString());
         int total = Integer.parseInt(paperMap.get("totalscore").toString());
+
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
+
         int quesNum = total / perScore;
         String uuid = paperMap.get("uuid").toString();
         Date year = (Date) paperMap.get("year");
         String year_str = simpleDateFormat.format(year);
         String questype = paperMap.get("questype").toString();
+        String quesdesc=paperMap.get("quesdesc") == null ? "" : paperMap.get("quesdesc").toString();
+        singleTestPaper.put("quesdesc", quesdesc);
         String subtype = paperMap.get("subtype") == null ? "" : paperMap.get("subtype").toString();
         sql = "select * from enrolment_question_verse where checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit " + quesNum;
         // String sql = "select * from enrolment_question_verse order by random() limit " + quesNum;

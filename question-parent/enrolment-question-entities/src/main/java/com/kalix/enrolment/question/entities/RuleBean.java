@@ -58,7 +58,7 @@ public class RuleBean extends BaseLogicDeleteEntity {
     /**
      * 题型描述（说明）
      */
-    private Long quesDesc;
+    private String quesDesc;
 
     public int getTitleNum() {
         return titleNum;
@@ -100,11 +100,11 @@ public class RuleBean extends BaseLogicDeleteEntity {
         this.paperId = paperId;
     }
 
-    public Long getQuesDesc() {
+    public String getQuesDesc() {
         return quesDesc;
     }
 
-    public void setQuesDesc(Long quesDesc) {
+    public void setQuesDesc(String quesDesc) {
         this.quesDesc = quesDesc;
     }
 
