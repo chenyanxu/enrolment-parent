@@ -1970,7 +1970,7 @@
 					<w:b-cs/>
 					<w:sz-cs w:val="21"/>
 				</w:rPr>
-				<w:t>${(ques.title)!}</w:t>
+				<w:t>${(ques.title)!} （${(ques.quesdesc)!}）</w:t>
 			</w:r>
 			<w:r wsp:rsidRPr="00FD7EBF">
 				<w:rPr>

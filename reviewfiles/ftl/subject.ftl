@@ -9158,7 +9158,7 @@
 					<w:sz w:val="28"/>
 					<w:sz-cs w:val="28"/>
 				</w:rPr>
-				<w:t>${(ques.title)!}</w:t>
+				<w:t>${(ques.title)!} （${(ques.quesdesc)!}）</w:t>
 			</w:r>
 		</w:p>
 		<#list (ques.question)! as question>
@@ -9175,7 +9175,7 @@
 					<wx:font wx:val="宋体"/>
 					<w:b/>
 				</w:rPr>
-				<w:t>${question.answerConstraint}</w:t>
+				<w:t>${(question.answerConstraint)!}</w:t>
 			</w:r>
 		</w:p>
 		<w:p wsp:rsidR="00782FEC" wsp:rsidRDefault="00782FEC" wsp:rsidP="00782FEC">
