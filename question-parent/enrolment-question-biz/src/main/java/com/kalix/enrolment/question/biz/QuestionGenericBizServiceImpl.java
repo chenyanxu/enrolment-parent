@@ -71,6 +71,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
 
     /**
      * 重写试题数据权限
+     *
      * @param queryDTO
      * @return
      */
@@ -363,8 +364,8 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
      */
     @Override
     public JsonStatus compareAllSimilarity(String subType) {
-        System.out.println("=====start");
-        System.out.println(new Date());
+        long sss = System.currentTimeMillis();
+        System.out.println("=====start===" + new Date() + "=====" + sss);
         JsonStatus jsonStatus = new JsonStatus();
         try {
             String questionType = this.getQuestionType();
@@ -376,9 +377,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             boolean compareStatus = this.getCompareStatus();
             if (compareStatus) {
                 String msg = questionTypeName + "-" + subTypeName + "排重比对数据进行中,请等待!";
-                System.out.println(msg);
-                System.out.println(new Date());
-                System.out.println("=====end");
+                System.out.println("=====end====" + new Date() + "====" + msg);
                 jsonStatus.setSuccess(false);
                 jsonStatus.setMsg(msg);
                 return jsonStatus;
@@ -408,53 +407,57 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                 e.printStackTrace();
             }
             List list = dao.findByNativeSql(sql, cls);
-            List listAll = dao.findByNativeSql(sqlAll, cls);
+            List<TP> listAll = dao.findByNativeSql(sqlAll, cls);
             // 是否需要排重，默认1无重复
-            String repeatedFlag = "1";
+            final String[] repeatedFlag = {"1"};
             double similarity = this.getSimilarity();
             for (int i = 0; i < list.size(); i++) {
-                repeatedFlag = "1";
+                repeatedFlag[0] = "1";
                 TP firstEntity = (TP) list.get(i);
                 long firstId = firstEntity.getId();
                 String firstStem = firstEntity.getStem();
-                for (int j = 0; j < listAll.size(); j++) {
-                    TP secondEntity = (TP) listAll.get(j);
-                    long secondId = secondEntity.getId();
-                    if (firstId != secondId) {
-                        String secondStem = secondEntity.getStem();
-                        double result = Similarity.morphoSimilarity(firstStem, secondStem);
-                        if (result > DEFAULT_SIMILARITY) {
-                            String resultDesc = "词形词序句子相似度" + new DecimalFormat("0.0000").format(result);
+                List<QuestionRepeatedBean> rtn = new ArrayList<QuestionRepeatedBean>();
 
-                            QuestionRepeatedBean questionRepeatedBean = new QuestionRepeatedBean();
-                            questionRepeatedBean.setQuestionType(questionType);
-                            questionRepeatedBean.setQuestionTypeName(questionTypeName);
-                            questionRepeatedBean.setQuestionBeans(questionBeans);
-                            questionRepeatedBean.setSubType(subType);
-                            questionRepeatedBean.setSubTypeName(subTypeName);
-                            questionRepeatedBean.setFirstQuestionId(firstId);
-                            questionRepeatedBean.setSecondQuestionId(secondId);
-                            questionRepeatedBean.setSimilarity(result);
-                            questionRepeatedBean.setSimilarityDesc(resultDesc);
-                            questionRepeatedBeanService.saveSimilarity(questionRepeatedBean);
-                            if (result > similarity) {
-                                repeatedFlag = "0";
-                            }
+                listAll.stream().parallel().filter(n -> n.getId() != firstId).forEach(secondEntity -> {
+                    long secondId = secondEntity.getId();
+                    String secondStem = secondEntity.getStem();
+                    long sss1 = System.currentTimeMillis();
+                    double result = Similarity.morphoSimilarity(firstStem, secondStem);
+                    long sss2 = System.currentTimeMillis() - sss1;
+                    System.out.print("===compare===" + sss2);
+                    if (result > DEFAULT_SIMILARITY) {
+                        String resultDesc = "词形词序句子相似度" + new DecimalFormat("0.0000").format(result);
+                        QuestionRepeatedBean questionRepeatedBean = new QuestionRepeatedBean();
+                        questionRepeatedBean.setQuestionType(questionType);
+                        questionRepeatedBean.setQuestionTypeName(questionTypeName);
+                        questionRepeatedBean.setQuestionBeans(questionBeans);
+                        questionRepeatedBean.setSubType(subType);
+                        questionRepeatedBean.setSubTypeName(subTypeName);
+                        questionRepeatedBean.setFirstQuestionId(firstId);
+                        questionRepeatedBean.setSecondQuestionId(secondId);
+                        questionRepeatedBean.setSimilarity(result);
+                        questionRepeatedBean.setSimilarityDesc(resultDesc);
+                        rtn.add(questionRepeatedBean);
+                        if (result > similarity) {
+                            repeatedFlag[0] = "0";
                         }
                     }
-                    System.out.print(".");
+                });
+                for (int j = 0; j < rtn.size(); j++) {
+                    QuestionRepeatedBean questionRepeatedBean = rtn.get(j);
+                    questionRepeatedBeanService.saveSimilarity(questionRepeatedBean);
                 }
-                this.updateCompareFlag(firstEntity.getId(), "1", repeatedFlag);
+                this.updateCompareFlag(firstEntity.getId(), "1", repeatedFlag[0]);
             }
             jsonStatus.setSuccess(true);
             // 比对成功，修改比对参数设置，可以进行下一次比对
             this.updateCompareStatus(1L, false);
         } catch (Exception e) {
+            e.printStackTrace();
             jsonStatus.setSuccess(false);
             jsonStatus.setMsg(e.getMessage());
         }
-        System.out.println(new Date());
-        System.out.println("=====end");
+        System.out.println("=====end=====" + new Date());
         return jsonStatus;
     }
 
@@ -800,7 +803,6 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             // double result = Similarity.phraseSimilarity(compareStem, stem);
             // 词形词序句子相似度
             double result = Similarity.morphoSimilarity(compareStem, stem);
-            System.out.print(".");
             // 优化的编辑距离句子相似度
             // double result = Similarity.editDistanceSimilarity(compareStem, stem);
             // 标准编辑距离句子相似度
@@ -866,8 +868,8 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     }
 
     protected void compareSingleSimilarity(TP entity, JsonStatus jsonStatus) {
-        System.out.println("=====start");
-        System.out.println(new Date());
+        long sss = System.currentTimeMillis();
+        System.out.println("=====start===" + new Date() + "=====" + sss);
         try {
             String subType = entity.getSubType();
             String questionType = this.getQuestionType();
@@ -890,17 +892,24 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-            List listAll = dao.findByNativeSql(sqlAll, cls);
+            List<TP> listAll = dao.findByNativeSql(sqlAll, cls);
             long firstId = entity.getId();
             String firstStem = entity.getStem();
             // 是否需要排重，默认1无重复
-            String repeatedFlag = "1";
+            final String[] repeatedFlag = {"1"};
             double similarity = this.getSimilarity();
-            for (int j = 0; j < listAll.size(); j++) {
+            /*for (int j = 0; j < listAll.size(); j++) {
                 TP secondEntity = (TP) listAll.get(j);
                 long secondId = secondEntity.getId();
                 String secondStem = secondEntity.getStem();
+                long sss1 = System.currentTimeMillis();
                 double result = Similarity.morphoSimilarity(firstStem, secondStem);
+                long sss2 = System.currentTimeMillis() - sss1;
+                if (sss2 > 400) {
+                    System.out.println("===compare===" + sss2);
+                    System.out.println("firstid=" + firstId + ",secondid=" + secondId);
+                    System.out.println(result);
+                }
                 if (result > DEFAULT_SIMILARITY) {
                     String resultDesc = "词形词序句子相似度" + new DecimalFormat("0.0000").format(result);
 
@@ -919,17 +928,51 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                         repeatedFlag = "0";
                     }
                 }
-                System.out.print(".");
+            }*/
+            List<QuestionRepeatedBean> rtn = new ArrayList<QuestionRepeatedBean>();
+            listAll.stream().parallel().forEach(secondEntity -> {
+                long secondId = secondEntity.getId();
+                String secondStem = secondEntity.getStem();
+                long sss1 = System.currentTimeMillis();
+                double result = Similarity.morphoSimilarity(firstStem, secondStem);
+                long sss2 = System.currentTimeMillis() - sss1;
+                if (sss2 > 400) {
+                    System.out.println("===compare===" + sss2);
+                    System.out.println("firstid=" + firstId + ",secondid=" + secondId);
+                    System.out.println(result);
+                }
+                if (result > DEFAULT_SIMILARITY) {
+                    String resultDesc = "词形词序句子相似度" + new DecimalFormat("0.0000").format(result);
+                    QuestionRepeatedBean questionRepeatedBean = new QuestionRepeatedBean();
+                    questionRepeatedBean.setQuestionType(questionType);
+                    questionRepeatedBean.setQuestionTypeName(questionTypeName);
+                    questionRepeatedBean.setQuestionBeans(questionBeans);
+                    questionRepeatedBean.setSubType(subType);
+                    questionRepeatedBean.setSubTypeName(subTypeName);
+                    questionRepeatedBean.setFirstQuestionId(firstId);
+                    questionRepeatedBean.setSecondQuestionId(secondId);
+                    questionRepeatedBean.setSimilarity(result);
+                    questionRepeatedBean.setSimilarityDesc(resultDesc);
+                    //questionRepeatedBeanService.saveSimilarity(questionRepeatedBean);
+                    rtn.add(questionRepeatedBean);
+                    if (result > similarity) {
+                        repeatedFlag[0] = "0";
+                    }
+                }
+            });
+            for (int i = 0; i < rtn.size(); i++) {
+                QuestionRepeatedBean questionRepeatedBean = rtn.get(i);
+                questionRepeatedBeanService.saveSimilarity(questionRepeatedBean);
             }
-            this.updateCompareFlag(entity.getId(), "1", repeatedFlag);
+            this.updateCompareFlag(entity.getId(), "1", repeatedFlag[0]);
             jsonStatus.setSuccess(true);
             jsonStatus.setMsg("试题排重比对完成,保存成功!");
         } catch (Exception e) {
+            e.printStackTrace();
             jsonStatus.setSuccess(false);
             jsonStatus.setMsg(e.getMessage());
         }
-        System.out.println(new Date());
-        System.out.println("=====end");
+        System.out.println("=====end=====" + new Date());
     }
 
     /**
@@ -1093,306 +1136,4 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     public void setDataAuthBeanService(IDataAuthBeanService dataAuthBeanService) {
         this.dataAuthBeanService = dataAuthBeanService;
     }
-
-    /*@Override
-    public JsonData getRepeates(String jsonStr, boolean isAll) {
-        System.out.println("=====start");
-        System.out.println("=====isall:" + isAll);
-        System.out.println(new Date().toString());
-        JsonData jsonData = new JsonData();
-        try {
-            if (StringUtils.isEmpty(jsonStr)) {
-                return jsonData;
-            }
-            Map queryMap = SerializeUtil.json2Map(jsonStr);
-            String questionType = (String) queryMap.get("questionType");
-            if (StringUtils.isEmpty(questionType)) {
-                return jsonData;
-            }
-
-            List<RepeatedCountDTO> repeateList = new ArrayList<RepeatedCountDTO>();
-            String questionTypeName = this.getQuestionTypeName();
-            String questionBeans = this.getQuestionBeans();
-            String subTypeName = "";
-            String subTypeDictType = this.getSubTypeDictType();
-            String subType = "";
-            String sql = "";
-            String sqlAll = "";
-            Class cls = Class.forName(this.entityClassName);
-            double similarity = this.getSimilarity();
-            if (StringUtils.isEmpty(subTypeDictType)) {
-                sql = "select t.* from " + dao.getTableName() + " t "
-                        + " where t.delFlag = '0' and t.repeatedFlag = '0' and t.checkFlag <> '2'";
-                sqlAll = "select t.* from " + dao.getTableName() + " t "
-                        + " where t.delFlag = '0' and t.checkFlag <> '2'";
-                List<TP> list = dao.findByNativeSql(sql, cls);
-                List<TP> referenceList = dao.findByNativeSql(sqlAll, cls);
-
-                int count = 0; // 记录比对重复结果个数
-                for (int i = 0; i < list.size(); i++) {
-                    RepeatedCountDTO repeatedCountDTO = new RepeatedCountDTO();
-                    TP entity = (TP) list.get(i);
-                    System.out.println(i + "id:=" + entity.getId());
-                    List<BaseQuestionDTO> dtoList = this.doRepeat(entity, referenceList, similarity, subType);
-                    if (dtoList != null && dtoList.size() > 0) { // 有重复
-                        BaseQuestionDTO baseQuestionDTO = new BaseQuestionDTO();
-                        baseQuestionDTO.setQuestionId(entity.getId());
-                        baseQuestionDTO.setStem(entity.getStem());
-                        baseQuestionDTO.setSimilarity("");
-
-                        baseQuestionDTO.setQuestionType(questionType);
-                        baseQuestionDTO.setQuestionTypeName(questionTypeName);
-                        baseQuestionDTO.setQuestionBeans(questionBeans);
-                        baseQuestionDTO.setSubType(subType);
-                        baseQuestionDTO.setSubTypeName(subTypeName);
-
-                        baseQuestionDTO.setAnalysis(entity.getAnalysis());
-                        baseQuestionDTO.setCheckFlag(entity.getCheckFlag());
-                        baseQuestionDTO.setCheckerId(entity.getCheckerId());
-                        baseQuestionDTO.setChecker(entity.getChecker());
-                        baseQuestionDTO.setCheckDate(entity.getCheckDate());
-                        baseQuestionDTO.setCreateBy(entity.getCreateBy());
-                        baseQuestionDTO.setCreationDate(entity.getCreationDate());
-                        dtoList.add(0, baseQuestionDTO);
-                        count++;
-
-                        String name = questionTypeName + "题目" + count;
-                        repeatedCountDTO.setName(name);
-                        repeatedCountDTO.setRepeateList(dtoList);
-                        repeateList.add(repeatedCountDTO);
-                    }
-                    if (!isAll) {
-                        if (count >= MAX_REPEATED_RECORD) {
-                            break;
-                        }
-                    }
-                }
-            } else {
-                List<EnrolmentDictBean> subDictBeans = enrolmentDictBeanService.getDictBeanByType(subTypeDictType);
-                for (int n = 0; n < subDictBeans.size(); n++) {
-                    EnrolmentDictBean subDictBean = subDictBeans.get(n);
-                    subType = subDictBean.getValue();
-                    subTypeName = subDictBean.getLabel();
-                    sql = "select t.* from " + dao.getTableName() + " t "
-                            + " where t.delFlag = '0' and t.repeatedFlag = '0' and t.checkFlag <> '2'"
-                            + " and t.subType = '" + subType + "'";
-                    sqlAll = "select t.* from " + dao.getTableName() + " t "
-                            + " where t.delFlag = '0' and t.checkFlag <> '2'"
-                            + " and t.subType = '" + subType + "'";
-                    List<TP> list = dao.findByNativeSql(sql, cls);
-                    List<TP> referenceList = dao.findByNativeSql(sqlAll, cls);
-
-                    int count = 0; // 记录比对重复结果个数
-                    for (int i = 0; i < list.size(); i++) {
-                        RepeatedCountDTO repeatedCountDTO = new RepeatedCountDTO();
-                        TP entity = (TP) list.get(i);
-                        System.out.println(i + "id:=" + entity.getId());
-                        List<BaseQuestionDTO> dtoList = this.doRepeat(entity, referenceList, similarity, subType);
-                        if (dtoList != null && dtoList.size() > 0) { // 有重复
-                            BaseQuestionDTO baseQuestionDTO = new BaseQuestionDTO();
-                            baseQuestionDTO.setQuestionId(entity.getId());
-                            baseQuestionDTO.setStem(entity.getStem());
-                            baseQuestionDTO.setSimilarity("");
-
-                            baseQuestionDTO.setQuestionType(questionType);
-                            baseQuestionDTO.setQuestionTypeName(questionTypeName);
-                            baseQuestionDTO.setQuestionBeans(questionBeans);
-                            baseQuestionDTO.setSubType(subType);
-                            baseQuestionDTO.setSubTypeName(subTypeName);
-
-                            baseQuestionDTO.setAnalysis(entity.getAnalysis());
-                            baseQuestionDTO.setCheckFlag(entity.getCheckFlag());
-                            baseQuestionDTO.setCheckerId(entity.getCheckerId());
-                            baseQuestionDTO.setChecker(entity.getChecker());
-                            baseQuestionDTO.setCheckDate(entity.getCheckDate());
-                            baseQuestionDTO.setCreateBy(entity.getCreateBy());
-                            baseQuestionDTO.setCreationDate(entity.getCreationDate());
-                            dtoList.add(0, baseQuestionDTO);
-                            count++;
-
-                            String name = questionTypeName + "-" + subTypeName + "题目" + count;
-                            repeatedCountDTO.setName(name);
-                            repeatedCountDTO.setRepeateList(dtoList);
-                            repeateList.add(repeatedCountDTO);
-                        }
-                        if (!isAll) {
-                            if (count >= MAX_REPEATED_RECORD) {
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            jsonData.setData(repeateList);
-            jsonData.setTotalCount((long) repeateList.size());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println(new Date().toString());
-        System.out.println("=====end");
-        return jsonData;
-    }
-
-    @Override
-    public JsonData getRepeates(Long questionId) {
-        JsonData jsonData = new JsonData();
-        List<BaseQuestionDTO> list = new ArrayList<BaseQuestionDTO>();
-        if (questionId == null || questionId < 1) {
-            return jsonData;
-        }
-        try {
-            TP entity = (TP) this.dao.get(questionId);
-            String subType = entity.getSubType();
-
-            Class cls = null;
-            try {
-                cls = Class.forName(this.entityClassName);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-            String sql = "";
-            if (StringUtils.isEmpty(subType)) {
-                sql = "select t.* from " + dao.getTableName() + " t "
-                        + " where t.delFlag = '0' and t.checkFlag <> '2' and t.id <> " + entity.getId();
-            } else {
-                sql = "select t.* from " + dao.getTableName() + " t "
-                        + " where t.delFlag = '0' and t.checkFlag <> '2' and t.subType = '" + subType + "' and t.id <> " + entity.getId();
-            }
-            List result = dao.findByNativeSql(sql, cls);
-            List<TP> referenceList = new ArrayList<TP>();
-            referenceList.addAll(result);
-
-            double similarity = this.getSimilarity();
-            list = this.doRepeat(entity, referenceList, similarity, subType);
-
-            jsonData.setData(list);
-            jsonData.setTotalCount((long) list.size());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return jsonData;
-    }
-
-    private List doRepeat(TP entity, List<TP> list, double similarity, String subType) {
-        long id = entity.getId();
-        String stem = entity.getStem();
-        String questionType = this.getQuestionType();
-        String questionTypeName = this.getQuestionTypeName();
-        String questionBeans = this.getQuestionBeans();
-        String subTypeName = this.getSubTypeName(subType);
-        List<BaseQuestionDTO> dtoList = new ArrayList<BaseQuestionDTO>();
-        list.stream().parallel().filter(n -> n.getId() != id).forEach(questionEntity -> {
-            long questionId = questionEntity.getId();
-            String questionStem = questionEntity.getStem();
-            // 词林相似度
-            // double result = Similarity.cilinSimilarity(stem, questionStem);
-            // 短语相似度
-            // double result = Similarity.phraseSimilarity(stem, questionStem);
-            // 词形词序句子相似度
-            System.out.print(".");
-            double result = Similarity.morphoSimilarity(stem, questionStem);
-            System.out.print(".");
-            // 优化的编辑距离句子相似度
-            // double result = Similarity.editDistanceSimilarity(stem, questionStem);
-            // 标准编辑距离句子相似度
-            // double result = Similarity.standardEditDistanceSimilarity(stem, questionStem);
-            // gregor编辑距离句子相似度
-            // double result = Similarity.gregorEditDistanceSimilarity(stem, questionStem);
-            // 拼音相似度
-            // double result = Similarity.pinyinSimilarity(stem, questionStem);
-            // 概念相似度
-            // double result = Similarity.conceptSimilarity(stem, questionStem);
-            // 字面相似度
-            // double result = Similarity.charBasedSimilarity(stem, questionStem);
-            // double result = 0.7;
-            if (result > similarity) {
-                BaseQuestionDTO baseQuestionDTO = new BaseQuestionDTO();
-                baseQuestionDTO.setQuestionId(questionId);
-                baseQuestionDTO.setStem(questionStem);
-                // baseQuestionDTO.setSimilarity("词林相似度" + new DecimalFormat("0.00").format(result));
-                baseQuestionDTO.setSimilarity("词形词序句子相似度" + new DecimalFormat("0.00").format(result));
-
-                baseQuestionDTO.setQuestionType(questionType);
-                baseQuestionDTO.setQuestionTypeName(questionTypeName);
-                baseQuestionDTO.setQuestionBeans(questionBeans);
-                baseQuestionDTO.setSubType(subType);
-                baseQuestionDTO.setSubTypeName(subTypeName);
-
-                baseQuestionDTO.setAnalysis(questionEntity.getAnalysis());
-                baseQuestionDTO.setCheckFlag(questionEntity.getCheckFlag());
-                baseQuestionDTO.setCheckerId(questionEntity.getCheckerId());
-                baseQuestionDTO.setChecker(questionEntity.getChecker());
-                baseQuestionDTO.setCheckDate(questionEntity.getCheckDate());
-                baseQuestionDTO.setCreateBy(questionEntity.getCreateBy());
-                baseQuestionDTO.setCreationDate(questionEntity.getCreationDate());
-                baseQuestionDTO.setRepeatedFlag(questionEntity.getRepeatedFlag());
-
-                dtoList.add(baseQuestionDTO);
-            }
-        });
-//        for (int i = 0; i < list.size(); i++) {
-//            TP questionEntity = list.get(i);
-//            long questionId = questionEntity.getId();
-//            if (questionId != id) {
-//                String questionStem = questionEntity.getStem();
-//                // 词林相似度
-//                // double result = Similarity.cilinSimilarity(stem, questionStem);
-//                // 短语相似度
-//                // double result = Similarity.phraseSimilarity(stem, questionStem);
-//                // 词形词序句子相似度
-//                double result = Similarity.morphoSimilarity(stem, questionStem);
-//                // 优化的编辑距离句子相似度
-//                // double result = Similarity.editDistanceSimilarity(stem, questionStem);
-//                // 标准编辑距离句子相似度
-//                // double result = Similarity.standardEditDistanceSimilarity(stem, questionStem);
-//                // gregor编辑距离句子相似度
-//                // double result = Similarity.gregorEditDistanceSimilarity(stem, questionStem);
-//                // 拼音相似度
-//                // double result = Similarity.pinyinSimilarity(stem, questionStem);
-//                // 概念相似度
-//                // double result = Similarity.conceptSimilarity(stem, questionStem);
-//                // 字面相似度
-//                // double result = Similarity.charBasedSimilarity(stem, questionStem);
-//                // double result = 0.7;
-//                if (result > similarity) {
-//                    BaseQuestionDTO baseQuestionDTO = new BaseQuestionDTO();
-//                    baseQuestionDTO.setQuestionId(questionId);
-//                    baseQuestionDTO.setStem(questionStem);
-//                    // baseQuestionDTO.setSimilarity("词林相似度" + new DecimalFormat("0.00").format(result));
-//                    baseQuestionDTO.setSimilarity("词形词序句子相似度" + new DecimalFormat("0.00").format(result));
-//
-//                    baseQuestionDTO.setQuestionType(questionType);
-//                    baseQuestionDTO.setQuestionTypeName(questionTypeName);
-//                    baseQuestionDTO.setQuestionBeans(questionBeans);
-//                    baseQuestionDTO.setSubType(subType);
-//                    baseQuestionDTO.setSubTypeName(subTypeName);
-//
-//                    baseQuestionDTO.setAnalysis(questionEntity.getAnalysis());
-//                    baseQuestionDTO.setCheckFlag(questionEntity.getCheckFlag());
-//                    baseQuestionDTO.setCheckerId(questionEntity.getCheckerId());
-//                    baseQuestionDTO.setChecker(questionEntity.getChecker());
-//                    baseQuestionDTO.setCheckDate(questionEntity.getCheckDate());
-//                    baseQuestionDTO.setCreateBy(questionEntity.getCreateBy());
-//                    baseQuestionDTO.setCreationDate(questionEntity.getCreationDate());
-//
-//                    dtoList.add(baseQuestionDTO);
-//                }
-//            }
-//        }
-        // 排序
-//        Collections.sort(dtoList, new Comparator<BaseQuestionDTO>(){
-//            public int compare(BaseQuestionDTO p1, BaseQuestionDTO p2) {
-//                if(p1.getSimilarity() > p2.getSimilarity()){
-//                    return 1;
-//                }
-//                if(p1.getAge() == p2.getAge()){
-//                    return 0;
-//                }
-//                return -1;
-//            }
-//        });
-        return dtoList;
-    }*/
 }
