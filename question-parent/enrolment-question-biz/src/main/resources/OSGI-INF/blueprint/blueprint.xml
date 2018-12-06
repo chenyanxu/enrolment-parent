@@ -318,6 +318,12 @@
     <service id="questionRepeatedBeanService" ref="questionRepeatedBeanServiceImpl"
              interface="com.kalix.enrolment.question.api.biz.IQuestionRepeatedBeanService"/>
 
+    <!-- 系统时间 -->
+    <bean id="currentDateServiceImpl" class="com.kalix.enrolment.question.biz.CurrentDateBeanServiceImpl">
+    </bean>
+    <service id="currentDateService" ref="currentDateServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.ICurrentDateBeanService"/>
+
     <!-- 定时器，自动进行题库排重比对 -->
     <bean id="timeJob" class="com.kalix.enrolment.question.biz.quartz.TimeJob">
     </bean>
