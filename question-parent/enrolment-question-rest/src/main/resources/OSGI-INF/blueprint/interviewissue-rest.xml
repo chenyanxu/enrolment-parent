@@ -116,7 +116,7 @@
             <description>interviewissue check rest service</description>
             <get id="route-getAllCheckInterviewIssue">
                 <description>Find all check interviewissues</description>
-                <to uri="bean:interviewIssueAuditService?method=getAllAuditEntityByQuery(${header.page},${header.limit},${header.subType})"/>
+                <to uri="bean:interviewIssueAuditService?method=getAllAuditEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.subType})"/>
             </get>
 
             <put id="route-batch-InterviewIssueCheck" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8"

@@ -116,7 +116,7 @@
             <description>verse check rest service</description>
             <get id="route-getAllCheckVerse">
                 <description>Find all check verses</description>
-                <to uri="bean:verseAuditService?method=getAllAuditEntityByQuery(${header.page},${header.limit},${header.subType})"/>
+                <to uri="bean:verseAuditService?method=getAllAuditEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.subType})"/>
             </get>
 
             <put id="route-batch-VerseCheck" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8"

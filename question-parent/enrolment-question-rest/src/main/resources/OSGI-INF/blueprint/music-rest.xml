@@ -116,7 +116,7 @@
             <description>music check rest service</description>
             <get id="route-getAllCheckMusic">
                 <description>Find all check musics</description>
-                <to uri="bean:musicAuditService?method=getAllAuditEntityByQuery(${header.page},${header.limit},${header.subType})"/>
+                <to uri="bean:musicAuditService?method=getAllAuditEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.subType})"/>
             </get>
 
             <put id="route-batch-MusicCheck" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8"

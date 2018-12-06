@@ -165,6 +165,24 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     }
 
     /**
+     * 获取题型类型名称
+     *
+     * @param type
+     * @return
+     */
+    @Override
+    public String getTypeName(String type) {
+        String typeName = "";
+        if (StringUtils.isEmpty(type)) {
+            typeName = "";
+        } else {
+            EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_TYPE, type);
+            typeName = enrolmentDictBean.getLabel();
+        }
+        return typeName;
+    }
+
+    /**
      * 获取试题审核角色名称
      *
      * @param subType
@@ -182,6 +200,25 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     }
 
     /**
+     * 获取试题审核角色名称
+     *
+     * @param type
+     * @param subType
+     * @return
+     */
+    @Override
+    public String getAuditRoleName(String type, String subType) {
+        String auditRoleName = "";
+        if(!StringUtils.isEmpty(type)){
+            auditRoleName = this.getTypeName(type);
+        }
+
+        auditRoleName += this.getAuditRoleName(subType);
+
+        return auditRoleName;
+    }
+
+    /**
      * 试题审核查询
      *
      * @param page
@@ -190,25 +227,44 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
      * @return
      */
     @Override
-    public JsonData getAllAuditEntityByQuery(Integer page, Integer limit, String subType) {
+    public JsonData getAllAuditEntityByQuery(Integer page, Integer limit, String jsonStr, String subType) {
+        Map queryMap = SerializeUtil.json2Map(jsonStr);
+        String type = (String) queryMap.get("type");
+
+        String questionType = this.getQuestionType();
+        if(questionType.equals("1") || questionType.equals("2")){
+            if(StringUtils.isEmpty(type)){
+                return new JsonData();
+            }
+        }
+
+        String appendType = "";
+        if(!StringUtils.isEmpty(type)){
+            appendType = " and type = '" + type + "'";
+        }
+
+        // 获取审核人角色名称
+        // String roleName = this.getAuditRoleName(subType);
+        // 获取审核人角色名称
+        String roleName = this.getAuditRoleName(type, subType);
 
         // 获取当前登录人ID
         Long currentUserId = this.shiroService.getCurrentUserId();
-        // 获取审核人角色名称
-        String roleName = this.getAuditRoleName(subType);
-
         // 1.该类型试题未审核总数
         int total = 0;
         String countSql = "";
+
         if (StringUtils.isEmpty(subType)) {
             countSql = "select count(1) from " + dao.getTableName()
                     + " where delFlag = '0'"
                     + " and checkFlag = '0'"
+                    + appendType
                     + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))";
         } else {
             countSql = "select count(1) from " + dao.getTableName()
                     + " where delFlag = '0'"
                     + " and checkFlag = '0'"
+                    + appendType
                     + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
                     + " and subType = '" + subType + "'";
         }
@@ -288,23 +344,27 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         if (StringUtils.isEmpty(subType)) {
             sql = "(select * from " + dao.getTableName()
                     + " where delFlag = '0' and checkFlag = '0'"
+                    + appendType
                     + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
                     + " order by updateDate desc limit " + perCnt + " offset " + offset
                     + ") union all ("
                     + "select * from " + dao.getTableName()
                     + " where delFlag = '0' and checkFlag != '0'"
+                    + appendType
                     + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
                     + " and checkerId = " + currentUserId
                     + " order by updateDate desc)";
         } else {
             sql = "(select * from " + dao.getTableName()
                     + " where delFlag = '0' and checkFlag = '0'"
+                    + appendType
                     + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
                     + " and subType = '" + subType + "'"
                     + " order by updateDate desc limit " + perCnt + " offset " + offset
                     + ") union all ("
                     + "select * from " + dao.getTableName()
                     + " where delFlag = '0' and checkFlag != '0'"
+                    + appendType
                     + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
                     + " and subType = '" + subType + "'"
                     + " and checkerId = " + currentUserId
