@@ -116,7 +116,7 @@
             <description>choice check rest service</description>
             <get id="route-getAllCheckChoice">
                 <description>Find all check choices</description>
-                <to uri="bean:choiceAuditService?method=getAllAuditEntityByQuery(${header.page},${header.limit},${header.subType})"/>
+                <to uri="bean:choiceAuditService?method=getAllAuditEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.subType})"/>
             </get>
 
             <put id="route-batch-ChoiceCheck" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8"

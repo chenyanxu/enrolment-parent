@@ -116,7 +116,7 @@
             <description>subject check rest service</description>
             <get id="route-getAllCheckSubject">
                 <description>Find all check subjects</description>
-                <to uri="bean:subjectAuditService?method=getAllAuditEntityByQuery(${header.page},${header.limit},${header.subType})"/>
+                <to uri="bean:subjectAuditService?method=getAllAuditEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.subType})"/>
             </get>
 
             <put id="route-batch-SubjectCheck" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8"

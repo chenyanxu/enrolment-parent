@@ -17,13 +17,22 @@ public interface IQuestionAuditService extends IService {
     String getAuditRoleName(String subType);
 
     /**
+     * 获取试题审核角色名称
+     * @param type 试题类别
+     * @param subType 试题子类
+     * @return
+     */
+    String getAuditRoleName(String type, String subType);
+
+    /**
      * 试题审核查询
      * @param page
      * @param limit
+     * @param jsonStr
      * @param subType
      * @return
      */
-    JsonData getAllAuditEntityByQuery(Integer page, Integer limit, String subType);
+    JsonData getAllAuditEntityByQuery(Integer page, Integer limit, String jsonStr, String subType);
 
     /**
      * 试题审核结果批量处理

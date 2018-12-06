@@ -48,6 +48,14 @@ public interface IQuestionService<T extends BaseQuestionEntity> extends ILogicDe
     String getSubTypeName(String subType);
 
     /**
+     * 获取题型子类名称
+     *
+     * @param type
+     * @return
+     */
+    String getTypeName(String type);
+
+    /**
      * 获取试题表名
      *
      * @return
