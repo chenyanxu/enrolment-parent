@@ -168,7 +168,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
     }
 
     public void getComletionList(int spacenum, List<CompletionBean> list_completion, String year_str, String questype, String subtype, int num) throws Exception {
-        String sql = "select * from enrolment_question_completion where checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit 1";
+        String sql = "select * from enrolment_question_completion where checkFlag='1' and spacenum<>0 and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit 1";
         List<CompletionBean> list = this.dao.findByNativeSql(sql, CompletionBean.class);
         if (list != null && list.size() > 0) {
             CompletionBean completionBean = list.get(0);
@@ -180,7 +180,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
                     getComletionList(spacenum, list_completion, year_str, questype, subtype, num);
                 } else if (spacenum < 0) {
                     spacenum = spacenum + completionSpaceNum;
-                    String sql_1 = "select * from enrolment_question_completion where checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') and spacenum='" + spacenum + "' order by random() limit 1";
+                    String sql_1 = "select * from enrolment_question_completion where checkFlag='1' and spacenum<>0 and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') and spacenum='" + spacenum + "' order by random() limit 1";
                     List<CompletionBean> list_1 = this.dao.findByNativeSql(sql_1, CompletionBean.class);
                     if (list_1 != null && list_1.size() > 0) {
                         CompletionBean completionBean_1 = list_1.get(0);

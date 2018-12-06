@@ -247,38 +247,57 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             for (RuleDto rule1Bean : list_rule) {
                 total += rule1Bean.getQuesTotalscore();
             }
-            if (total == paperTotal) {
+            if (total == paperTotal||"3".equals(tempName)) {
                 if (paperBean.getCopies() > 1) {
                     copies = paperBean.getCopies();
                 }
                 for (int j = 0; j < copies; j++) {
                     String uuid = UUID.randomUUID().toString();
                     quesList = new ArrayList<Map>();
-                    for (int i = 0; i < list_rule.size(); i++) {
-                        RuleDto ruleBean = (RuleDto) list_rule.get(i);
+                    if(list_rule!=null&&list_rule.size()>0){
+                        for (int i = 0; i < list_rule.size(); i++) {
+                            RuleDto ruleBean = (RuleDto) list_rule.get(i);
+                            Map paper_map = new HashMap();
+                            paper_map.put("year", year);
+                            paper_map.put("score", ruleBean.getQuesScore());
+                            paper_map.put("totalscore", ruleBean.getQuesTotalscore());
+                            paper_map.put("titlenum", ruleBean.getTitleNum());
+                            paper_map.put("paperid", ruleBean.getPaperId());
+                            paper_map.put("questype", ruleBean.getQuesType());
+                            paper_map.put("quesdesc", ruleBean.getQuesDesc());
+                            paper_map.put("subtype", ruleBean.getSubType());
+                            paper_map.put("questypename", ruleBean.getQuesTypeName());
+                            paper_map.put("uuid", uuid);
+                            String beanName = ruleBean.getQuesTypeDesc();
+                            Map<String, String> map = new HashMap<String, String>();
+                            map.put("beanName", beanName);
+                            questionService = JNDIHelper.getJNDIServiceForName(IQuestionService.class.getName(), map);
+                            Map singleTestPaper = questionService.createSingleTestPaper(paper_map);
+                            List list_ques = (List) singleTestPaper.get("question");
+                            if (list_ques == null || list_ques.size() == 0) {
+                                doPaperRes = "F";
+                                break;
+                            }
+                            quesList.add(singleTestPaper);
+                        }
+                    }else {
                         Map paper_map = new HashMap();
                         paper_map.put("year", year);
-                        paper_map.put("score", ruleBean.getQuesScore());
-                        paper_map.put("totalscore", ruleBean.getQuesTotalscore());
-                        paper_map.put("titlenum", ruleBean.getTitleNum());
-                        paper_map.put("paperid", ruleBean.getPaperId());
-                        paper_map.put("questype", ruleBean.getQuesType());
-                        paper_map.put("quesdesc", ruleBean.getQuesDesc());
-                        paper_map.put("subtype", ruleBean.getSubType());
-                        paper_map.put("questypename", ruleBean.getQuesTypeName());
                         paper_map.put("uuid", uuid);
-                        String beanName = ruleBean.getQuesTypeDesc();
+                        paper_map.put("paperid", paperId);
+                        paper_map.put("subtype", kskmValue);
+                        paper_map.put("kskm", kskm);
                         Map<String, String> map = new HashMap<String, String>();
-                        map.put("beanName", beanName);
+                        map.put("beanName", "InterviewIssue");
                         questionService = JNDIHelper.getJNDIServiceForName(IQuestionService.class.getName(), map);
                         Map singleTestPaper = questionService.createSingleTestPaper(paper_map);
                         List list_ques = (List) singleTestPaper.get("question");
                         if (list_ques == null || list_ques.size() == 0) {
                             doPaperRes = "F";
-                            break;
                         }
                         quesList.add(singleTestPaper);
                     }
+
                     if ("F".equals(doPaperRes)) {
 
                         paperQuesBeanService.deleteByUuid(uuid);
@@ -365,6 +384,8 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             }
         } catch (Exception e) {
             //logger.error("导出出错", e);
+            jsonStatus.setSuccess(false);
+            jsonStatus.setMsg("试卷生成失败!");
             e.printStackTrace();
             // throw new BusinessException(CommonResultEnum.COMMON_ERROR_637);
         } finally {
