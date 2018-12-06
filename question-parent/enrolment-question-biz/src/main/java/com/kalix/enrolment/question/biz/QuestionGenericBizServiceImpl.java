@@ -119,7 +119,10 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     @Override
     public void afterSaveEntity(TP entity, JsonStatus status) {
         super.afterSaveEntity(entity, status);
-        this.compareSingleSimilarity(entity, status);
+        String questionType = this.getQuestionType();
+        String subType = entity.getSubType();
+        if (!(questionType.equals("6") && subType.equals("1")))
+            this.compareSingleSimilarity(entity, status);
     }
 
     /**
