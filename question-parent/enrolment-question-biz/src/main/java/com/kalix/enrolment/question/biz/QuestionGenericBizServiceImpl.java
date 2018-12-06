@@ -119,7 +119,10 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     @Override
     public void afterSaveEntity(TP entity, JsonStatus status) {
         super.afterSaveEntity(entity, status);
-        this.compareSingleSimilarity(entity, status);
+        String questionType = this.getQuestionType();
+        String subType = entity.getSubType();
+        if (!(questionType.equals("6") && subType.equals("1")))
+            this.compareSingleSimilarity(entity, status);
     }
 
     /**
@@ -338,6 +341,16 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
                 break;
             }
         }
+
+        if(total <= ys){
+            offset = 0;
+            perCnt = 1;
+        }
+        /*if (perCnt == 0) {
+            offset = 0;
+            perCnt = 1;
+            perCnt = ys;
+        }*/
 
         // 6.分配未审核试题并查询分配结果（包括已经审核试题）
         String sql = "";
