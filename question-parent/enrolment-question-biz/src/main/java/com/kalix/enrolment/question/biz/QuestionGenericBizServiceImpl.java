@@ -339,6 +339,16 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             }
         }
 
+        if(total <= ys){
+            offset = 0;
+            perCnt = 1;
+        }
+        /*if (perCnt == 0) {
+            offset = 0;
+            perCnt = 1;
+            perCnt = ys;
+        }*/
+
         // 6.分配未审核试题并查询分配结果（包括已经审核试题）
         String sql = "";
         if (StringUtils.isEmpty(subType)) {
