@@ -78,7 +78,7 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
                 PaperQuesBean paperQuesBean = new PaperQuesBean();
                 map.put("type", kskm);
                 map.put("stem", interviewIssueBean.getStem());
-
+                paperQuesBean.setQuesid(interviewIssueBean.getId());
                 paperQuesBean.setYear(year);
                // paperQuesBean.setQuesType(questype);
                 paperQuesBean.setSubType(subtype);
