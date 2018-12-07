@@ -34,6 +34,7 @@ public class QuestionDTO extends BaseDTO {
     private String delFlag;          // 逻辑删除标识
     private String reason;           // 逻辑删除原因
     private String compareFlag;      // 试题排重比对标识
+    private String opFlag;           // 排重处理标识
     private double similarity;       // 试题相似度
     private String similarityDesc;   // 试题相似度说明
 
@@ -235,5 +236,13 @@ public class QuestionDTO extends BaseDTO {
 
     public void setAnswerD(String answerD) {
         this.answerD = answerD;
+    }
+
+    public String getOpFlag() {
+        return opFlag;
+    }
+
+    public void setOpFlag(String opFlag) {
+        this.opFlag = opFlag;
     }
 }

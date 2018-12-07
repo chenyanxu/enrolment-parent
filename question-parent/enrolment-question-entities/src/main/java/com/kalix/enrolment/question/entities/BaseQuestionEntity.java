@@ -30,6 +30,7 @@ public abstract class BaseQuestionEntity extends BaseLogicDeleteEntity {
 
     private String type;               // 试题类别,字典（可以为空）
     private String subType;            // 试题子类类型,字典（可以为空）
+    private String opFlag = "0";       // 操作标识(目前使用其记录排重处理保留的数据值1,删除的数据值2,为新增排重审核功能使用)
 
     @Transient
     private double similarity;         // 试题相似度
@@ -122,6 +123,14 @@ public abstract class BaseQuestionEntity extends BaseLogicDeleteEntity {
 
     public void setCompareFlag(String compareFlag) {
         this.compareFlag = compareFlag;
+    }
+
+    public String getOpFlag() {
+        return opFlag;
+    }
+
+    public void setOpFlag(String opFlag) {
+        this.opFlag = opFlag;
     }
 
     public double getSimilarity() {

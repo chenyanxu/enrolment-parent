@@ -50,7 +50,6 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     protected IDataAuthBeanService dataAuthBeanService;
 
     protected static double DEFAULT_SIMILARITY = 0.7;
-    // protected static int MAX_REPEATED_RECORD = 1;
 
     /**
      * 查询试题默认排序
@@ -342,15 +341,10 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             }
         }
 
-        if(total <= ys){
+        if (perCnt == 0) {
             offset = 0;
             perCnt = 1;
         }
-        /*if (perCnt == 0) {
-            offset = 0;
-            perCnt = 1;
-            perCnt = ys;
-        }*/
 
         // 6.分配未审核试题并查询分配结果（包括已经审核试题）
         String sql = "";
@@ -611,6 +605,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             entity.setRepeatedFlag("1");
             entity.setUpdateBy(shiroService.getCurrentUserLoginName());
             entity.setUpdateById(shiroService.getCurrentUserId());
+            entity.setOpFlag("1");
             this.dao.save(entity);
             jsonStatus.setSuccess(true);
             jsonStatus.setMsg("试题保留成功！");
@@ -637,6 +632,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             entity.setRepeatedFlag("1");
             entity.setUpdateBy(shiroService.getCurrentUserLoginName());
             entity.setUpdateById(shiroService.getCurrentUserId());
+            entity.setOpFlag("2");
             this.dao.save(entity);
             jsonStatus.setSuccess(true);
             jsonStatus.setMsg("试题删除成功！");

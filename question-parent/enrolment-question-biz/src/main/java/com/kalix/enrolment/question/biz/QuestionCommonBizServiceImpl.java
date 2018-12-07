@@ -211,6 +211,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                     questionDTO.setCreationDate(entity.getCreationDate());
                     questionDTO.setUpdateBy(entity.getUpdateBy());
                     questionDTO.setUpdateDate(entity.getUpdateDate());
+                    questionDTO.setOpFlag(entity.getOpFlag());
                     list.add(questionDTO);
                 }
             }
