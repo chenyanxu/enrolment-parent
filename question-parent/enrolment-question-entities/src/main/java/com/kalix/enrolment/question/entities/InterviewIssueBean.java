@@ -16,6 +16,7 @@ public class InterviewIssueBean extends BaseQuestionEntity {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy", timezone = "GMT+8")
     private Date year;                 // 年份
+    @Column(length = 2000)
     private String scoreStandard;      // 评分标准
 
     public Date getYear() {

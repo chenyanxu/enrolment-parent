@@ -18,6 +18,7 @@ public abstract class BaseQuestionEntity extends BaseLogicDeleteEntity {
     @Lob
     @Column(nullable = false)
     private String stem;               // 题干
+    @Column(length = 2000)
     private String analysis;           // 试题解析
     private String checkFlag = "0";    // 审核状态，字典[审核状态]
     private Long checkerId;            // 审核员id
