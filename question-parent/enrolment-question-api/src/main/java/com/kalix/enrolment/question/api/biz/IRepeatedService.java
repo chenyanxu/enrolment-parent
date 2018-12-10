@@ -106,4 +106,11 @@ public interface IRepeatedService extends IService {
      * @return
      */
     JsonData getSecondQuestions(Integer page, Integer limit, String jsonStr, String sort);
+
+    /**
+     * 获取题干相同的试题
+     *
+     * @return
+     */
+    JsonData getTheSameStem(String jsonStr);
 }

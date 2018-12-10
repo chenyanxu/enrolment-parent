@@ -225,6 +225,34 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
         return jsonData;
     }
 
+    /**
+     * 获取题干相同的试题
+     *
+     * @return
+     */
+    @Override
+    public JsonData getTheSameStem(String jsonStr) {
+        JsonData jsonData = new JsonData();
+        try {
+            Map queryMap = SerializeUtil.json2Map(jsonStr);
+            String questionType = (String) queryMap.get("questionType");
+            if (StringUtils.isEmpty(questionType)) {
+                return jsonData;
+            }
+            EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_QUESTIONTYPE, questionType);
+            String beanName = enrolmentDictBean.getDescription();
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("beanName", beanName);
+            repeatedService = JNDIHelper.getJNDIServiceForName(IRepeatedService.class.getName(), map);
+            jsonData = repeatedService.getTheSameStem(jsonStr);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonData;
+    }
+
     @Override
     public JsonStatus autoCreateTestPaper(Long paperId) {
         JsonStatus jsonStatus = new JsonStatus();

@@ -48,6 +48,13 @@ public interface IQuestionCommonBizService extends IService {
     JsonData getAllQuestionTestings(Integer page, Integer limit, String jsonStr, String sort);
 
     /**
+     * 获取题干相同的试题
+     *
+     * @return
+     */
+    JsonData getTheSameStem(String jsonStr);
+
+    /**
      * 根据试卷及试卷规则参数自动生成试卷
      *
      * @param paperId

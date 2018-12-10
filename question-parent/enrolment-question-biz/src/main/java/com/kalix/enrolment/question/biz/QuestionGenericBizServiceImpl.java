@@ -8,6 +8,7 @@ import com.kalix.enrolment.question.api.biz.*;
 import com.kalix.enrolment.question.api.dao.IQuestionRepeatedBeanDao;
 import com.kalix.enrolment.question.dto.model.CompareQuestionDTO;
 import com.kalix.enrolment.question.dto.model.QuestionDTO;
+import com.kalix.enrolment.question.dto.model.RepeatedTestingDTO;
 import com.kalix.enrolment.question.entities.BaseQuestionEntity;
 import com.kalix.enrolment.question.entities.QuestionRepeatedBean;
 import com.kalix.enrolment.question.entities.QuestionSettingBean;
@@ -211,7 +212,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     @Override
     public String getAuditRoleName(String type, String subType) {
         String auditRoleName = "";
-        if(!StringUtils.isEmpty(type)){
+        if (!StringUtils.isEmpty(type)) {
             auditRoleName = this.getTypeName(type);
         }
 
@@ -234,14 +235,14 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         String type = (String) queryMap.get("type");
 
         String questionType = this.getQuestionType();
-        if(questionType.equals("1") || questionType.equals("2")){
-            if(StringUtils.isEmpty(type)){
+        if (questionType.equals("1") || questionType.equals("2")) {
+            if (StringUtils.isEmpty(type)) {
                 return new JsonData();
             }
         }
 
         String appendType = "";
-        if(!StringUtils.isEmpty(type)){
+        if (!StringUtils.isEmpty(type)) {
             appendType = " and type = '" + type + "'";
         }
 
@@ -846,6 +847,47 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             }
             jsonData = this.dao.findByNativeSql(sql, page, limit, cls);*/
             jsonData = this.dao.findByNativeSql(sql, page, limit, QuestionDTO.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonData;
+    }
+
+    /**
+     * 获取题干相同的试题
+     *
+     * @return
+     */
+    @Override
+    public JsonData getTheSameStem(String jsonStr) {
+        JsonData jsonData = new JsonData();
+        try {
+            Map queryMap = SerializeUtil.json2Map(jsonStr);
+            String subType = (String) queryMap.get("subType");
+            StringBuilder whereStrB = new StringBuilder();
+            if (StringUtils.isNotEmpty(subType)) {
+                whereStrB.append(" and y.subtype = '" + subType + "' ");
+            }
+            String questionType = this.getQuestionType();
+            String questionTypeName = this.getQuestionTypeName();
+            String questionBeans = this.getQuestionBeans();
+            String subTypeName = this.getSubTypeName(subType);
+            StringBuilder sqlStrB = new StringBuilder();
+            String selectStr = "select '" + questionType + "' as questiontype, '" + questionTypeName +
+                    "' as questiontypename, '" + questionBeans + "' as questionbeans, '" + subTypeName +
+                    "' as subtypename, t.subtype, t.repeatedCount, t.stem from " +
+                    "(select count(1) as repeatedCount, trim(y.stem) as stem, y.subtype from " + this.dao.getTableName() +
+                    " y where y.delflag='0'";
+            sqlStrB.append(selectStr);
+            if (whereStrB.length() > 0) {
+                sqlStrB.append(whereStrB.toString());
+            }
+            sqlStrB.append("group by trim(y.stem),y.subtype having count(1) > 1) t ");
+            sqlStrB.append("order by t.subType, t.stem");
+            String sql = sqlStrB.toString();
+            List<RepeatedTestingDTO> list = this.dao.findByNativeSql(sql, RepeatedTestingDTO.class);
+            jsonData.setData(list);
+            jsonData.setTotalCount((long) list.size());
         } catch (Exception e) {
             e.printStackTrace();
         }

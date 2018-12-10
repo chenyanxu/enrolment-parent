@@ -48,6 +48,15 @@
             </get>
         </rest>
 
+        <rest path="/repeatedtestings" consumes="application/json;charset=utf-8" produces="application/json">
+            <description>repeatedTesting rest service</description>
+            <!-- this is a rest GET to find all repeatedTestings -->
+            <get id="route-getAllRepeatedTestings" outType="com.kalix.framework.core.api.persistence.JsonData">
+                <description>Find all repeatedTestings</description>
+                <to uri="bean:questionCommonBizService?method=getTheSameStem(${header.jsonStr})"/>
+            </get>
+        </rest>
+
         <rest path="/testPaper" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <description>question common biz rest service</description>
 
@@ -78,8 +87,5 @@
             </post>
 
         </rest>
-
-
-
     </camelContext>
 </blueprint>
