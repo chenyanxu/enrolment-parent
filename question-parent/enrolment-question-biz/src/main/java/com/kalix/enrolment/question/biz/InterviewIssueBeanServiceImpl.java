@@ -65,7 +65,7 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
 
         Date year = (Date) paperMap.get("year");
         String year_str = simpleDateFormat.format(year);
-        sql = "select * from enrolment_question_interview where checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "'  and subtype='" + subtype + "') order by random() limit 2";
+        sql = "select * from enrolment_question_interview where checkFlag='1' and subtype='"+subtype+"' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "'  and subtype='" + subtype + "') order by random() limit 2";
 
         // 创建试题内容
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();

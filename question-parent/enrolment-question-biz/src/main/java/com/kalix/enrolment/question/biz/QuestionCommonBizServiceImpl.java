@@ -35,7 +35,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
     protected static String DICT_QUESTIONTYPE = "题型";
     protected static String DICT_TYPE = "类别";
     protected static String DICT_KSKM = "考试科目";
-
+    protected static String DICT_MSTLX = "面试题类型";
     private IEnrolmentDictBeanService enrolmentDictBeanService;
     private ICouchdbService couchdbService;
     private IAttachmentBeanService attachmentBeanService;
@@ -296,6 +296,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                             paper_map.put("quesdesc", ruleBean.getQuesDesc());
                             paper_map.put("subtype", ruleBean.getSubType());
                             paper_map.put("questypename", ruleBean.getQuesTypeName());
+                            paper_map.put("typeCount", ruleBean.getTypeCount());
                             paper_map.put("uuid", uuid);
                             String beanName = ruleBean.getQuesTypeDesc();
                             Map<String, String> map = new HashMap<String, String>();
@@ -315,7 +316,9 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                         paper_map.put("uuid", uuid);
                         paper_map.put("paperid", paperId);
                         paper_map.put("subtype", kskmValue);
-                        paper_map.put("kskm", kskm);
+                        EnrolmentDictBean enrolmentDictBean_mst = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_MSTLX, kskmValue);
+                        String kskm_xmt = enrolmentDictBean_mst.getLabel();
+                        paper_map.put("kskm", kskm_xmt);
                         Map<String, String> map = new HashMap<String, String>();
                         map.put("beanName", "InterviewIssue");
                         questionService = JNDIHelper.getJNDIServiceForName(IQuestionService.class.getName(), map);
@@ -335,16 +338,20 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                         break;
                     } else {
                         String tmp = "";
-                        tempMap.put("kskm", kskm);
                         tempMap.put("year", year_str);
                         tempMap.put("quesList", quesList);
                         tempMap.put("uuid", uuid);
                         if ("1".equals(tempName)) {
+                            tempMap.put("kskm", kskm);
                             tmp = "testPaper.ftl";
                         } else if ("2".equals(tempName)) {
+                            tempMap.put("kskm", kskm);
                             tmp = "subject.ftl";
                         } else {
                             tmp = "Interview.ftl";
+                            EnrolmentDictBean enrolmentDictBean_mst = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_MSTLX, kskmValue);
+                            String kskm_xmt = enrolmentDictBean_mst.getLabel();
+                            tempMap.put("kskm", kskm_xmt);
                         }
                         jsonStatus = produceTestPaper(tmp, tempMap, paperId);
                     }
