@@ -111,7 +111,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
     }
 
     /**
-     * 单条试题保存成功后，进行排重比对
+     * 单条试题新增保存成功后，进行排重比对
      *
      * @param entity
      * @param status
@@ -123,6 +123,25 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         String subType = entity.getSubType();
         if (!(questionType.equals("6") && subType.equals("1")))
             this.compareSingleSimilarity(entity, status);
+    }
+
+    /**
+     * 单条试题编辑保存成功前，进行排重比对
+     *
+     * @param entity
+     * @param status
+     */
+    @Override
+    public void beforeUpdateEntity(TP entity, JsonStatus status) {
+        super.beforeUpdateEntity(entity, status);
+        TP oldEntity = this.getEntity(entity.getId());
+        // 改变题干需要进行比对
+        if (!oldEntity.getStem().equals(entity.getStem())) {
+            String questionType = this.getQuestionType();
+            String subType = entity.getSubType();
+            if (!(questionType.equals("6") && subType.equals("1")))
+                this.compareSingleSimilarity(entity, status);
+        }
     }
 
     /**
@@ -966,7 +985,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         // 排序
         Collections.sort(rtn, new Comparator<TP>() {
             public int compare(TP p1, TP p2) {
-                if (p1.getSimilarity() > p2.getSimilarity()) {
+                if (p1.getSimilarity() < p2.getSimilarity()) {
                     return 1;
                 }
                 if (p1.getSimilarity() == p2.getSimilarity()) {
@@ -1182,7 +1201,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         if (StringUtils.isNotEmpty(subTypeDictType)) {
             sqlStrB.append("left join enrolment_dict d2 on d2.type = '" + subTypeDictType + "' and d2.value = y.subtype ");
         }
-        sqlStrB.append("where y.delflag = '0' and y.repeatedflag = '0' and y.compareflag = '1' ");
+        sqlStrB.append("where y.delflag = '0' and y.checkflag <> '2' and y.repeatedflag = '0' and y.compareflag = '1' ");
         if (jsonStrB.length() > 0) {
             sqlStrB.append(jsonStrB.toString());
         }
@@ -1217,7 +1236,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
             sqlStrB.append("left join enrolment_dict d2 on d2.type = '" + subTypeDictType + "' and d2.value = y.subtype ");
         }
         sqlStrB.append(", " + this.questionRepeatedBeanDao.getTableName() + " r ");
-        sqlStrB.append("where y.delflag = '0' and y.id = r.secondquestionid and r.questiontype = '" + questionType +
+        sqlStrB.append("where y.delflag = '0' and y.checkflag <> '2' and y.id = r.secondquestionid and r.questiontype = '" + questionType +
                 "' and r.firstquestionid = " + firstQuestionId + " and r.similarity > " +
                 "(select s.similarity from enrolment_question_setting s where s.id = 1) ");
         sqlStrB.append("order by r.similarity desc, y.subtype, y.type, y.id");
