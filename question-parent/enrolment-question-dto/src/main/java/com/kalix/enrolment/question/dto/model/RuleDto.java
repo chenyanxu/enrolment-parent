@@ -18,7 +18,7 @@ public class RuleDto extends BaseDTO {
     /**
      *试题数量
      */
-    private int titleNum;
+    private String titleNum;
     /**
      * 试题类型
      */
@@ -58,11 +58,11 @@ public class RuleDto extends BaseDTO {
         this.typeCount = typeCount;
     }
 
-    public int getTitleNum() {
+    public String getTitleNum() {
         return titleNum;
     }
 
-    public void setTitleNum(int titleNum) {
+    public void setTitleNum(String titleNum) {
         this.titleNum = titleNum;
     }
 
