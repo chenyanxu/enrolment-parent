@@ -180,6 +180,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                 for (int i = 0; i < resultList.size(); i++) {
                     BaseQuestionEntity entity = (BaseQuestionEntity) resultList.get(i);
                     QuestionDTO questionDTO = new QuestionDTO();
+                    questionDTO.setId(entity.getId());
                     questionDTO.setQuestionType(questionType);
                     questionDTO.setQuestionTypeName(questionTypeName);
                     questionDTO.setQuestionBeans(questionBeans);
