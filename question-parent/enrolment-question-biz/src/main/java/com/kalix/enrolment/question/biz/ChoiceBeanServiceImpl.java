@@ -69,20 +69,37 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
         String questype = paperMap.get("questype").toString();
         String quesdesc=paperMap.get("quesdesc") == null ? "" : paperMap.get("quesdesc").toString();
         String subtype = paperMap.get("subtype") == null ? "" : paperMap.get("subtype").toString();
-
+        String typeCount=paperMap.get("typeCount") == null ? "" : paperMap.get("typeCount").toString();
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
         singleTestPaper.put("quesdesc", quesdesc);
-        int quesNum = total / perScore;
 
+        int quesNum = 0;
+        int typeNum=0;
+        List<ChoiceBean> list=new ArrayList<>();
         Date year = (Date) paperMap.get("year");
         String year_str = simpleDateFormat.format(year);
-        sql = "select * from enrolment_question_Choice where checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit " + quesNum;
+        if(StringUtils.isEmpty(typeCount)) {
+
+            quesNum = total / perScore;
+            sql = "select * from enrolment_question_Choice where checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit " + quesNum;
+            list = this.dao.findByNativeSql(sql, ChoiceBean.class);
+        }else {
+            String [] ques=typeCount.split(";");
+            for(int i=0;i<ques.length;i++){
+                String[] str=ques[i].split(",");
+                sql = "select * from enrolment_question_Choice where checkFlag='1' and type='"+str[0]+"' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit " + str[1];
+                typeNum = Integer.parseInt(str[1]) / perScore;
+                quesNum+=typeNum;
+                List<ChoiceBean> list_1 = this.dao.findByNativeSql(sql, ChoiceBean.class);
+                list.addAll(list_1);
+            }
+        }
 
         // 创建试题内容
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
         // 以下需要通过算法动态获取（抽取试题）
-        List<ChoiceBean> list = this.dao.findByNativeSql(sql, ChoiceBean.class);
+
         if (list.size() == quesNum) {
             for (int i = 0; i < list.size(); i++) {
                 Map<String, Object> map = new HashMap<String, Object>();

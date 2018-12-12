@@ -48,6 +48,16 @@ public class RuleDto extends BaseDTO {
      */
     private String quesDesc;
 
+    private String typeCount;
+
+    public String getTypeCount() {
+        return typeCount;
+    }
+
+    public void setTypeCount(String typeCount) {
+        this.typeCount = typeCount;
+    }
+
     public int getTitleNum() {
         return titleNum;
     }

@@ -59,6 +59,19 @@ public class RuleBean extends BaseLogicDeleteEntity {
      * 题型描述（说明）
      */
     private String quesDesc;
+    /**
+     * 题型出题分数
+     */
+    private String typeCount;
+
+
+    public String getTypeCount() {
+        return typeCount;
+    }
+
+    public void setTypeCount(String typeCount) {
+        this.typeCount = typeCount;
+    }
 
     public int getTitleNum() {
         return titleNum;
