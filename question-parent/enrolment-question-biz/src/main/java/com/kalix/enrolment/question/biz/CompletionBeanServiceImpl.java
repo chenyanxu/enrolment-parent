@@ -11,6 +11,7 @@ import com.kalix.enrolment.question.entities.PaperQuesBean;
 import com.kalix.enrolment.question.entities.QuestionSettingBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
 import com.kalix.framework.core.api.persistence.JsonStatus;
+import com.kalix.framework.core.util.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -78,6 +79,8 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         String title = "";
         int num = 0;
         int sumSpace = 0;
+        int quesNum=0;
+        int typeNum=0;
         //Map paperMap=new HashMap();
         //paperMap.put("titlenum","1");
         //paperMap.put("score","2");
@@ -89,11 +92,13 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         int perScore = Integer.parseInt(paperMap.get("score").toString());
         int total = Integer.parseInt(paperMap.get("totalscore").toString());
         String quesdesc=paperMap.get("quesdesc") == null ? "" : paperMap.get("quesdesc").toString();
+        String typeCount=paperMap.get("typeCount") == null ? "" : paperMap.get("typeCount").toString();
         String uuid = paperMap.get("uuid").toString();
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每空" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
         singleTestPaper.put("quesdesc", quesdesc);
-        int quesNum = total / perScore;
+
+
 
 
         Date year = (Date) paperMap.get("year");
@@ -101,7 +106,21 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         String questype = paperMap.get("questype").toString();
         String subtype = paperMap.get("subtype") == null ? "" : paperMap.get("subtype").toString();
         try {
-            getComletionList(quesNum, list_completion, year_str, questype, subtype, num);
+            if(StringUtils.isEmpty(typeCount)){
+                quesNum = total / perScore;
+                getComletionList(quesNum, list_completion, year_str, questype, subtype, num);
+            }else {
+                //1,10;2,10;
+                String [] ques=typeCount.split(";");
+                for(int i=0;i<ques.length;i++){
+                    num=0;
+                    String[] str=ques[i].split(",");
+                    typeNum = Integer.parseInt(str[1]) / perScore;
+                    quesNum+=typeNum;
+                    getComletionList(typeNum, list_completion, year_str, questype, str[0], num);
+                }
+            }
+
             // 创建试题内容
             List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
 
@@ -168,7 +187,14 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
     }
 
     public void getComletionList(int spacenum, List<CompletionBean> list_completion, String year_str, String questype, String subtype, int num) throws Exception {
-        String sql = "select * from enrolment_question_completion where checkFlag='1' and spacenum<>0 and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit 1";
+        String sql="";
+        String sql_1="";
+        if(StringUtils.isEmpty(subtype)){
+            sql = "select * from enrolment_question_completion where checkFlag='1' and spacenum<>0 and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit 1";
+        }else {
+            sql = "select * from enrolment_question_completion where checkFlag='1' and type='" + subtype + "' and spacenum<>0 and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit 1";
+        }
+
         List<CompletionBean> list = this.dao.findByNativeSql(sql, CompletionBean.class);
         if (list != null && list.size() > 0) {
             CompletionBean completionBean = list.get(0);
@@ -179,8 +205,15 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
                     list_completion.add(completionBean);
                     getComletionList(spacenum, list_completion, year_str, questype, subtype, num);
                 } else if (spacenum < 0) {
+
                     spacenum = spacenum + completionSpaceNum;
-                    String sql_1 = "select * from enrolment_question_completion where checkFlag='1' and spacenum<>0 and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') and spacenum='" + spacenum + "' order by random() limit 1";
+                    if(StringUtils.isEmpty(subtype)){
+                        sql_1 = "select * from enrolment_question_completion where checkFlag='1' and spacenum<>0 and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') and spacenum='" + spacenum + "' order by random() limit 1";
+                    }
+                    else{
+                        sql_1 = "select * from enrolment_question_completion where checkFlag='1' and  spacenum<>0 and type='" + subtype + "' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') and spacenum='" + spacenum + "' order by random() limit 1";
+                    }
+
                     List<CompletionBean> list_1 = this.dao.findByNativeSql(sql_1, CompletionBean.class);
                     if (list_1 != null && list_1.size() > 0) {
                         CompletionBean completionBean_1 = list_1.get(0);
@@ -197,7 +230,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
 
                 }
             } else {
-                if (num > 5) {
+                if (num > 10) {
                     JsonStatus jsonStatus = new JsonStatus();
                     jsonStatus.setMsg("试题数量不够，请补充试题！");
                     throw new Exception(jsonStatus.getMsg());
