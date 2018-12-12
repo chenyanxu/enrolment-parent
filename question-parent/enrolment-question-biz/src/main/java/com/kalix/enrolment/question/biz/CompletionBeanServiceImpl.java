@@ -34,10 +34,12 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         int count = 0;
         int index = 0;
         String stem = entity.getStem();
+        stem=stem.replaceAll("＃","#");
         while ((index = stem.indexOf("[#", index)) != -1) {
             index = index + "[#".length();
             count++;
         }
+
         entity.setSpaceNum(count);
 
         // 解决create_by 未写入的问题
@@ -157,6 +159,8 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
 
         return singleTestPaper;
     }
+
+
 
     @Override
     public boolean getCompareStatus() {
