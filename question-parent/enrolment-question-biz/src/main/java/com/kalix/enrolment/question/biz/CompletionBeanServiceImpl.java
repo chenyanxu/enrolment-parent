@@ -157,7 +157,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
             e.printStackTrace();
         }
         //备用试题
-        SpareQues(singleTestPaper,year_str, questype, subtype);
+        //SpareQues(singleTestPaper,year_str, questype, subtype);
         return singleTestPaper;
     }
 

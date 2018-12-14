@@ -262,6 +262,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
         try {
             int copies = 1;
             int total = 0;
+            String type="";
             //成卷结果
             String doPaperRes = "T";
             List<Map> quesList = null;
@@ -301,6 +302,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                             paper_map.put("questypename", ruleBean.getQuesTypeName());
                             paper_map.put("typeCount", ruleBean.getTypeCount());
                             paper_map.put("uuid", uuid);
+                            type= ruleBean.getQuesTypeName();
                             String beanName = ruleBean.getQuesTypeDesc();
                             Map<String, String> map = new HashMap<String, String>();
                             map.put("beanName", beanName);
@@ -329,6 +331,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                         List list_ques = (List) singleTestPaper.get("question");
                         if (list_ques == null || list_ques.size() == 0) {
                             doPaperRes = "F";
+                            //break;
                         }
                         quesList.add(singleTestPaper);
                     }
@@ -337,7 +340,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
 
                         paperQuesBeanService.deleteByUuid(uuid);
                         jsonStatus.setSuccess(false);
-                        jsonStatus.setMsg("试题数量不足，成卷失败，已生成" + j + "套卷!");
+                        jsonStatus.setMsg(type+"数量不足，成卷失败，已生成" + j + "套卷!");
                         break;
                     } else {
                         String tmp = "";

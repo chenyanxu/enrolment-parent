@@ -124,7 +124,7 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
 
         singleTestPaper.put("question", question);
         //备用试题
-        SpareQues(singleTestPaper,year_str, questype, subtype);
+       // SpareQues(singleTestPaper,year_str, questype, subtype);
         return singleTestPaper;
     }
 
