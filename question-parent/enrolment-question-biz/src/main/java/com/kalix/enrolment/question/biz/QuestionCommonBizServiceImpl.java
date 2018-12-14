@@ -257,6 +257,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
     @Override
     public JsonStatus autoCreateTestPaper(Long paperId) {
         JsonStatus jsonStatus = new JsonStatus();
+        String uuid_str="";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
         try {
             int copies = 1;
@@ -283,6 +284,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                 }
                 for (int j = 0; j < copies; j++) {
                     String uuid = UUID.randomUUID().toString();
+                    uuid_str+=uuid+",";
                     quesList = new ArrayList<Map>();
                     if(list_rule!=null&&list_rule.size()>0){
                         for (int i = 0; i < list_rule.size(); i++) {
@@ -362,6 +364,17 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                 jsonStatus.setMsg("试卷分数与参数分数不符，请核对后重新提交！");
             }
         } catch (IOException e) {
+            if(!StringUtils.isEmpty(uuid_str)){
+                if(uuid_str.indexOf(",")>-1){
+                    String [] str=uuid_str.split(",");
+                    for(String uuid:str){
+                        paperQuesBeanService.deleteByUuid(uuid);
+                    }
+                }else {
+                    paperQuesBeanService.deleteByUuid(uuid_str);
+                }
+            }
+
             e.printStackTrace();
             jsonStatus.setSuccess(false);
             jsonStatus.setMsg(e.getMessage());

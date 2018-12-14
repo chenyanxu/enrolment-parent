@@ -123,8 +123,31 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
         }
 
         singleTestPaper.put("question", question);
-
+        //备用试题
+        SpareQues(singleTestPaper,year_str, questype, subtype);
         return singleTestPaper;
+    }
+
+
+    public void  SpareQues(Map<String, Object> singleTestPaper,String year_str,String questype,String subtype){
+        String pattern = "(?<=\\[#).*?(?=\\])";
+        // 编译正则
+        List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
+        String sql = "select * from enrolment_question_Choice where checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit 5";
+        List<ChoiceBean> list = this.dao.findByNativeSql(sql, ChoiceBean.class);
+        for (int i = 0; i < list.size(); i++) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            ChoiceBean choiceBean = list.get(i);
+            map.put("type", "选择题");
+            map.put("stem", choiceBean.getStem());
+            map.put("answerA", choiceBean.getAnswerA());
+            map.put("answerB", choiceBean.getAnswerB());
+            map.put("answerC", choiceBean.getAnswerC());
+            map.put("answerD", choiceBean.getAnswerD());
+            question.add(map);
+
+        }
+        singleTestPaper.put("SpareQues",question);
     }
 
     @Override

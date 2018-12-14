@@ -156,12 +156,31 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        //备用试题
+        SpareQues(singleTestPaper,year_str, questype, subtype);
         return singleTestPaper;
     }
 
 
+    public void  SpareQues(Map<String, Object> singleTestPaper,String year_str,String questype,String subtype){
+        String pattern = "(?<=\\[#).*?(?=\\])";
+        // 编译正则
+        Pattern p1 = Pattern.compile(pattern);
+        List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
+        String sql = "select * from enrolment_question_completion where checkFlag='1' and spacenum<>0 and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit 5";
+        List<CompletionBean> list = this.dao.findByNativeSql(sql, CompletionBean.class);
+        for (int i = 0; i < list.size(); i++) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            CompletionBean completionBean = list.get(i);
+            map.put("type", "填空题");
+            Matcher m = p1.matcher(completionBean.getStem());
+            String stem = m.replaceAll("________").replaceAll("\\[#", "").replaceAll("\\]", "");
+            map.put("stem", stem);
+            question.add(map);
 
+        }
+        singleTestPaper.put("SpareQues",question);
+    }
     @Override
     public boolean getCompareStatus() {
         QuestionSettingBean questionSettingBean = questionSettingBeanService.getEntity(1L);
