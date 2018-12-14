@@ -112,7 +112,7 @@
             </post>
         </rest>
 
-        <rest path="/verses/check/list" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+        <rest path="/verses/check/list" consumes="application/json;chazErset=utf-8" produces="application/json;charset=utf-8">
             <description>verse check rest service</description>
             <get id="route-getAllCheckVerse">
                 <description>Find all check verses</description>
@@ -131,6 +131,14 @@
             <get id="route-getCheckVerse">
                 <description>Find check verse by id</description>
                 <to uri="bean:verseService?method=getEntity(${header.id})"/>
+            </get>
+        </rest>
+
+        <rest path="/verses/check/progress" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>verse check progress rest service</description>
+            <get id="route-getAllCheckVerseProgress">
+                <description>Find check verses Progress</description>
+                <to uri="bean:verseAuditService?method=getAuditProgress(${header.jsonStr})"/>
             </get>
         </rest>
     </camelContext>

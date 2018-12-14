@@ -7,6 +7,7 @@ import com.kalix.admin.duty.entities.DataAuthBean;
 import com.kalix.enrolment.question.api.biz.*;
 import com.kalix.enrolment.question.api.dao.IQuestionRepeatedBeanDao;
 import com.kalix.enrolment.question.dto.model.CompareQuestionDTO;
+import com.kalix.enrolment.question.dto.model.QuestionAuditDTO;
 import com.kalix.enrolment.question.dto.model.QuestionDTO;
 import com.kalix.enrolment.question.dto.model.RepeatedTestingDTO;
 import com.kalix.enrolment.question.entities.BaseQuestionEntity;
@@ -442,6 +443,111 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
         jsonStatus.setMsg("试题审核成功");
 
         return jsonStatus;
+    }
+
+    /**
+     * 获取审核进度信息
+     * @return
+     */
+    @Override
+    public QuestionAuditDTO getAuditProgress(String jsonStr) {
+        QuestionAuditDTO questionAuditDTO = new QuestionAuditDTO();
+        Map queryMap = SerializeUtil.json2Map(jsonStr);
+        String type = (String) queryMap.get("type");
+        String subType = (String) queryMap.get("subType");
+
+        String questionType = this.getQuestionType();
+        if (questionType.equals("1") || questionType.equals("2")) {
+            if (StringUtils.isEmpty(type)) {
+                return questionAuditDTO;
+            }
+        }
+
+        String appendType = "";
+        if (!StringUtils.isEmpty(type)) {
+            appendType = " and type = '" + type + "'";
+        }
+
+        // ----------审核人数量
+        // 获取审核人角色名称
+        String roleName = this.getAuditRoleName(type, subType);
+        // 获取当前登录人ID
+        Long currentUserId = this.shiroService.getCurrentUserId();
+        // 根据该试题的角色查找审核该试题的人员
+        int persons = 0;
+        List userIdList = new ArrayList();
+        RoleBean roleBean = roleBeanService.queryByRoleName(roleName);
+        if (roleBean != null) {
+            userIdList = roleBeanService.getUserIdsByRoleId(roleBean.getId());
+            persons = userIdList.size();
+        }
+        // 判断当前登录人是否是审核人
+        if (!userIdList.contains(currentUserId)) {
+            return questionAuditDTO;
+        }
+        questionAuditDTO.setAuditorNum(persons);
+
+        String questionNumSql = "";
+        String completNumSql = "";
+        String completTotalSql = "";
+        if (StringUtils.isEmpty(subType)) {
+            questionNumSql = "select count(1) from " + dao.getTableName()
+                    + " where delFlag = '0'"
+                    + appendType
+                    + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))";
+            completNumSql = "select count(1) from " + dao.getTableName()
+                    + " where delFlag = '0' and checkFlag != '0'"
+                    + appendType
+                    + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
+                    + " and checkerId = " + currentUserId;
+            completTotalSql = "select count(1) from " + dao.getTableName()
+                    + " where delFlag = '0' and checkFlag != '0'"
+                    + appendType
+                    + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))";
+        } else {
+            questionNumSql = "select count(1) from " + dao.getTableName()
+                    + " where delFlag = '0'"
+                    + appendType
+                    + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
+                    + " and subType = '" + subType + "'";
+            completNumSql = "select count(1) from " + dao.getTableName()
+                    + " where delFlag = '0' and checkFlag != '0'"
+                    + appendType
+                    + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
+                    + " and subType = '" + subType + "'"
+                    + " and checkerId = " + currentUserId;
+            completTotalSql = "select count(1) from " + dao.getTableName()
+                    + " where delFlag = '0' and checkFlag != '0'"
+                    + appendType
+                    + " and (to_char(creationdate,'yyyy') = to_char(now(),'yyyy'))"
+                    + " and subType = '" + subType + "'";
+        }
+
+        // ----------审核试题数量
+        int questionNum = 0;
+        List list = dao.findByNativeSql(questionNumSql, Integer.class);
+        if (list != null && list.get(0) != null) {
+            questionNum = (Integer) list.get(0);
+        }
+        questionAuditDTO.setQuestionNum(questionNum);
+
+        // ----------审核完成数量
+        int completNum = 0;
+        list = dao.findByNativeSql(completNumSql, Integer.class);
+        if (list != null && list.get(0) != null) {
+            completNum = (Integer) list.get(0);
+        }
+        questionAuditDTO.setCompleteNum(completNum);
+
+        // ----------审核完成总量
+        int completTotal = 0;
+        list = dao.findByNativeSql(completTotalSql, Integer.class);
+        if (list != null && list.get(0) != null) {
+            completTotal = (Integer) list.get(0);
+        }
+        questionAuditDTO.setCompleteTotal(completTotal);
+
+        return questionAuditDTO;
     }
 
     /**

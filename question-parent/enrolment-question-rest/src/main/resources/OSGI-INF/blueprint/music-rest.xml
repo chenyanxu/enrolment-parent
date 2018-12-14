@@ -133,5 +133,13 @@
                 <to uri="bean:musicService?method=getEntity(${header.id})"/>
             </get>
         </rest>
+
+        <rest path="/musics/check/progress" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>music check progress rest service</description>
+            <get id="route-getAllCheckMusicProgress">
+                <description>Find check musics Progress</description>
+                <to uri="bean:musicAuditService?method=getAuditProgress(${header.jsonStr})"/>
+            </get>
+        </rest>
     </camelContext>
 </blueprint>

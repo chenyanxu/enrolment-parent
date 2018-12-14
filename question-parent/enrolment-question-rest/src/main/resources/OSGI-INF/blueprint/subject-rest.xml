@@ -133,5 +133,13 @@
                 <to uri="bean:subjectService?method=getEntity(${header.id})"/>
             </get>
         </rest>
+
+        <rest path="/subjects/check/progress" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>subject check progress rest service</description>
+            <get id="route-getAllCheckSubjectProgress">
+                <description>Find check subjects Progress</description>
+                <to uri="bean:subjectAuditService?method=getAuditProgress(${header.jsonStr})"/>
+            </get>
+        </rest>
     </camelContext>
 </blueprint>
