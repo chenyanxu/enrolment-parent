@@ -133,5 +133,13 @@
                 <to uri="bean:completionService?method=getEntity(${header.id})"/>
             </get>
         </rest>
+
+        <rest path="/completions/check/progress" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>completion check progress rest service</description>
+            <get id="route-getAllCheckCompletionProgress">
+                <description>Find check completions Progress</description>
+                <to uri="bean:completionService?method=getAuditProgress(${header.jsonStr})"/>
+            </get>
+        </rest>
     </camelContext>
 </blueprint>

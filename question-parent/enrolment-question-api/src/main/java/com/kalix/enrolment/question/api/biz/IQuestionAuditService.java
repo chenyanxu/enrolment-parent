@@ -1,5 +1,6 @@
 package com.kalix.enrolment.question.api.biz;
 
+import com.kalix.enrolment.question.dto.model.QuestionAuditDTO;
 import com.kalix.framework.core.api.IService;
 import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
@@ -42,4 +43,11 @@ public interface IQuestionAuditService extends IService {
      * @return
      */
     JsonStatus batchAudit(String entityIds, String checkFlag, String reason);
+
+    /**
+     * 获取审核进度信息
+     * @param jsonStr
+     * @return
+     */
+    QuestionAuditDTO getAuditProgress(String jsonStr);
 }

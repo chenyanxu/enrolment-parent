@@ -133,5 +133,13 @@
                 <to uri="bean:choiceService?method=getEntity(${header.id})"/>
             </get>
         </rest>
+
+        <rest path="/choices/check/progress" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>choice check progress rest service</description>
+            <get id="route-getAllCheckChoiceProgress">
+                <description>Find check choices Progress</description>
+                <to uri="bean:choiceAuditService?method=getAuditProgress(${header.jsonStr})"/>
+            </get>
+        </rest>
     </camelContext>
 </blueprint>
