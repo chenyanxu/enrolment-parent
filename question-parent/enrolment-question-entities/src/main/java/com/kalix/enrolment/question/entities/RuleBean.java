@@ -28,7 +28,7 @@ public class RuleBean extends BaseLogicDeleteEntity {
     /**
      * 试题顺序号
      */
-    private int titleNum;
+    private String titleNum;
     /**
      * 题型,字典[题型]
      */
@@ -73,11 +73,11 @@ public class RuleBean extends BaseLogicDeleteEntity {
         this.typeCount = typeCount;
     }
 
-    public int getTitleNum() {
+    public String getTitleNum() {
         return titleNum;
     }
 
-    public void setTitleNum(int titleNum) {
+    public void setTitleNum(String titleNum) {
         this.titleNum = titleNum;
     }
 
