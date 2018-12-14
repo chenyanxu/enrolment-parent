@@ -88,9 +88,9 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
             String [] ques=typeCount.split(";");
             for(int i=0;i<ques.length;i++){
                 String[] str=ques[i].split(",");
-                sql = "select * from enrolment_question_Choice where checkFlag='1' and type='"+str[0]+"' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit " + str[1];
                 typeNum = Integer.parseInt(str[1]) / perScore;
                 quesNum+=typeNum;
+                sql = "select * from enrolment_question_Choice where checkFlag='1' and type='"+str[0]+"' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit " +typeNum;
                 List<ChoiceBean> list_1 = this.dao.findByNativeSql(sql, ChoiceBean.class);
                 list.addAll(list_1);
             }
