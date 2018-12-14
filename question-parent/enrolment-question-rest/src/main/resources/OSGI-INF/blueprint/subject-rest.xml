@@ -138,7 +138,7 @@
             <description>subject check progress rest service</description>
             <get id="route-getAllCheckSubjectProgress">
                 <description>Find check subjects Progress</description>
-                <to uri="bean:subjectService?method=getAuditProgress(${header.jsonStr})"/>
+                <to uri="bean:subjectAuditService?method=getAuditProgress(${header.jsonStr})"/>
             </get>
         </rest>
     </camelContext>

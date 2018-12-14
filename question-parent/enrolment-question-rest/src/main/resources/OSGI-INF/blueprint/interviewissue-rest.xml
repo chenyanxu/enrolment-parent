@@ -138,7 +138,7 @@
             <description>interviewIssue check progress rest service</description>
             <get id="route-getAllCheckInterviewIssueProgress">
                 <description>Find check interviewIssues Progress</description>
-                <to uri="bean:interviewIssueService?method=getAuditProgress(${header.jsonStr})"/>
+                <to uri="bean:interviewIssueAuditService?method=getAuditProgress(${header.jsonStr})"/>
             </get>
         </rest>
     </camelContext>

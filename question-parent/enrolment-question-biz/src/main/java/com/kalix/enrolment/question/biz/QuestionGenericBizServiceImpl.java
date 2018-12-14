@@ -449,6 +449,7 @@ public abstract class QuestionGenericBizServiceImpl<T extends IGenericDao, TP ex
      * 获取审核进度信息
      * @return
      */
+    @Override
     public QuestionAuditDTO getAuditProgress(String jsonStr) {
         QuestionAuditDTO questionAuditDTO = new QuestionAuditDTO();
         Map queryMap = SerializeUtil.json2Map(jsonStr);

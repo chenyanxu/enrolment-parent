@@ -138,7 +138,7 @@
             <description>completion check progress rest service</description>
             <get id="route-getAllCheckCompletionProgress">
                 <description>Find check completions Progress</description>
-                <to uri="bean:completionService?method=getAuditProgress(${header.jsonStr})"/>
+                <to uri="bean:completionAuditService?method=getAuditProgress(${header.jsonStr})"/>
             </get>
         </rest>
     </camelContext>
