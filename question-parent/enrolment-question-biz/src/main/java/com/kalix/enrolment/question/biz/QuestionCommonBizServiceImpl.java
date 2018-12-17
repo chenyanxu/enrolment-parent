@@ -387,6 +387,130 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
         return jsonStatus;
     }
 
+    @Override
+    public Map<String, Object> autoCreateTestPaperMap(Long paperId, Long examId) {
+        String uuid_str="";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
+        Map<String, Object> tempMap = new HashMap<>();
+        try {
+            int copies = 1;
+            int total = 0;
+            String type="";
+            //成卷结果
+            String doPaperRes = "T";
+            List<Map<String, Object>> quesList = null;
+            PaperBean paperBean = paperBeanService.getEntity(paperId);
+            String tempName = paperBean.getTempName();
+            Date year = paperBean.getYear();
+            String year_str = simpleDateFormat.format(year);
+            int paperTotal = paperBean.getTotalMark();
+            String kskmValue = paperBean.getKskm();
+            EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_KSKM, kskmValue);
+            String kskm = enrolmentDictBean.getLabel();
+            List<RuleDto> list_rule = ruleBeanService.findByPaperId(paperId);
+            for (RuleDto rule1Bean : list_rule) {
+                total += rule1Bean.getQuesTotalscore();
+            }
+            // "3"是面试题
+            if (total == paperTotal||"3".equals(tempName)) {
+                if (paperBean.getCopies() > 1) {
+                    copies = paperBean.getCopies();
+                }
+                for (int j = 0; j < copies; j++) {
+                    String uuid = UUID.randomUUID().toString();
+                    uuid_str+=uuid+",";
+                    quesList = new ArrayList<Map<String, Object>>();
+                    if(list_rule!=null&&list_rule.size()>0){
+                        for (int i = 0; i < list_rule.size(); i++) {
+                            RuleDto ruleBean = (RuleDto) list_rule.get(i);
+                            Map<String, Object> paper_map = new HashMap();
+                            paper_map.put("year", year);
+                            paper_map.put("score", ruleBean.getQuesScore());
+                            paper_map.put("totalscore", ruleBean.getQuesTotalscore());
+                            paper_map.put("titlenum", ruleBean.getTitleNum());
+                            paper_map.put("paperid", ruleBean.getPaperId());
+                            paper_map.put("questype", ruleBean.getQuesType());
+                            paper_map.put("quesdesc", ruleBean.getQuesDesc());
+                            paper_map.put("subtype", ruleBean.getSubType());
+                            paper_map.put("questypename", ruleBean.getQuesTypeName());
+                            paper_map.put("typeCount", ruleBean.getTypeCount());
+                            paper_map.put("uuid", uuid);
+                            paper_map.put("examId", examId);
+                            type= ruleBean.getQuesTypeName();
+                            String beanName = ruleBean.getQuesTypeDesc();
+                            Map<String, String> map = new HashMap<String, String>();
+                            map.put("beanName", beanName);
+                            questionService = JNDIHelper.getJNDIServiceForName(IQuestionService.class.getName(), map);
+                            Map singleTestPaper = questionService.createSingleTestPaper(paper_map);
+                            List list_ques = (List) singleTestPaper.get("question");
+                            if (list_ques == null || list_ques.size() == 0) {
+                                doPaperRes = "F";
+                                break;
+                            }
+                            quesList.add(singleTestPaper);
+                        }
+                    }else {
+                        Map<String, Object> paper_map = new HashMap();
+                        paper_map.put("year", year);
+                        paper_map.put("uuid", uuid);
+                        paper_map.put("paperid", paperId);
+                        paper_map.put("examId", examId);
+                        paper_map.put("subtype", kskmValue);
+                        EnrolmentDictBean enrolmentDictBean_mst = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_MSTLX, kskmValue);
+                        String kskm_xmt = enrolmentDictBean_mst.getLabel();
+                        paper_map.put("kskm", kskm_xmt);
+                        Map<String, String> map = new HashMap<String, String>();
+                        map.put("beanName", "InterviewIssue");
+                        questionService = JNDIHelper.getJNDIServiceForName(IQuestionService.class.getName(), map);
+                        Map singleTestPaper = questionService.createSingleTestPaper(paper_map);
+                        List list_ques = (List) singleTestPaper.get("question");
+                        if (list_ques == null || list_ques.size() == 0) {
+                            doPaperRes = "F";
+                            //break;
+                        }
+                        quesList.add(singleTestPaper);
+                    }
+
+                    if ("F".equals(doPaperRes)) {
+                        paperQuesBeanService.deleteByUuid(uuid);
+                        break;
+                    } else {
+                        tempMap.put("year", year_str);
+                        tempMap.put("quesList", quesList);
+                        tempMap.put("uuid", uuid);
+                        if ("1".equals(tempName)) {
+                            tempMap.put("kskm", kskm);
+                        } else if ("2".equals(tempName)) {
+                            tempMap.put("kskm", kskm);
+                        } else {
+                            EnrolmentDictBean enrolmentDictBean_mst = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_MSTLX, kskmValue);
+                            String kskm_xmt = enrolmentDictBean_mst.getLabel();
+                            tempMap.put("kskm", kskm_xmt);
+                        }
+                    }
+                }
+            } else {
+                tempMap.put("error", "试卷分数与参数分数不符");
+            }
+        } catch (IOException e) {
+            if(!StringUtils.isEmpty(uuid_str)){
+                if(uuid_str.indexOf(",")>-1){
+                    String [] str=uuid_str.split(",");
+                    for(String uuid:str){
+                        paperQuesBeanService.deleteByUuid(uuid);
+                    }
+                }else {
+                    paperQuesBeanService.deleteByUuid(uuid_str);
+                }
+            }
+
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return tempMap;
+    }
+
     private JsonStatus produceTestPaper(String fileName, Map tempMap, Long paperId) throws IOException {
         JsonStatus jsonStatus = new JsonStatus();
 

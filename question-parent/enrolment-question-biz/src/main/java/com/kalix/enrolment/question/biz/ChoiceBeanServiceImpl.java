@@ -61,6 +61,7 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
         String title = "";
         // 以下需要通过参数动态获取
         Long paperId = Long.parseLong(paperMap.get("paperid").toString());
+        Long examId = Long.parseLong(paperMap.get("examId").toString());
         int titleNum = Integer.parseInt(paperMap.get("titlenum").toString());
         String titleName = paperMap.get("questypename").toString();
         int perScore = Integer.parseInt(paperMap.get("score").toString());
@@ -72,6 +73,7 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
         String typeCount=paperMap.get("typeCount") == null ? "" : paperMap.get("typeCount").toString();
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
+        singleTestPaper.put("titleNum", titleNum);
         singleTestPaper.put("quesdesc", quesdesc);
 
         int quesNum = 0;
@@ -82,7 +84,8 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
         if(StringUtils.isEmpty(typeCount)) {
 
             quesNum = total / perScore;
-            sql = "select * from enrolment_question_Choice where checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit " + quesNum;
+            // sql = "select * from enrolment_question_Choice where checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit " + quesNum;
+            sql = "select * from enrolment_question_Choice where checkFlag='1' order by random() limit " + quesNum;
             list = this.dao.findByNativeSql(sql, ChoiceBean.class);
         }else {
             String [] ques=typeCount.split(";");
@@ -90,7 +93,8 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
                 String[] str=ques[i].split(",");
                 typeNum = Integer.parseInt(str[1]) / perScore;
                 quesNum+=typeNum;
-                sql = "select * from enrolment_question_Choice where checkFlag='1' and type='"+str[0]+"' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit " +typeNum;
+//                sql = "select * from enrolment_question_Choice where checkFlag='1' and type='"+str[0]+"' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit " +typeNum;
+                sql = "select * from enrolment_question_Choice where checkFlag='1' and type='"+str[0]+"' order by random() limit " +typeNum;
                 List<ChoiceBean> list_1 = this.dao.findByNativeSql(sql, ChoiceBean.class);
                 list.addAll(list_1);
             }
@@ -117,6 +121,9 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
                 paperQuesBean.setSubType(subtype);
                 paperQuesBean.setUuid(uuid);
                 paperQuesBean.setPaperId(paperId);
+                paperQuesBean.setExamId(examId);
+                paperQuesBean.setCreateById(shiroService.getCurrentUserId());
+                paperQuesBean.setUpdateById(shiroService.getCurrentUserId());
                 paperQuesBeanService.saveEntity(paperQuesBean);
                 question.add(map);
             }

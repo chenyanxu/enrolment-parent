@@ -30,6 +30,11 @@ public class PaperQuesBean extends BaseLogicDeleteEntity {
      */
     private Long paperId;
 
+    /**
+     * 考试Id
+     */
+    private Long examId;
+
 
     public Long getPaperId() {
         return paperId;
@@ -77,5 +82,13 @@ public class PaperQuesBean extends BaseLogicDeleteEntity {
 
     public void setSubType(String subType) {
         this.subType = subType;
+    }
+
+    public Long getExamId() {
+        return examId;
+    }
+
+    public void setExamId(Long examId) {
+        this.examId = examId;
     }
 }

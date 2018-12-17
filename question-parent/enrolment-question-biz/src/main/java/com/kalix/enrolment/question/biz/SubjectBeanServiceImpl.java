@@ -56,6 +56,7 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
         String title = "";
         // 以下需要通过参数动态获取
         Long paperId=Long.parseLong(paperMap.get("paperid").toString());
+        Long examId = Long.parseLong(paperMap.get("examId").toString());
         int titleNum = Integer.parseInt(paperMap.get("titlenum").toString());
 
         int perScore = Integer.parseInt(paperMap.get("score").toString());
@@ -70,13 +71,14 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
         //  String titleName = "评述题";
         title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
+        singleTestPaper.put("titleNum", titleNum);
         singleTestPaper.put("quesdesc", quesdesc);
         int quesNum = total / perScore;
 
         Date year = (Date) paperMap.get("year");
         String year_str = simpleDateFormat.format(year);
-        sql = "select * from enrolment_question_subject where checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "')  and subtype='" + subtype + "'  order by random() limit " + quesNum;
-
+//        sql = "select * from enrolment_question_subject where checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "')  and subtype='" + subtype + "'  order by random() limit " + quesNum;
+        sql = "select * from enrolment_question_subject where checkFlag='1' and subtype='" + subtype + "'  order by random() limit " + quesNum;
         // 创建试题内容
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
         // 以下需要通过算法动态获取（抽取试题）
@@ -95,6 +97,9 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
                 paperQuesBean.setSubType(subtype);
                 paperQuesBean.setUuid(uuid);
                 paperQuesBean.setPaperId(paperId);
+                paperQuesBean.setExamId(examId);
+                paperQuesBean.setCreateById(shiroService.getCurrentUserId());
+                paperQuesBean.setUpdateById(shiroService.getCurrentUserId());
                 paperQuesBeanService.saveEntity(paperQuesBean);
                 question.add(map);
             }
