@@ -11,6 +11,7 @@ import com.kalix.enrolment.question.entities.QuestionSettingBean;
 import com.kalix.enrolment.question.entities.SubjectBean;
 import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
+import com.kalix.framework.core.util.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -54,6 +55,7 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
         String sql = "";
         // 创建试题标题
         String title = "";
+        String year_ques="";
         // 以下需要通过参数动态获取
         Long paperId=Long.parseLong(paperMap.get("paperid").toString());
         int titleNum = Integer.parseInt(paperMap.get("titlenum").toString());
@@ -62,6 +64,20 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
         int total = Integer.parseInt(paperMap.get("totalscore").toString());
 
         String questype = paperMap.get("questype").toString();
+        String quesRange = paperMap.get("quesRange").toString();
+        if(!StringUtils.isEmpty(quesRange)){
+
+            if(quesRange.indexOf(",")>-1){
+                String[] ques=quesRange.split(",");
+                    for(String ques_str:ques){
+                        year_ques+="'"+ques_str+"'"+",";
+                    }
+                year_ques=year_ques.substring(0,year_ques.length()-1);
+            }else {
+                year_ques=quesRange;
+            }
+        }
+
         String uuid = paperMap.get("uuid").toString();
         String quesdesc=paperMap.get("quesdesc") == null ? "" : paperMap.get("quesdesc").toString();
         String subtype = paperMap.get("subtype") == null ? "" : paperMap.get("subtype").toString();
@@ -73,9 +89,9 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
         singleTestPaper.put("quesdesc", quesdesc);
         int quesNum = total / perScore;
 
-        Date year = (Date) paperMap.get("year");
-        String year_str = simpleDateFormat.format(year);
-        sql = "select * from enrolment_question_subject where checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "')  and subtype='" + subtype + "'  order by random() limit " + quesNum;
+        //Date year = (Date) paperMap.get("year");
+        //String year_str = simpleDateFormat.format(year);
+        sql = "select * from enrolment_question_subject where  to_char(year, 'yyyy') in (" + year_ques + ") and checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy') in (" + year_ques + ") and questype='" + questype + "' and subtype='" + subtype + "')  and subtype='" + subtype + "'  order by random() limit " + quesNum;
 
         // 创建试题内容
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
@@ -90,7 +106,7 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
                 map.put("type", "论述题");
                 map.put("stem", subjectBean.getStem());
                 paperQuesBean.setQuesid(subjectBean.getId());
-                paperQuesBean.setYear(year);
+                paperQuesBean.setYear(subjectBean.getYear());
                 paperQuesBean.setQuesType(questype);
                 paperQuesBean.setSubType(subtype);
                 paperQuesBean.setUuid(uuid);

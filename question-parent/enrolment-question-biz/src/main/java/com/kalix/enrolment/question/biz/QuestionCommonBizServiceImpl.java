@@ -301,6 +301,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                             paper_map.put("subtype", ruleBean.getSubType());
                             paper_map.put("questypename", ruleBean.getQuesTypeName());
                             paper_map.put("typeCount", ruleBean.getTypeCount());
+                            paper_map.put("quesRange", ruleBean.getQuesRange());
                             paper_map.put("uuid", uuid);
                             type= ruleBean.getQuesTypeName();
                             String beanName = ruleBean.getQuesTypeDesc();

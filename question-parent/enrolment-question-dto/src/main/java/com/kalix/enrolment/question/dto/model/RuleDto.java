@@ -49,6 +49,19 @@ public class RuleDto extends BaseDTO {
     private String quesDesc;
 
     private String typeCount;
+    /**
+     * 主观题范围
+
+     */
+    public String quesRange;
+
+    public String getQuesRange() {
+        return quesRange;
+    }
+
+    public void setQuesRange(String quesRange) {
+        this.quesRange = quesRange;
+    }
 
     public String getTypeCount() {
         return typeCount;
