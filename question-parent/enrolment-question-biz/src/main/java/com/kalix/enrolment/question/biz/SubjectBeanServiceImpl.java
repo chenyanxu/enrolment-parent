@@ -100,6 +100,7 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
                 paperQuesBean.setExamId(examId);
                 paperQuesBean.setCreateById(shiroService.getCurrentUserId());
                 paperQuesBean.setUpdateById(shiroService.getCurrentUserId());
+                map.put("paperBean", paperQuesBean);
                 paperQuesBeanService.saveEntity(paperQuesBean);
                 question.add(map);
             }

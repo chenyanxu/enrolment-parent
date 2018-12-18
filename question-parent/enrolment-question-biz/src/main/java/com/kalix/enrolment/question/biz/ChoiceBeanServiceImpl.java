@@ -124,6 +124,7 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
                 paperQuesBean.setExamId(examId);
                 paperQuesBean.setCreateById(shiroService.getCurrentUserId());
                 paperQuesBean.setUpdateById(shiroService.getCurrentUserId());
+                map.put("paperBean", paperQuesBean);
                 paperQuesBeanService.saveEntity(paperQuesBean);
                 question.add(map);
             }
