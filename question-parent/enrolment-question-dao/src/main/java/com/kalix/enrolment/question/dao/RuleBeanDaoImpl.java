@@ -21,7 +21,7 @@ public class RuleBeanDaoImpl extends BaseBeanDao<RuleBean, Long> implements IRul
 
     @Override
     public List findByPaperId(Long paperId) {
-        String sql = "select a.id,a.paperid,a.quesdesc,a.quesscore,a.questotalscore,a.questype,a.titlenum,a.subtype,a.typecount, d.label as quesTypeName, d.description as quesTypeDesc " +
+        String sql = "select a.id,a.paperid,a.quesdesc,a.quesscore,a.questotalscore,a.questype,a.titlenum,a.subtype,a.typecount,a.quesRange, d.label as quesTypeName, d.description as quesTypeDesc " +
                 " from " + super.getTableName() + " a, enrolment_dict d " +
                 " where a.delflag = '0' and a.paperid = ?1 and a.questype = d.value and d.type = '题型' order  by a.titlenum";
         return this.findByNativeSql(sql, RuleDto.class, paperId);

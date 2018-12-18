@@ -65,9 +65,17 @@ public class RuleBean extends BaseLogicDeleteEntity {
     private String typeCount;
 
 
+    /**
+     * 主观题范围
+
+     */
+    public String quesRange;
+
     public String getTypeCount() {
         return typeCount;
     }
+
+
 
     public void setTypeCount(String typeCount) {
         this.typeCount = typeCount;
@@ -144,4 +152,12 @@ public class RuleBean extends BaseLogicDeleteEntity {
     public void setSubType(String subType) {
         this.subType = subType;
     }
+    public String getQuesRange() {
+        return quesRange;
+    }
+
+    public void setQuesRange(String quesRange) {
+        this.quesRange = quesRange;
+    }
+
 }
