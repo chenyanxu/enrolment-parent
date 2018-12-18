@@ -355,7 +355,12 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                             tempMap.put("kskm", kskm);
                             tmp = "subject.ftl";
                         } else {
-                            tmp = "Interview.ftl";
+                            if("7".equals(kskmValue)||"8".equals(kskmValue)){
+                                tmp = "Interview_subtype.ftl";
+                            }else {
+                                tmp = "Interview.ftl";
+                            }
+
                             EnrolmentDictBean enrolmentDictBean_mst = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_MSTLX, kskmValue);
                             String kskm_xmt = enrolmentDictBean_mst.getLabel();
                             tempMap.put("kskm", kskm_xmt);

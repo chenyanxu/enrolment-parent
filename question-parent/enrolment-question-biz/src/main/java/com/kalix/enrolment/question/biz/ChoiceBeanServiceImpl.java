@@ -82,7 +82,7 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
         if(StringUtils.isEmpty(typeCount)) {
 
             quesNum = total / perScore;
-            sql = "select * from enrolment_question_Choice where checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit " + quesNum;
+            sql = "select * from enrolment_question_Choice where delflag='0' and checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit " + quesNum;
             list = this.dao.findByNativeSql(sql, ChoiceBean.class);
         }else {
             String [] ques=typeCount.split(";");
@@ -90,7 +90,7 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
                 String[] str=ques[i].split(",");
                 typeNum = Integer.parseInt(str[1]) / perScore;
                 quesNum+=typeNum;
-                sql = "select * from enrolment_question_Choice where checkFlag='1' and type='"+str[0]+"' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit " +typeNum;
+                sql = "select * from enrolment_question_Choice where  delflag='0' and checkFlag='1' and type='"+str[0]+"' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit " +typeNum;
                 List<ChoiceBean> list_1 = this.dao.findByNativeSql(sql, ChoiceBean.class);
                 list.addAll(list_1);
             }

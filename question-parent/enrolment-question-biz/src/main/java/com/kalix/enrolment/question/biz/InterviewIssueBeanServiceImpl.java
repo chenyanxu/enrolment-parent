@@ -65,7 +65,12 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
 
         Date year = (Date) paperMap.get("year");
         String year_str = simpleDateFormat.format(year);
-        sql = "select * from enrolment_question_interview where checkFlag='1' and subtype='"+subtype+"' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "'  and subtype='" + subtype + "') order by random() limit 2";
+        if("7".equals(subtype)||"8".equals(subtype)){
+            sql = "select * from enrolment_question_interview where delflag='0' and checkFlag='1' and subtype='"+subtype+"' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "'  and subtype='" + subtype + "') ";
+        }else {
+            sql = "select * from enrolment_question_interview where delflag='0' and checkFlag='1' and subtype='"+subtype+"' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "'  and subtype='" + subtype + "') order by random() limit 2";
+        }
+
 
         // 创建试题内容
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
@@ -78,6 +83,7 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
                 PaperQuesBean paperQuesBean = new PaperQuesBean();
                 map.put("type", kskm);
                 map.put("stem", interviewIssueBean.getStem());
+                map.put("analysis", interviewIssueBean.getAnalysis());
                 paperQuesBean.setQuesid(interviewIssueBean.getId());
                 paperQuesBean.setYear(year);
                // paperQuesBean.setQuesType(questype);

@@ -167,7 +167,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         // 编译正则
         Pattern p1 = Pattern.compile(pattern);
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
-        String sql = "select * from enrolment_question_completion where checkFlag='1' and spacenum<>0 and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit 5";
+        String sql = "select * from enrolment_question_completion where delflag='0' and checkFlag='1' and spacenum<>0 and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit 5";
         List<CompletionBean> list = this.dao.findByNativeSql(sql, CompletionBean.class);
         for (int i = 0; i < list.size(); i++) {
             Map<String, Object> map = new HashMap<String, Object>();
@@ -213,9 +213,9 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         String sql="";
         String sql_1="";
         if(StringUtils.isEmpty(subtype)){
-            sql = "select * from enrolment_question_completion where checkFlag='1' and spacenum<>0 and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit 1";
+            sql = "select * from enrolment_question_completion where delflag='0' and checkFlag='1' and spacenum<>0 and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit 1";
         }else {
-            sql = "select * from enrolment_question_completion where checkFlag='1' and type='" + subtype + "' and spacenum<>0 and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit 1";
+            sql = "select * from enrolment_question_completion where delflag='0' and checkFlag='1' and type='" + subtype + "' and spacenum<>0 and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit 1";
         }
 
         List<CompletionBean> list = this.dao.findByNativeSql(sql, CompletionBean.class);
@@ -231,10 +231,10 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
 
                     spacenum = spacenum + completionSpaceNum;
                     if(StringUtils.isEmpty(subtype)){
-                        sql_1 = "select * from enrolment_question_completion where checkFlag='1' and spacenum<>0 and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') and spacenum='" + spacenum + "' order by random() limit 1";
+                        sql_1 = "select * from enrolment_question_completion where delflag='0' and checkFlag='1' and spacenum<>0 and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') and spacenum='" + spacenum + "' order by random() limit 1";
                     }
                     else{
-                        sql_1 = "select * from enrolment_question_completion where checkFlag='1' and  spacenum<>0 and type='" + subtype + "' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') and spacenum='" + spacenum + "' order by random() limit 1";
+                        sql_1 = "select * from enrolment_question_completion where delflag='0' and checkFlag='1' and  spacenum<>0 and type='" + subtype + "' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') and spacenum='" + spacenum + "' order by random() limit 1";
                     }
 
                     List<CompletionBean> list_1 = this.dao.findByNativeSql(sql_1, CompletionBean.class);
