@@ -75,6 +75,7 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
         singleTestPaper.put("title", title);
         singleTestPaper.put("titleNum", titleNum);
         singleTestPaper.put("quesdesc", quesdesc);
+        singleTestPaper.put("perScore", perScore);
 
         int quesNum = 0;
         int typeNum=0;

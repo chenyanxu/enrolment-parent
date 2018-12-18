@@ -73,6 +73,7 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
         singleTestPaper.put("title", title);
         singleTestPaper.put("titleNum", titleNum);
         singleTestPaper.put("quesdesc", quesdesc);
+        singleTestPaper.put("perScore", perScore);
         int quesNum = total / perScore;
 
         Date year = (Date) paperMap.get("year");
