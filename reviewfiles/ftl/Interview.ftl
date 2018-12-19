@@ -6,16 +6,16 @@
 		<o:Author>Administrator</o:Author>
 		<o:LastAuthor>ad</o:LastAuthor>
 		<o:Revision>2</o:Revision>
-		<o:TotalTime>0</o:TotalTime>
-		<o:Created>2018-12-05T01:19:00Z</o:Created>
-		<o:LastSaved>2018-12-05T01:19:00Z</o:LastSaved>
+		<o:TotalTime>1</o:TotalTime>
+		<o:Created>2018-12-18T08:16:00Z</o:Created>
+		<o:LastSaved>2018-12-18T08:16:00Z</o:LastSaved>
 		<o:Pages>1</o:Pages>
-		<o:Words>7</o:Words>
-		<o:Characters>43</o:Characters>
+		<o:Words>165</o:Words>
+		<o:Characters>943</o:Characters>
 		<o:Company>Hewlett-Packard Company</o:Company>
-		<o:Lines>1</o:Lines>
-		<o:Paragraphs>1</o:Paragraphs>
-		<o:CharactersWithSpaces>49</o:CharactersWithSpaces>
+		<o:Lines>7</o:Lines>
+		<o:Paragraphs>2</o:Paragraphs>
+		<o:CharactersWithSpaces>1106</o:CharactersWithSpaces>
 		<o:Version>12</o:Version>
 	</o:DocumentProperties>
 	<o:CustomDocumentProperties>
@@ -243,7 +243,7 @@
 			<wx:uiName wx:val="页眉"/>
 			<w:basedOn w:val="a"/>
 			<w:link w:val="Char"/>
-			<w:rsid w:val="008C607F"/>
+			<w:rsid w:val="00EE1F0E"/>
 			<w:pPr>
 				<w:pBdr>
 					<w:bottom w:val="single" w:sz="6" wx:bdrwidth="15" w:space="1" w:color="auto"/>
@@ -265,7 +265,7 @@
 			<w:name w:val="页眉 Char"/>
 			<w:basedOn w:val="a0"/>
 			<w:link w:val="a3"/>
-			<w:rsid w:val="008C607F"/>
+			<w:rsid w:val="00EE1F0E"/>
 			<w:rPr>
 				<w:kern w:val="2"/>
 				<w:sz w:val="18"/>
@@ -277,7 +277,7 @@
 			<wx:uiName wx:val="页脚"/>
 			<w:basedOn w:val="a"/>
 			<w:link w:val="Char0"/>
-			<w:rsid w:val="008C607F"/>
+			<w:rsid w:val="00EE1F0E"/>
 			<w:pPr>
 				<w:tabs>
 					<w:tab w:val="center" w:pos="4153"/>
@@ -296,7 +296,7 @@
 			<w:name w:val="页脚 Char"/>
 			<w:basedOn w:val="a0"/>
 			<w:link w:val="a4"/>
-			<w:rsid w:val="008C607F"/>
+			<w:rsid w:val="00EE1F0E"/>
 			<w:rPr>
 				<w:kern w:val="2"/>
 				<w:sz w:val="18"/>
@@ -337,14 +337,14 @@
 		</w:hdrShapeDefaults>
 		<w:footnotePr>
 			<w:footnote w:type="separator">
-				<w:p wsp:rsidR="00F90BA8" wsp:rsidRDefault="00F90BA8" wsp:rsidP="008C607F">
+				<w:p wsp:rsidR="00B152DA" wsp:rsidRDefault="00B152DA" wsp:rsidP="00EE1F0E">
 					<w:r>
 						<w:separator/>
 					</w:r>
 				</w:p>
 			</w:footnote>
 			<w:footnote w:type="continuation-separator">
-				<w:p wsp:rsidR="00F90BA8" wsp:rsidRDefault="00F90BA8" wsp:rsidP="008C607F">
+				<w:p wsp:rsidR="00B152DA" wsp:rsidRDefault="00B152DA" wsp:rsidP="00EE1F0E">
 					<w:r>
 						<w:continuationSeparator/>
 					</w:r>
@@ -353,14 +353,14 @@
 		</w:footnotePr>
 		<w:endnotePr>
 			<w:endnote w:type="separator">
-				<w:p wsp:rsidR="00F90BA8" wsp:rsidRDefault="00F90BA8" wsp:rsidP="008C607F">
+				<w:p wsp:rsidR="00B152DA" wsp:rsidRDefault="00B152DA" wsp:rsidP="00EE1F0E">
 					<w:r>
 						<w:separator/>
 					</w:r>
 				</w:p>
 			</w:endnote>
 			<w:endnote w:type="continuation-separator">
-				<w:p wsp:rsidR="00F90BA8" wsp:rsidRDefault="00F90BA8" wsp:rsidP="008C607F">
+				<w:p wsp:rsidR="00B152DA" wsp:rsidRDefault="00B152DA" wsp:rsidP="00EE1F0E">
 					<w:r>
 						<w:continuationSeparator/>
 					</w:r>
@@ -383,45 +383,38 @@
 		</w:compat>
 		<wsp:rsids>
 			<wsp:rsidRoot wsp:val="00F1344F"/>
-			<wsp:rsid wsp:val="008C607F"/>
+			<wsp:rsid wsp:val="00B152DA"/>
+			<wsp:rsid wsp:val="00EE1F0E"/>
 			<wsp:rsid wsp:val="00F1344F"/>
-			<wsp:rsid wsp:val="00F90BA8"/>
 			<wsp:rsid wsp:val="08271C05"/>
 			<wsp:rsid wsp:val="18B73E87"/>
 			<wsp:rsid wsp:val="1CE00AEB"/>
+			<wsp:rsid wsp:val="5B8200DD"/>
 			<wsp:rsid wsp:val="7A4E1664"/>
 		</wsp:rsids>
 	</w:docPr>
 	<w:body>
 	<#list quesList as ques>
 	<#list (ques.question)! as question>
-		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00F90BA8">
+		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00B152DA">
 			<w:pPr>
 				<w:rPr>
-					<w:rFonts w:ascii="宋体" w:h-ansi="宋体" w:cs="宋体" w:hint="fareast"/>
-					<wx:font wx:val="宋体"/>
+					<w:rFonts w:hint="fareast"/>
 					<w:b/>
-					<w:b-cs/>
 					<w:sz w:val="28"/>
 					<w:sz-cs w:val="28"/>
 				</w:rPr>
 			</w:pPr>
 			<w:r>
-				<w:rPr>
-					<w:rFonts w:ascii="宋体" w:h-ansi="宋体" w:cs="宋体" w:hint="fareast"/>
-					<wx:font wx:val="宋体"/>
-					<w:b/>
-					<w:b-cs/>
-					<w:sz w:val="28"/>
-					<w:sz-cs w:val="28"/>
-					<w:lang w:val="ZH-CN"/>
-				</w:rPr>
+	
+				<#if question_index ==0>
 				<w:pict>
 					<v:line id="直线 3" o:spid="_x0000_s1027" style="position:absolute;left:0;text-align:left;flip:y;z-index:-1" from="-98.45pt,335.1pt" to="609.55pt,337.3pt" o:gfxdata="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&#xA;AFkBAACDBQAAAAA=&#xA;" strokeweight="2.25pt">
 						<v:fill o:detectmouseclick="t"/>
 						<v:stroke dashstyle="1 1"/>
 					</v:line>
 				</w:pict>
+				</#if>
 			</w:r>
 			<w:r>
 				<w:rPr>
@@ -435,65 +428,57 @@
 				<w:t>${(question.type)!}</w:t>
 			</w:r>
 		</w:p>
-		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00F90BA8"/>
-		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00F90BA8"/>
-		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00F90BA8">
+		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00B152DA">
 			<w:pPr>
+				<w:jc w:val="left"/>
 				<w:rPr>
-					<w:rFonts w:hint="fareast"/>
+					<w:rFonts w:ascii="宋体" w:h-ansi="宋体" w:cs="宋体" w:hint="fareast"/>
+					<wx:font wx:val="宋体"/>
 					<w:b/>
-					<w:sz w:val="36"/>
-					<w:sz-cs w:val="36"/>
+					<w:sz w:val="24"/>
 				</w:rPr>
 			</w:pPr>
 		</w:p>
-		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00F90BA8"/>
-		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00F90BA8">
+		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00B152DA">
 			<w:pPr>
-				<w:jc w:val="center"/>
+				<w:jc w:val="left"/>
 				<w:rPr>
-					<w:rFonts w:hint="fareast"/>
-					<w:b/>
-					<w:sz w:val="36"/>
-					<w:sz-cs w:val="36"/>
-				</w:rPr>
-			</w:pPr>
-		</w:p>
-		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00F90BA8">
-			<w:pPr>
-				<w:jc w:val="center"/>
-				<w:rPr>
-					<w:rFonts w:hint="fareast"/>
+					<w:rFonts w:ascii="宋体" w:h-ansi="宋体" w:cs="宋体" w:hint="fareast"/>
+					<wx:font wx:val="宋体"/>
+					<w:b-cs/>
+					<w:sz w:val="24"/>
 				</w:rPr>
 			</w:pPr>
 			<w:r>
 				<w:rPr>
-					<w:rFonts w:hint="fareast"/>
+					<w:rFonts w:ascii="宋体" w:h-ansi="宋体" w:cs="宋体" w:hint="fareast"/>
 					<wx:font wx:val="宋体"/>
-					<w:b/>
-					<w:sz w:val="36"/>
-					<w:sz-cs w:val="36"/>
+					<w:b-cs/>
+					<w:sz w:val="24"/>
 				</w:rPr>
 				<w:t>题目：${(question.stem)!}</w:t>
-			</w:r>
-		
+			</w:r>		
 		</w:p>
-		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00F90BA8"/>
-		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00F90BA8"/>
-		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00F90BA8"/>
-		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00F90BA8"/>
-		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00F90BA8"/>
-		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00F90BA8"/>
-		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00F90BA8"/>
-		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00F90BA8"/>
-		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00F90BA8"/>
-		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00F90BA8"/>
-		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00F90BA8"/>
-		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00F90BA8"/>
-		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00F90BA8"/>
+		<#if question_index ==0>
+		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00B152DA"/>
+		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00B152DA"/>
+		<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00B152DA"/>
+		</#if>
 		</#list>
 		</#list>
-		<w:sectPr wsp:rsidR="00F90BA8">
+	
+		<w:p wsp:rsidR="00B152DA" wsp:rsidRDefault="00B152DA">
+			<w:pPr>
+				<w:jc w:val="center"/>
+				<w:rPr>
+					<w:rFonts w:ascii="宋体" w:h-ansi="宋体" w:cs="宋体" w:hint="fareast"/>
+					<wx:font wx:val="宋体"/>
+					<w:b/>
+					<w:sz w:val="24"/>
+				</w:rPr>
+			</w:pPr>
+		</w:p>
+		<w:sectPr wsp:rsidR="00B152DA">
 			<w:pgSz w:w="11906" w:h="16838"/>
 			<w:pgMar w:top="1440" w:right="1800" w:bottom="1440" w:left="1800" w:header="851" w:footer="992" w:gutter="0"/>
 			<w:cols w:space="720"/>
