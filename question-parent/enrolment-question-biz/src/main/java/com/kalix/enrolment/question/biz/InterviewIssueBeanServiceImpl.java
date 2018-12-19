@@ -73,7 +73,7 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
                 }
                 year_ques=year_ques.substring(0,year_ques.length()-1);
             }else {
-                year_ques=quesRange;
+                year_ques="'"+quesRange+"'";
             }
         }
 
