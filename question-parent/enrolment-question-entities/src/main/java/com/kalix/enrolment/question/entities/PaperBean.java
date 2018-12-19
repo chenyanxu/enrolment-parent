@@ -39,7 +39,19 @@ public class PaperBean extends BaseLogicDeleteEntity {
     private String kskm; //考试科目
 
     private String tempName; //模板名称
+    /**
+     * 面试题范围
 
+     */
+    public String quesRange;
+
+    public String getQuesRange() {
+        return quesRange;
+    }
+
+    public void setQuesRange(String quesRange) {
+        this.quesRange = quesRange;
+    }
 
     public String getTempName() {
         return tempName;

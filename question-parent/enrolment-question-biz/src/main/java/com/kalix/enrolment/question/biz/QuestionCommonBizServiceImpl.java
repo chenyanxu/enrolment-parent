@@ -348,6 +348,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                         tempMap.put("year", year_str);
                         tempMap.put("quesList", quesList);
                         tempMap.put("uuid", uuid);
+                        tempMap.put("quesRange", paperBean.getQuesRange());
                         if ("1".equals(tempName)) {
                             tempMap.put("kskm", kskm);
                             tmp = "testPaper.ftl";

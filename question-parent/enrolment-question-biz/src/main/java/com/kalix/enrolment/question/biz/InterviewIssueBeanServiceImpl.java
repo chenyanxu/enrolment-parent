@@ -10,6 +10,7 @@ import com.kalix.enrolment.question.entities.InterviewIssueBean;
 import com.kalix.enrolment.question.entities.PaperQuesBean;
 import com.kalix.enrolment.question.entities.QuestionSettingBean;
 import com.kalix.framework.core.api.biz.IDownloadService;
+import com.kalix.framework.core.util.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -54,6 +55,7 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
         String sql = "";
         // 创建试题标题
         String title = "";
+        String year_ques="";
         // 以下需要通过参数动态获取
         Long paperId = Long.parseLong(paperMap.get("paperid").toString());
         String uuid = paperMap.get("uuid").toString();
@@ -61,14 +63,26 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
         String kskm = paperMap.get("kskm").toString();
         //title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
         singleTestPaper.put("title", title);
+        String quesRange = paperMap.get("quesRange").toString();
+        if(!StringUtils.isEmpty(quesRange)){
 
+            if(quesRange.indexOf(",")>-1){
+                String[] ques=quesRange.split(",");
+                for(String ques_str:ques){
+                    year_ques+="'"+ques_str+"'"+",";
+                }
+                year_ques=year_ques.substring(0,year_ques.length()-1);
+            }else {
+                year_ques=quesRange;
+            }
+        }
 
         Date year = (Date) paperMap.get("year");
         String year_str = simpleDateFormat.format(year);
         if("7".equals(subtype)||"8".equals(subtype)){
-            sql = "select * from enrolment_question_interview where delflag='0' and checkFlag='1' and subtype='"+subtype+"' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "'  and subtype='" + subtype + "') ";
+            sql = "select * from enrolment_question_interview where delflag='0' and  to_char(year, 'yyyy') in (" + year_ques + ") and checkFlag='1' and subtype='"+subtype+"' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "'  and subtype='" + subtype + "') ";
         }else {
-            sql = "select * from enrolment_question_interview where delflag='0' and checkFlag='1' and subtype='"+subtype+"' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "'  and subtype='" + subtype + "') order by random() limit 2";
+            sql = "select * from enrolment_question_interview where delflag='0' and  to_char(year, 'yyyy') in (" + year_ques + ") and checkFlag='1' and subtype='"+subtype+"' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "'  and subtype='" + subtype + "') order by random() limit 2";
         }
 
 
