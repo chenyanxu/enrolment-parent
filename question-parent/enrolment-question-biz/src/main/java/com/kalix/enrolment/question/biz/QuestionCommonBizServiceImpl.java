@@ -322,6 +322,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                         paper_map.put("uuid", uuid);
                         paper_map.put("paperid", paperId);
                         paper_map.put("subtype", kskmValue);
+                        paper_map.put("quesRange", paperBean.getQuesRange());
                         EnrolmentDictBean enrolmentDictBean_mst = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_MSTLX, kskmValue);
                         String kskm_xmt = enrolmentDictBean_mst.getLabel();
                         paper_map.put("kskm", kskm_xmt);
@@ -348,7 +349,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                         tempMap.put("year", year_str);
                         tempMap.put("quesList", quesList);
                         tempMap.put("uuid", uuid);
-                        tempMap.put("quesRange", paperBean.getQuesRange());
+
                         if ("1".equals(tempName)) {
                             tempMap.put("kskm", kskm);
                             tmp = "testPaper.ftl";
