@@ -90,20 +90,20 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
         List<InterviewIssueBean> list = this.dao.findByNativeSql(sql, InterviewIssueBean.class);
         if ("7".equals(subtype) || "8".equals(subtype) || "9".equals(subtype) || (list.size() == 2)) {
             for (int i = 0; i < list.size(); i++) {
-                Map<String, Object> map = new HashMap<String, Object>();
                 InterviewIssueBean interviewIssueBean = list.get(i);
-                PaperQuesBean paperQuesBean = new PaperQuesBean();
+                Map<String, Object> map = new HashMap<String, Object>();
                 map.put("type", kskm);
                 map.put("stem", interviewIssueBean.getStem());
                 map.put("analysis", interviewIssueBean.getAnalysis());
+                question.add(map);
+                /*PaperQuesBean paperQuesBean = new PaperQuesBean();
                 paperQuesBean.setQuesid(interviewIssueBean.getId());
                 paperQuesBean.setYear(year);
                 // paperQuesBean.setQuesType(questype);
                 paperQuesBean.setSubType(subtype);
                 paperQuesBean.setUuid(uuid);
                 paperQuesBean.setPaperId(paperId);
-                paperQuesBeanService.saveEntity(paperQuesBean);
-                question.add(map);
+                paperQuesBeanService.saveEntity(paperQuesBean);*/
             }
         }
         singleTestPaper.put("question", question);
