@@ -406,6 +406,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
         Writer out = null;
         FileOutputStream fos = null;
         Response response = null;
+        String uuid=null;
         try {
             String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
             if (realPath.charAt(realPath.length() - 1) != '/') {
@@ -427,7 +428,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             //out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile)));
             out = new BufferedWriter(oWriter);
             t.process(tempMap, out);
-            String uuid =tempMap.get("uuid").toString();
+             uuid =tempMap.get("uuid").toString();
             jsonStatus.setSuccess(true);
             jsonStatus.setMsg("试卷生成成功!");
             if (outFile.exists()) {
@@ -448,6 +449,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             jsonStatus.setSuccess(false);
             jsonStatus.setMsg("试卷生成失败!");
             e.printStackTrace();
+            paperQuesBeanService.deleteByUuid(uuid);
             // throw new BusinessException(CommonResultEnum.COMMON_ERROR_637);
         } finally {
             out.close();
