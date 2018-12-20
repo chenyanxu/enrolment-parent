@@ -258,12 +258,12 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
     @Override
     public JsonStatus autoCreateTestPaper(Long paperId) {
         JsonStatus jsonStatus = new JsonStatus();
-        String uuid_str="";
+        String uuid_str = "";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
         try {
             int copies = 1;
             int total = 0;
-            String type="";
+            String type = "";
             //成卷结果
             String doPaperRes = "T";
             List<Map> quesList = null;
@@ -280,15 +280,15 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             for (RuleDto rule1Bean : list_rule) {
                 total += rule1Bean.getQuesTotalscore();
             }
-            if (total == paperTotal||"3".equals(tempName)) {
+            if (total == paperTotal || "3".equals(tempName)) {
                 if (paperBean.getCopies() > 1) {
                     copies = paperBean.getCopies();
                 }
                 for (int j = 0; j < copies; j++) {
                     String uuid = UUID.randomUUID().toString();
-                    uuid_str+=uuid+",";
+                    uuid_str += uuid + ",";
                     quesList = new ArrayList<Map>();
-                    if(list_rule!=null&&list_rule.size()>0){
+                    if (list_rule != null && list_rule.size() > 0) {
                         for (int i = 0; i < list_rule.size(); i++) {
                             RuleDto ruleBean = (RuleDto) list_rule.get(i);
                             Map paper_map = new HashMap();
@@ -304,7 +304,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                             paper_map.put("typeCount", ruleBean.getTypeCount());
                             paper_map.put("quesRange", ruleBean.getQuesRange());
                             paper_map.put("uuid", uuid);
-                            type= ruleBean.getQuesTypeName();
+                            type = ruleBean.getQuesTypeName();
                             String beanName = ruleBean.getQuesTypeDesc();
                             Map<String, String> map = new HashMap<String, String>();
                             map.put("beanName", beanName);
@@ -317,7 +317,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                             }
                             quesList.add(singleTestPaper);
                         }
-                    }else {
+                    } else {
                         Map paper_map = new HashMap();
                         paper_map.put("year", year);
                         paper_map.put("uuid", uuid);
@@ -343,7 +343,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
 
                         paperQuesBeanService.deleteByUuid(uuid);
                         jsonStatus.setSuccess(false);
-                        jsonStatus.setMsg(type+"数量不足，成卷失败，已生成" + j + "套卷!");
+                        jsonStatus.setMsg(type + "数量不足，成卷失败，已生成" + j + "套卷!");
                         break;
                     } else {
                         String tmp = "";
@@ -361,9 +361,9 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                             tempMap.put("kskm", kskm_zgt);
                             tmp = "subject.ftl";
                         } else {
-                            if("7".equals(kskmValue)||"8".equals(kskmValue)){
+                            if ("7".equals(kskmValue) || "8".equals(kskmValue) || "9".equals(kskmValue)) {
                                 tmp = "Interview_subtype.ftl";
-                            }else {
+                            } else {
                                 tmp = "Interview.ftl";
                             }
 
@@ -379,13 +379,13 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                 jsonStatus.setMsg("试卷分数与参数分数不符，请核对后重新提交！");
             }
         } catch (IOException e) {
-            if(!StringUtils.isEmpty(uuid_str)){
-                if(uuid_str.indexOf(",")>-1){
-                    String [] str=uuid_str.split(",");
-                    for(String uuid:str){
+            if (!StringUtils.isEmpty(uuid_str)) {
+                if (uuid_str.indexOf(",") > -1) {
+                    String[] str = uuid_str.split(",");
+                    for (String uuid : str) {
                         paperQuesBeanService.deleteByUuid(uuid);
                     }
-                }else {
+                } else {
                     paperQuesBeanService.deleteByUuid(uuid_str);
                 }
             }
@@ -410,7 +410,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
         Writer out = null;
         FileOutputStream fos = null;
         Response response = null;
-        String uuid=null;
+        String uuid = null;
         try {
             String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
             if (realPath.charAt(realPath.length() - 1) != '/') {
@@ -432,7 +432,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             //out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile)));
             out = new BufferedWriter(oWriter);
             t.process(tempMap, out);
-             uuid =tempMap.get("uuid").toString();
+            uuid = tempMap.get("uuid").toString();
             jsonStatus.setSuccess(true);
             jsonStatus.setMsg("试卷生成成功!");
             if (outFile.exists()) {
@@ -471,13 +471,13 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             if (id.indexOf(":") > -1) {
                 String[] str = id.split(":");
                 for (String idStr : str) {
-                    AttachmentBean attachmentBean =  attachmentBeanService.getEntity(Long.parseLong(idStr));
+                    AttachmentBean attachmentBean = attachmentBeanService.getEntity(Long.parseLong(idStr));
                     paperQuesBeanService.deleteByUuid(attachmentBean.getAttachmentId());
                     attachmentBeanService.deleteEntity(Long.parseLong(idStr));
                 }
 
             } else {
-                AttachmentBean attachmentBean =  attachmentBeanService.getEntity(Long.parseLong(id));
+                AttachmentBean attachmentBean = attachmentBeanService.getEntity(Long.parseLong(id));
                 paperQuesBeanService.deleteByUuid(attachmentBean.getAttachmentId());
                 attachmentBeanService.deleteEntity(Long.parseLong(id));
             }
@@ -495,13 +495,13 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             if (id.indexOf(":") > -1) {
                 String[] str = id.split(":");
                 for (String idStr : str) {
-                    AttachmentBean attachmentBean =  attachmentBeanService.getEntity(Long.parseLong(idStr));
+                    AttachmentBean attachmentBean = attachmentBeanService.getEntity(Long.parseLong(idStr));
                     paperQuesBeanService.deleteByUuid(attachmentBean.getAttachmentId());
                     attachmentBeanService.deleteEntity(Long.parseLong(idStr));
                 }
 
             } else {
-                AttachmentBean attachmentBean =   attachmentBeanService.getEntity(Long.parseLong(id));
+                AttachmentBean attachmentBean = attachmentBeanService.getEntity(Long.parseLong(id));
                 paperQuesBeanService.deleteByUuid(attachmentBean.getAttachmentId());
                 attachmentBeanService.deleteEntity(Long.parseLong(id));
             }
