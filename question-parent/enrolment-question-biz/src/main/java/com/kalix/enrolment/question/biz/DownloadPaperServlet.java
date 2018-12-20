@@ -55,6 +55,7 @@ public class DownloadPaperServlet extends CustomServlet {
             paperBeanService = JNDIHelper.getJNDIServiceForName(IPaperBeanService.class.getName());
             PaperBean paperBean=paperBeanService.getEntity(Long.parseLong(paperId));
             fileName= paperBean.getTitle();
+            String kskm=paperBean.getKskm();
             String tempName=paperBean.getTempName();
             // 预览文件真实路径地址
             String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
@@ -84,7 +85,7 @@ public class DownloadPaperServlet extends CustomServlet {
                             for(String id: str){
                                 AttachmentBean attachmentBean= attachmentBeanService.getEntity(Long.parseLong(id));
                                 list.add(attachmentBean);
-                                if("2".equals(tempName)){
+                                if("2".equals(tempName)|| ("3".equals(tempName)&&"13".equals(kskm))){
                                     paperQuesBeanService=JNDIHelper.getJNDIServiceForName(IPaperQuesBeanService.class.getName());
                                     List<PaperQuesBean> list1=paperQuesBeanService.findByPaperId(Long.parseLong(paperId));
                                     for(PaperQuesBean paperQuesBean:list1){
@@ -101,7 +102,7 @@ public class DownloadPaperServlet extends CustomServlet {
                         }else {
                             AttachmentBean attachmentBean= attachmentBeanService.getEntity(Long.parseLong(ids));
                             list.add(attachmentBean);
-                            if("2".equals(tempName)){
+                            if("2".equals(tempName)|| ("3".equals(tempName)&&"13".equals(kskm))){
                                 paperQuesBeanService=JNDIHelper.getJNDIServiceForName(IPaperQuesBeanService.class.getName());
                                 List<PaperQuesBean> list1=paperQuesBeanService.findByPaperId(Long.parseLong(paperId));
                                 for(PaperQuesBean paperQuesBean:list1){

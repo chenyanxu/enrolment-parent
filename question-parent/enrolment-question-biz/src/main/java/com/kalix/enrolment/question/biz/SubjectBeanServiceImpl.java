@@ -64,7 +64,7 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
         int total = Integer.parseInt(paperMap.get("totalscore").toString());
 
         String questype = paperMap.get("questype").toString();
-        String quesRange = paperMap.get("quesRange").toString();
+        String quesRange = paperMap.get("quesRange") == null ? "" : paperMap.get("quesRange").toString();
         if(!StringUtils.isEmpty(quesRange)){
 
             if(quesRange.indexOf(",")>-1){
@@ -74,7 +74,7 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
                     }
                 year_ques=year_ques.substring(0,year_ques.length()-1);
             }else {
-                year_ques=quesRange;
+                year_ques="'"+quesRange+"'";
             }
         }
 
@@ -89,9 +89,15 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
         singleTestPaper.put("quesdesc", quesdesc);
         int quesNum = total / perScore;
 
-        //Date year = (Date) paperMap.get("year");
-        //String year_str = simpleDateFormat.format(year);
-        sql = "select * from enrolment_question_subject where delflag='0' and  to_char(year, 'yyyy') in (" + year_ques + ") and checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy') in (" + year_ques + ") and questype='" + questype + "' and subtype='" + subtype + "')  and subtype='" + subtype + "'  order by random() limit " + quesNum;
+
+        if(StringUtils.isEmpty(quesRange)){
+            Date year = (Date) paperMap.get("year");
+            String year_str = simpleDateFormat.format(year);
+            sql = "select * from enrolment_question_subject where delflag='0' and checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "')  and subtype='" + subtype + "'  order by random() limit " + quesNum;
+        }else {
+            sql = "select * from enrolment_question_subject where delflag='0' and  to_char(year, 'yyyy') in (" + year_ques + ") and checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy') in (" + year_ques + ") and questype='" + questype + "' and subtype='" + subtype + "')  and subtype='" + subtype + "'  order by random() limit " + quesNum;
+        }
+
 
         // 创建试题内容
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();

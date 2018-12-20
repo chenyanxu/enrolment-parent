@@ -36,6 +36,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
     protected static String DICT_TYPE = "类别";
     protected static String DICT_KSKM = "考试科目";
     protected static String DICT_MSTLX = "面试题类型";
+    protected static String DICT_ZGTLX = "主观题类型";
     private IEnrolmentDictBeanService enrolmentDictBeanService;
     private ICouchdbService couchdbService;
     private IAttachmentBeanService attachmentBeanService;
@@ -351,10 +352,13 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                         tempMap.put("uuid", uuid);
 
                         if ("1".equals(tempName)) {
+
                             tempMap.put("kskm", kskm);
                             tmp = "testPaper.ftl";
                         } else if ("2".equals(tempName)) {
-                            tempMap.put("kskm", kskm);
+                            EnrolmentDictBean enrolmentDictBean_zgt = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_ZGTLX, kskmValue);
+                            String kskm_zgt = enrolmentDictBean_zgt.getLabel();
+                            tempMap.put("kskm", kskm_zgt);
                             tmp = "subject.ftl";
                         } else {
                             if("7".equals(kskmValue)||"8".equals(kskmValue)){
@@ -406,6 +410,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
         Writer out = null;
         FileOutputStream fos = null;
         Response response = null;
+        String uuid=null;
         try {
             String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
             if (realPath.charAt(realPath.length() - 1) != '/') {
@@ -427,7 +432,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             //out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile)));
             out = new BufferedWriter(oWriter);
             t.process(tempMap, out);
-            String uuid =tempMap.get("uuid").toString();
+             uuid =tempMap.get("uuid").toString();
             jsonStatus.setSuccess(true);
             jsonStatus.setMsg("试卷生成成功!");
             if (outFile.exists()) {
@@ -448,6 +453,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             jsonStatus.setSuccess(false);
             jsonStatus.setMsg("试卷生成失败!");
             e.printStackTrace();
+            paperQuesBeanService.deleteByUuid(uuid);
             // throw new BusinessException(CommonResultEnum.COMMON_ERROR_637);
         } finally {
             out.close();
