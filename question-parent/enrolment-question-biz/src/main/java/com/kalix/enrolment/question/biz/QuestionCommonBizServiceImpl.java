@@ -36,6 +36,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
     protected static String DICT_TYPE = "类别";
     protected static String DICT_KSKM = "考试科目";
     protected static String DICT_MSTLX = "面试题类型";
+    protected static String DICT_ZGTLX = "主观题类型";
     private IEnrolmentDictBeanService enrolmentDictBeanService;
     private ICouchdbService couchdbService;
     private IAttachmentBeanService attachmentBeanService;
@@ -351,10 +352,13 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                         tempMap.put("uuid", uuid);
 
                         if ("1".equals(tempName)) {
+
                             tempMap.put("kskm", kskm);
                             tmp = "testPaper.ftl";
                         } else if ("2".equals(tempName)) {
-                            tempMap.put("kskm", kskm);
+                            EnrolmentDictBean enrolmentDictBean_zgt = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_ZGTLX, kskmValue);
+                            String kskm_zgt = enrolmentDictBean_zgt.getLabel();
+                            tempMap.put("kskm", kskm_zgt);
                             tmp = "subject.ftl";
                         } else {
                             if("7".equals(kskmValue)||"8".equals(kskmValue)){
