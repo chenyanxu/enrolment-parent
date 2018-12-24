@@ -1,6 +1,7 @@
 package com.kalix.enrolment.question.biz;
 
 import com.kalix.enrolment.question.api.biz.*;
+import com.kalix.enrolment.question.biz.util.PassWordCreate;
 import com.kalix.enrolment.question.dto.model.QuestionDTO;
 import com.kalix.enrolment.question.dto.model.RuleDto;
 import com.kalix.enrolment.question.entities.BaseQuestionEntity;
@@ -357,7 +358,11 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                             tmp = "testPaper.ftl";
                         } else if ("2".equals(tempName)) {
                             EnrolmentDictBean enrolmentDictBean_zgt = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_ZGTLX, kskmValue);
-                            String kskm_zgt = enrolmentDictBean_zgt.getLabel();
+                            //String kskm_zgt = enrolmentDictBean_zgt.getLabel();
+                            String kskm_zgt = enrolmentDictBean_zgt.getDescription();
+                            if (StringUtils.isEmpty(kskm_zgt)) {
+                                kskm_zgt = enrolmentDictBean_zgt.getLabel();
+                            }
                             tempMap.put("kskm", kskm_zgt);
                             tmp = "subject.ftl";
                         } else {
@@ -368,10 +373,14 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                             }
 
                             EnrolmentDictBean enrolmentDictBean_mst = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_MSTLX, kskmValue);
-                            String kskm_xmt = enrolmentDictBean_mst.getLabel();
+                            //String kskm_xmt = enrolmentDictBean_mst.getLabel();
+                            String kskm_xmt = enrolmentDictBean_mst.getDescription();
+                            if (StringUtils.isEmpty(kskm_xmt)) {
+                                kskm_xmt = enrolmentDictBean_mst.getLabel();
+                            }
                             tempMap.put("kskm", kskm_xmt);
                         }
-                        jsonStatus = produceTestPaper(tmp, tempMap, paperId);
+                        jsonStatus = produceTestPaper(tmp, tempMap, paperId,j);
                     }
                 }
             } else {
@@ -399,7 +408,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
         return jsonStatus;
     }
 
-    private JsonStatus produceTestPaper(String fileName, Map tempMap, Long paperId) throws IOException {
+    private JsonStatus produceTestPaper(String fileName, Map tempMap, Long paperId,int j) throws IOException {
         JsonStatus jsonStatus = new JsonStatus();
 
         Configuration configuration = new Configuration();
@@ -423,8 +432,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             //输出文档路径及名称
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
             String testPaperName = sdf.format(new Date());
-
-            outFile = new File(reviewBaseDir + "\\" + testPaperName + ".doc");
+            outFile = new File(reviewBaseDir + "\\" + testPaperName+"_"+j + ".doc");
 
             fos = new FileOutputStream(outFile);
             OutputStreamWriter oWriter = new OutputStreamWriter(fos, "UTF-8");
