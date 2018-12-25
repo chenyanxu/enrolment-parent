@@ -31,7 +31,7 @@ public class doZipUtils {
         BufferedOutputStream bos = null;
         String path=map.get("path").toString();
         String filename=map.get("filename").toString();
-        String password=map.get("password").toString();
+        String password=map.get("password")==null?"":map.get("password").toString();
         rtnUrl=path+File.separatorChar+filename;
        // parameters.setSourceExternalStream(true);
         try {

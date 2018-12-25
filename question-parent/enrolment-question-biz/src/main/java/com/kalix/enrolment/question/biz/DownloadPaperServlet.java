@@ -51,6 +51,9 @@ public class DownloadPaperServlet extends CustomServlet {
             // sessionId
             String sessionId = req.getParameter("sessionId") == null ? "" : req.getParameter("sessionId");
 
+            // answer
+            String answer = req.getParameter("answer") == null ? "" : req.getParameter("answer");
+
 
             paperBeanService = JNDIHelper.getJNDIServiceForName(IPaperBeanService.class.getName());
             PaperBean paperBean=paperBeanService.getEntity(Long.parseLong(paperId));
@@ -66,10 +69,15 @@ public class DownloadPaperServlet extends CustomServlet {
             String reviewBaseDir = realPath + "reviewfiles";
             switch (fileType.toLowerCase()) {
                 case "zip":
+                    String fileName_str="";
                     //输出文档路径及名称
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
                     String testPaperName = sdf.format(new Date());
-                    String fileName_str = fileName+"_"+testPaperName+".zip";
+                    if(StringUtils.isEmpty(answer)) {
+                         fileName_str = fileName + "_" + testPaperName + ".zip";
+                    }else {
+                        fileName_str = fileName + "_答案_" + testPaperName + ".zip";
+                    }
                     resp.setHeader("Access-Control-Allow-Origin", "*");
                     resp.setHeader("Access-Control-Allow-Credentials", "true");
                     resp.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
@@ -78,12 +86,30 @@ public class DownloadPaperServlet extends CustomServlet {
                    //  out_zip = new ZipOutputStream(resp.getOutputStream());
                     attachmentBeanService = JNDIHelper.getJNDIServiceForName(IAttachmentBeanService.class.getName());
                     doZipUtils doZipUtils = new doZipUtils();
-                    if(!StringUtils.isEmpty(ids)){
-                        list=new ArrayList();
-                        if(ids.indexOf(",")>-1){
-                            String [] str =ids.split(",");
-                            for(String id: str){
-                                AttachmentBean attachmentBean= attachmentBeanService.getEntity(Long.parseLong(id));
+                    if(StringUtils.isEmpty(answer)){
+                        if(!StringUtils.isEmpty(ids)){
+                            list=new ArrayList();
+                            if(ids.indexOf(",")>-1){
+                                String [] str =ids.split(",");
+                                for(String id: str){
+                                    AttachmentBean attachmentBean= attachmentBeanService.getEntity(Long.parseLong(id));
+                                    list.add(attachmentBean);
+                                    if("2".equals(tempName)|| ("3".equals(tempName)&&"13".equals(kskm))){
+                                        paperQuesBeanService=JNDIHelper.getJNDIServiceForName(IPaperQuesBeanService.class.getName());
+                                        List<PaperQuesBean> list1=paperQuesBeanService.findByPaperId(Long.parseLong(paperId));
+                                        for(PaperQuesBean paperQuesBean:list1){
+                                            Long quesId=  paperQuesBean.getQuesid();
+                                            List<AttachmentBean> attachmentBean_fujian= attachmentBeanService.findByMainId(quesId);
+                                            for(AttachmentBean attachment:attachmentBean_fujian){
+                                                list.add(attachment);
+                                            }
+
+                                        }
+                                    }
+                                }
+
+                            }else {
+                                AttachmentBean attachmentBean= attachmentBeanService.getEntity(Long.parseLong(ids));
                                 list.add(attachmentBean);
                                 if("2".equals(tempName)|| ("3".equals(tempName)&&"13".equals(kskm))){
                                     paperQuesBeanService=JNDIHelper.getJNDIServiceForName(IPaperQuesBeanService.class.getName());
@@ -98,52 +124,67 @@ public class DownloadPaperServlet extends CustomServlet {
                                     }
                                 }
                             }
+                        }
+                        PassWordCreate passWordCreate = new PassWordCreate();
+                        String  password=passWordCreate.createPassWord(10);
+                        PasswordBean passwordBean = new PasswordBean();
+                        passwordBean.setPaperId(Long.parseLong(paperId));
+                        passwordBean.setFileName(fileName_str);
+                        passwordBean.setPassword(password);
 
-                        }else {
-                            AttachmentBean attachmentBean= attachmentBeanService.getEntity(Long.parseLong(ids));
-                            list.add(attachmentBean);
-                            if("2".equals(tempName)|| ("3".equals(tempName)&&"13".equals(kskm))){
-                                paperQuesBeanService=JNDIHelper.getJNDIServiceForName(IPaperQuesBeanService.class.getName());
-                                List<PaperQuesBean> list1=paperQuesBeanService.findByPaperId(Long.parseLong(paperId));
-                                for(PaperQuesBean paperQuesBean:list1){
-                                    Long quesId=  paperQuesBean.getQuesid();
-                                    List<AttachmentBean> attachmentBean_fujian= attachmentBeanService.findByMainId(quesId);
-                                    for(AttachmentBean attachment:attachmentBean_fujian){
-                                        list.add(attachment);
-                                    }
+                        Map<String, String> map = SerializeUtil.json2Map(SerializeUtil.serializeJson(passwordBean, "yyyy-MM-dd HH:mm:ss"));
+                        map.remove("id");
+                        map.remove("version");
+                        HttpClientUtil.shiroPost("/passwords", map, sessionId, access_token);
 
+                        Map<String, String> map_str = new HashMap<>();
+                        map_str.put("path",reviewBaseDir);
+                        map_str.put("filename",fileName+"_"+testPaperName+"_answer");
+                        map_str.put("password",password);
+                        String path=doZipUtils.doZip(list,map_str);
+                        zipFile = new File(path);
+                        zipInputStream = new FileInputStream(zipFile);
+                        out_zip = resp.getOutputStream();
+                        BufferedOutputStream zipBos = new BufferedOutputStream(out_zip);
+                        int xlsLen = 2048;
+                        byte[] xlsB = new byte[xlsLen];
+                        while ((xlsLen = zipInputStream.read(xlsB)) != -1) {
+                            zipBos.write(xlsB, 0, xlsLen);
+                        }
+                        zipBos.flush();
+                        resp.flushBuffer();
+
+                    }else {
+                        if(!StringUtils.isEmpty(ids)){
+                            list=new ArrayList();
+                            if(ids.indexOf(",")>-1){
+                                String [] str =ids.split(",");
+                                for(String id: str){
+                                    List attachmentBean= attachmentBeanService.findByMainId(Long.parseLong(id));
+                                    list.add(attachmentBean.get(0));
                                 }
+
+                            }else {
+                                List attachmentBean= attachmentBeanService.findByMainId(Long.parseLong(ids));
+                                list.add(attachmentBean.get(0));
                             }
                         }
+                        Map<String, String> map_str = new HashMap<>();
+                        map_str.put("path",reviewBaseDir);
+                        map_str.put("filename",fileName+"_答案_"+testPaperName);
+                        String path=doZipUtils.doZip(list,map_str);
+                        zipFile = new File(path);
+                        zipInputStream = new FileInputStream(zipFile);
+                        out_zip = resp.getOutputStream();
+                        BufferedOutputStream zipBos = new BufferedOutputStream(out_zip);
+                        int xlsLen = 2048;
+                        byte[] xlsB = new byte[xlsLen];
+                        while ((xlsLen = zipInputStream.read(xlsB)) != -1) {
+                            zipBos.write(xlsB, 0, xlsLen);
+                        }
+                        zipBos.flush();
+                        resp.flushBuffer();
                     }
-                    PassWordCreate passWordCreate = new PassWordCreate();
-                    String  password=passWordCreate.createPassWord(10);
-                    PasswordBean passwordBean = new PasswordBean();
-                    passwordBean.setPaperId(Long.parseLong(paperId));
-                    passwordBean.setFileName(fileName_str);
-                    passwordBean.setPassword(password);
-
-                    Map<String, String> map = SerializeUtil.json2Map(SerializeUtil.serializeJson(passwordBean, "yyyy-MM-dd HH:mm:ss"));
-                    map.remove("id");
-                    map.remove("version");
-                    HttpClientUtil.shiroPost("/passwords", map, sessionId, access_token);
-
-                    Map<String, String> map_str = new HashMap<>();
-                    map_str.put("path",reviewBaseDir);
-                    map_str.put("filename",fileName+"_"+testPaperName);
-                    map_str.put("password",password);
-                    String path=doZipUtils.doZip(list,map_str);
-                    zipFile = new File(path);
-                    zipInputStream = new FileInputStream(zipFile);
-                    out_zip = resp.getOutputStream();
-                    BufferedOutputStream zipBos = new BufferedOutputStream(out_zip);
-                    int xlsLen = 2048;
-                    byte[] xlsB = new byte[xlsLen];
-                    while ((xlsLen = zipInputStream.read(xlsB)) != -1) {
-                        zipBos.write(xlsB, 0, xlsLen);
-                    }
-                    zipBos.flush();
-                    resp.flushBuffer();
                     default:
                     break;
             }
