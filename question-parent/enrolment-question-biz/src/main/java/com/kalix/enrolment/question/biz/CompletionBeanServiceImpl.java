@@ -125,7 +125,8 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
 
             // 创建试题内容
             List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
-
+            // 创建答案
+            List<Map<String, Object>> answer = new ArrayList<Map<String, Object>>();
             if (list_completion != null && list_completion.size() > 0) {
                 for (CompletionBean completionBean : list_completion) {
                     sumSpace += completionBean.getSpaceNum();
@@ -135,11 +136,21 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
                 if (sumSpace == quesNum) {
                     for (int i = 0; i < list_completion.size(); i++) {
                         Map<String, Object> map = new HashMap<String, Object>();
+                        Map<String, Object> map_answer = new HashMap<String, Object>();
                         CompletionBean completionBean = list_completion.get(i);
                         map.put("type", "填空题");
                         Matcher m = p1.matcher(completionBean.getStem());
                         String stem = m.replaceAll("________").replaceAll("\\[#", "").replaceAll("\\]", "");
                         map.put("stem", stem);
+                        map_answer.put("answerA",completionBean.getAnswerA());
+                        map_answer.put("answerB",completionBean.getAnswerB());
+                        map_answer.put("answerC",completionBean.getAnswerC());
+                        map_answer.put("answerD",completionBean.getAnswerD());
+                        map_answer.put("answerE",completionBean.getAnswerE());
+                        map_answer.put("answerF",completionBean.getAnswerF());
+                        map_answer.put("answerG",completionBean.getAnswerG());
+                        map_answer.put("type", "填空题");
+                        answer.add(map_answer);
                         question.add(map);
                         PaperQuesBean paperQuesBean = new PaperQuesBean();
                         paperQuesBean.setQuesid(completionBean.getId());
@@ -153,6 +164,7 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
                 }
             }
             singleTestPaper.put("question", question);
+            singleTestPaper.put("answer", answer);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -167,19 +179,21 @@ public class CompletionBeanServiceImpl extends QuestionGenericBizServiceImpl<ICo
         // 编译正则
         Pattern p1 = Pattern.compile(pattern);
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
+
         String sql = "select * from enrolment_question_completion where delflag='0' and checkFlag='1' and spacenum<>0 and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "') order by random() limit 5";
         List<CompletionBean> list = this.dao.findByNativeSql(sql, CompletionBean.class);
         for (int i = 0; i < list.size(); i++) {
             Map<String, Object> map = new HashMap<String, Object>();
+
             CompletionBean completionBean = list.get(i);
             map.put("type", "填空题");
             Matcher m = p1.matcher(completionBean.getStem());
             String stem = m.replaceAll("________").replaceAll("\\[#", "").replaceAll("\\]", "");
             map.put("stem", stem);
             question.add(map);
-
         }
         singleTestPaper.put("SpareQues",question);
+
     }
     @Override
     public boolean getCompareStatus() {

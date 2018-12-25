@@ -413,13 +413,18 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
 
         Configuration configuration = new Configuration();
         File outFile = null;
+        File outFile_answer = null;
         //dataMap 要填入模本的数据文件
         //设置模本装置方法和路径,
         Template t = null;
+        Template t_answer = null;
         Writer out = null;
+        Writer out_answer = null;
         FileOutputStream fos = null;
+        FileOutputStream fos_answer = null;
         Response response = null;
         String uuid = null;
+        Long paperFj_id=0L;
         try {
             String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
             if (realPath.charAt(realPath.length() - 1) != '/') {
@@ -429,31 +434,50 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             configuration.setDirectoryForTemplateLoading(new File(reviewBaseDir));
             //test.ftl为要装载的模板
             t = configuration.getTemplate(fileName, "utf-8");
+            t_answer= configuration.getTemplate("answer.ftl", "utf-8");
             //输出文档路径及名称
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
             String testPaperName = sdf.format(new Date());
             outFile = new File(reviewBaseDir + "\\" + testPaperName+"_"+j + ".doc");
-
+            outFile_answer = new File(reviewBaseDir + "\\" + testPaperName+"_"+j+"_answer.doc");
             fos = new FileOutputStream(outFile);
+            fos_answer = new FileOutputStream(outFile_answer);
             OutputStreamWriter oWriter = new OutputStreamWriter(fos, "UTF-8");
+            OutputStreamWriter oWriter_answer = new OutputStreamWriter(fos_answer, "UTF-8");
             //这个地方对流的编码不可或缺，使用main（）单独调用时，应该可以，但是如果是web请求导出时导出后word文档就会打不开，并且包XML文件错误。主要是编码格式不正确，无法解析。
             //out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile)));
             out = new BufferedWriter(oWriter);
+            out_answer = new BufferedWriter(oWriter_answer);
             t.process(tempMap, out);
+            t_answer.process(tempMap, out_answer);
             uuid = tempMap.get("uuid").toString();
             jsonStatus.setSuccess(true);
             jsonStatus.setMsg("试卷生成成功!");
             if (outFile.exists()) {
                 InputStream input = new FileInputStream(outFile);
                 response = couchdbService.addAttachment(input,
-                        testPaperName + ".doc", "application/vnd.ms-word");
+                        testPaperName +testPaperName+"_"+j +  ".doc", "application/vnd.ms-word");
 
                 AttachmentBean attachmentBean = new AttachmentBean();
                 attachmentBean.setAttachmentId(uuid);
-                attachmentBean.setAttachmentName(testPaperName + ".doc");
-                attachmentBean.setAttachmentPath(couchdbService.getDBUrl() + response.getId() + "/" + testPaperName + ".doc");
+                attachmentBean.setAttachmentName(testPaperName +"_"+j + ".doc");
+                attachmentBean.setAttachmentPath(couchdbService.getDBUrl() + response.getId() + "/" + testPaperName +"_"+j + ".doc");
                 attachmentBean.setAttachmentRev(response.getRev());
                 attachmentBean.setMainId(paperId);
+                attachmentBeanService.saveEntity(attachmentBean);
+                paperFj_id=attachmentBean.getId();
+            }
+            if (outFile_answer.exists()) {
+                InputStream input = new FileInputStream(outFile_answer);
+                response = couchdbService.addAttachment(input,
+                        testPaperName+"_"+j+"_answer.doc", "application/vnd.ms-word");
+
+                AttachmentBean attachmentBean = new AttachmentBean();
+                attachmentBean.setAttachmentId(uuid);
+                attachmentBean.setAttachmentName(testPaperName+"_"+j+"_answer.doc");
+                attachmentBean.setAttachmentPath(couchdbService.getDBUrl() + response.getId() + "/" + testPaperName +"_"+j+"_answer.doc");
+                attachmentBean.setAttachmentRev(response.getRev());
+                attachmentBean.setMainId(paperFj_id);
                 attachmentBeanService.saveEntity(attachmentBean);
             }
         } catch (Exception e) {
@@ -466,6 +490,8 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
         } finally {
             out.close();
             fos.close();
+            out_answer.close();
+            fos_answer.close();
             outFile.delete();
         }
         return jsonStatus;

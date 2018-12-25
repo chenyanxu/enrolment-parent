@@ -98,11 +98,14 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
 
         // 创建试题内容
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
+        // 创建试题内容
+        List<Map<String, Object>> answer = new ArrayList<Map<String, Object>>();
         // 以下需要通过算法动态获取（抽取试题）
 
         if (list.size() == quesNum) {
             for (int i = 0; i < list.size(); i++) {
                 Map<String, Object> map = new HashMap<String, Object>();
+                Map<String, Object> map_answer = new HashMap<String, Object>();
                 ChoiceBean choiceBean = list.get(i);
                 PaperQuesBean paperQuesBean = new PaperQuesBean();
                 map.put("type", "选择题");
@@ -111,6 +114,11 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
                 map.put("answerB", choiceBean.getAnswerB());
                 map.put("answerC", choiceBean.getAnswerC());
                 map.put("answerD", choiceBean.getAnswerD());
+                if(!StringUtils.isEmpty(choiceBean.getAnswer())){
+                    map_answer.put("type", "选择题");
+                    map_answer.put("answer",choiceBean.getAnswer());
+                }
+
                 paperQuesBean.setQuesid(choiceBean.getId());
                 paperQuesBean.setYear(year);
                 paperQuesBean.setQuesType(questype);
@@ -119,9 +127,10 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
                 paperQuesBean.setPaperId(paperId);
                 paperQuesBeanService.saveEntity(paperQuesBean);
                 question.add(map);
+                answer.add(map_answer);
             }
         }
-
+        singleTestPaper.put("answer", answer);
         singleTestPaper.put("question", question);
         //备用试题
        // SpareQues(singleTestPaper,year_str, questype, subtype);
