@@ -490,11 +490,24 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             paperQuesBeanService.deleteByUuid(uuid);
             // throw new BusinessException(CommonResultEnum.COMMON_ERROR_637);
         } finally {
-            out.close();
-            fos.close();
-            out_answer.close();
-            fos_answer.close();
-            outFile.delete();
+            if(out!=null){
+                out.close();
+            }
+            if(fos!=null) {
+                fos.close();
+            }
+            if(out_answer!=null) {
+                out_answer.close();
+            }
+            if(fos_answer!=null) {
+                fos_answer.close();
+            }
+            if(outFile!=null) {
+                outFile.delete();
+            }
+            if(outFile_answer!=null) {
+                outFile_answer.delete();
+            }
         }
         return jsonStatus;
     }
