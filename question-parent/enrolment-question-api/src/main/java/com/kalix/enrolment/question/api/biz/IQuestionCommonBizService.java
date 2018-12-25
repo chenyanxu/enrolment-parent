@@ -1,5 +1,6 @@
 package com.kalix.enrolment.question.api.biz;
 
+import com.kalix.enrolment.question.dto.model.BatchDeleteDTO;
 import com.kalix.framework.core.api.IService;
 import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
@@ -62,7 +63,7 @@ public interface IQuestionCommonBizService extends IService {
      */
     JsonStatus autoCreateTestPaper(Long paperId);
 
-    JsonStatus deletePaper(String ids);
-    JsonStatus reductionPaper(String ids);
+    JsonStatus deletePaper(BatchDeleteDTO batchDeleteDTO);
 
+    JsonStatus reductionPaper(String ids);
 }

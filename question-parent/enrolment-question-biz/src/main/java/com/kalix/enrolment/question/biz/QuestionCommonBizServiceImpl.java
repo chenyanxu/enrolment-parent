@@ -1,7 +1,7 @@
 package com.kalix.enrolment.question.biz;
 
 import com.kalix.enrolment.question.api.biz.*;
-import com.kalix.enrolment.question.biz.util.PassWordCreate;
+import com.kalix.enrolment.question.dto.model.BatchDeleteDTO;
 import com.kalix.enrolment.question.dto.model.QuestionDTO;
 import com.kalix.enrolment.question.dto.model.RuleDto;
 import com.kalix.enrolment.question.entities.BaseQuestionEntity;
@@ -380,7 +380,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                             }
                             tempMap.put("kskm", kskm_xmt);
                         }
-                        jsonStatus = produceTestPaper(tmp, tempMap, paperId,j);
+                        jsonStatus = produceTestPaper(tmp, tempMap, paperId, j);
                     }
                 }
             } else {
@@ -408,7 +408,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
         return jsonStatus;
     }
 
-    private JsonStatus produceTestPaper(String fileName, Map tempMap, Long paperId,int j) throws IOException {
+    private JsonStatus produceTestPaper(String fileName, Map tempMap, Long paperId, int j) throws IOException {
         JsonStatus jsonStatus = new JsonStatus();
 
         Configuration configuration = new Configuration();
@@ -440,6 +440,8 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             String testPaperName = sdf.format(new Date());
             outFile = new File(reviewBaseDir + "\\" + testPaperName+"_"+j + ".doc");
             outFile_answer = new File(reviewBaseDir + "\\" + testPaperName+"_"+j+"_answer.doc");
+            outFile = new File(reviewBaseDir + "\\" + testPaperName + "_" + j + ".doc");
+
             fos = new FileOutputStream(outFile);
             fos_answer = new FileOutputStream(outFile_answer);
             OutputStreamWriter oWriter = new OutputStreamWriter(fos, "UTF-8");
@@ -498,23 +500,26 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
     }
 
     @Override
-    public JsonStatus deletePaper(String id) {
+    public JsonStatus deletePaper(BatchDeleteDTO batchDeleteDTO) {
         JsonStatus jsonStatus = new JsonStatus();
+        String ids = batchDeleteDTO.getIds();
+        if (StringUtils.isEmpty(ids)) {
+            jsonStatus.setSuccess(false);
+            jsonStatus.setMsg("无效参数，删除失败，未删除任何有效数据！");
+            return jsonStatus;
+        }
 
-        if (!StringUtils.isEmpty(id)) {
-            if (id.indexOf(":") > -1) {
-                String[] str = id.split(":");
-                for (String idStr : str) {
-                    AttachmentBean attachmentBean = attachmentBeanService.getEntity(Long.parseLong(idStr));
-                    paperQuesBeanService.deleteByUuid(attachmentBean.getAttachmentId());
-                    attachmentBeanService.deleteEntity(Long.parseLong(idStr));
-                }
-
-            } else {
-                AttachmentBean attachmentBean = attachmentBeanService.getEntity(Long.parseLong(id));
+        if (ids.indexOf(":") > -1) {
+            String[] str = ids.split(":");
+            for (String idStr : str) {
+                AttachmentBean attachmentBean = attachmentBeanService.getEntity(Long.parseLong(idStr));
                 paperQuesBeanService.deleteByUuid(attachmentBean.getAttachmentId());
-                attachmentBeanService.deleteEntity(Long.parseLong(id));
+                attachmentBeanService.deleteEntity(Long.parseLong(idStr));
             }
+        } else {
+            AttachmentBean attachmentBean = attachmentBeanService.getEntity(Long.parseLong(ids));
+            paperQuesBeanService.deleteByUuid(attachmentBean.getAttachmentId());
+            attachmentBeanService.deleteEntity(Long.parseLong(ids));
         }
         jsonStatus.setMsg("删除成功！");
         jsonStatus.setSuccess(true);
