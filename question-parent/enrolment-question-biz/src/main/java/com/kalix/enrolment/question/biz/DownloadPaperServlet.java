@@ -154,7 +154,7 @@ public class DownloadPaperServlet extends CustomServlet {
 
                         Map<String, String> map_str = new HashMap<>();
                         map_str.put("path", reviewBaseDir);
-                        map_str.put("filename", fileName + "_" + testPaperName + "_answer");
+                        map_str.put("filename", fileName + "_" + testPaperName);
                         map_str.put("password", password);
                         String path = doZipUtils.doZip(list, map_str);
                         zipFile = new File(path);

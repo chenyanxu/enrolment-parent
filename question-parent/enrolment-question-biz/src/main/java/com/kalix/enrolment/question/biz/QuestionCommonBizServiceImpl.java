@@ -458,7 +458,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             if (outFile.exists()) {
                 InputStream input = new FileInputStream(outFile);
                 response = couchdbService.addAttachment(input,
-                        testPaperName +testPaperName+"_"+j +  ".doc", "application/vnd.ms-word");
+                        testPaperName +"_"+j +  ".doc", "application/vnd.ms-word");
 
                 AttachmentBean attachmentBean = new AttachmentBean();
                 attachmentBean.setAttachmentId(uuid);
