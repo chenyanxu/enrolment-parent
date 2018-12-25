@@ -2,7 +2,6 @@ package com.kalix.enrolment.question.biz;
 
 import com.kalix.enrolment.question.api.biz.IPaperBeanService;
 import com.kalix.enrolment.question.api.biz.IPaperQuesBeanService;
-import com.kalix.enrolment.question.api.biz.IPasswordBeanService;
 import com.kalix.enrolment.question.biz.util.PassWordCreate;
 import com.kalix.enrolment.question.biz.util.doZipUtils;
 import com.kalix.enrolment.question.entities.PaperBean;
@@ -34,29 +33,55 @@ public class DownloadPaperServlet extends CustomServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        OutputStream  out_zip=null;
-        FileInputStream zipInputStream=null;
-        File zipFile=null;
+        // 预览文件类型
+        String fileType = req.getParameter("filetype") == null ? "" : req.getParameter("filetype");
+        // 预览文件目录
+        String ids = req.getParameter("ids") == null ? "" : req.getParameter("ids");
+        // 预览文件名称
+        String paperId = req.getParameter("paperId") == null ? "" : req.getParameter("paperId");
+        // access_token
+        String access_token = req.getParameter("access_token") == null ? "" : req.getParameter("access_token");
+        // sessionId
+        String sessionId = req.getParameter("sessionId") == null ? "" : req.getParameter("sessionId");
+        this.downloadPaper(fileType, ids, paperId, access_token, sessionId, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 预览文件类型
+        String fileType = req.getParameter("filetype") == null ? "" : req.getParameter("filetype");
+        // 预览文件目录
+        String ids = req.getParameter("ids") == null ? "" : req.getParameter("ids");
+        // 预览文件名称
+        String paperId = req.getParameter("paperId") == null ? "" : req.getParameter("paperId");
+        // access_token
+        String access_token = req.getParameter("access_token") == null ? "" : req.getParameter("access_token");
+        // sessionId
+        String sessionId = req.getParameter("sessionId") == null ? "" : req.getParameter("sessionId");
+        this.downloadPaper(fileType, ids, paperId, access_token, sessionId, resp);
+    }
+
+    /**
+     * @param fileType    预览文件类型
+     * @param ids
+     * @param paperId
+     * @param accessToken
+     * @param sessionId
+     * @param resp
+     */
+    private void downloadPaper(String fileType, String ids, String paperId, String accessToken, String sessionId,
+                               HttpServletResponse resp) throws ServletException, IOException {
+        OutputStream out_zip = null;
+        FileInputStream zipInputStream = null;
+        File zipFile = null;
         try {
-            String fileName="";
-            List list=null;
-            // 预览文件类型
-            String fileType = req.getParameter("filetype") == null ? "" : req.getParameter("filetype");
-            // 预览文件目录
-            String ids = req.getParameter("ids") == null ? "" : req.getParameter("ids");
-            // 预览文件名称
-            String paperId = req.getParameter("paperId") == null ? "" : req.getParameter("paperId");
-            // access_token
-            String access_token = req.getParameter("access_token") == null ? "" : req.getParameter("access_token");
-            // sessionId
-            String sessionId = req.getParameter("sessionId") == null ? "" : req.getParameter("sessionId");
-
-
+            String fileName = "";
+            List list = null;
             paperBeanService = JNDIHelper.getJNDIServiceForName(IPaperBeanService.class.getName());
-            PaperBean paperBean=paperBeanService.getEntity(Long.parseLong(paperId));
-            fileName= paperBean.getTitle();
-            String kskm=paperBean.getKskm();
-            String tempName=paperBean.getTempName();
+            PaperBean paperBean = paperBeanService.getEntity(Long.parseLong(paperId));
+            fileName = paperBean.getTitle();
+            String kskm = paperBean.getKskm();
+            String tempName = paperBean.getTempName();
             // 预览文件真实路径地址
             String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
             if (realPath.charAt(realPath.length() - 1) != '/') {
@@ -69,46 +94,45 @@ public class DownloadPaperServlet extends CustomServlet {
                     //输出文档路径及名称
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
                     String testPaperName = sdf.format(new Date());
-                    String fileName_str = fileName+"_"+testPaperName+".zip";
+                    String fileName_str = fileName + "_" + testPaperName + ".zip";
                     resp.setHeader("Access-Control-Allow-Origin", "*");
                     resp.setHeader("Access-Control-Allow-Credentials", "true");
                     resp.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
                     resp.setContentType("application/octet-stream; charset=utf-8");
                     resp.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName_str, "UTF-8"));
-                   //  out_zip = new ZipOutputStream(resp.getOutputStream());
+                    //  out_zip = new ZipOutputStream(resp.getOutputStream());
                     attachmentBeanService = JNDIHelper.getJNDIServiceForName(IAttachmentBeanService.class.getName());
                     doZipUtils doZipUtils = new doZipUtils();
-                    if(!StringUtils.isEmpty(ids)){
-                        list=new ArrayList();
-                        if(ids.indexOf(",")>-1){
-                            String [] str =ids.split(",");
-                            for(String id: str){
-                                AttachmentBean attachmentBean= attachmentBeanService.getEntity(Long.parseLong(id));
+                    if (!StringUtils.isEmpty(ids)) {
+                        list = new ArrayList();
+                        if (ids.indexOf(",") > -1) {
+                            String[] str = ids.split(",");
+                            for (String id : str) {
+                                AttachmentBean attachmentBean = attachmentBeanService.getEntity(Long.parseLong(id));
                                 list.add(attachmentBean);
-                                if("2".equals(tempName)|| ("3".equals(tempName)&&"13".equals(kskm))){
-                                    paperQuesBeanService=JNDIHelper.getJNDIServiceForName(IPaperQuesBeanService.class.getName());
-                                    List<PaperQuesBean> list1=paperQuesBeanService.findByPaperId(Long.parseLong(paperId));
-                                    for(PaperQuesBean paperQuesBean:list1){
-                                        Long quesId=  paperQuesBean.getQuesid();
-                                        List<AttachmentBean> attachmentBean_fujian= attachmentBeanService.findByMainId(quesId);
-                                        for(AttachmentBean attachment:attachmentBean_fujian){
+                                if ("2".equals(tempName) || ("3".equals(tempName) && "13".equals(kskm))) {
+                                    paperQuesBeanService = JNDIHelper.getJNDIServiceForName(IPaperQuesBeanService.class.getName());
+                                    List<PaperQuesBean> list1 = paperQuesBeanService.findByPaperId(Long.parseLong(paperId));
+                                    for (PaperQuesBean paperQuesBean : list1) {
+                                        Long quesId = paperQuesBean.getQuesid();
+                                        List<AttachmentBean> attachmentBean_fujian = attachmentBeanService.findByMainId(quesId);
+                                        for (AttachmentBean attachment : attachmentBean_fujian) {
                                             list.add(attachment);
                                         }
 
                                     }
                                 }
                             }
-
-                        }else {
-                            AttachmentBean attachmentBean= attachmentBeanService.getEntity(Long.parseLong(ids));
+                        } else {
+                            AttachmentBean attachmentBean = attachmentBeanService.getEntity(Long.parseLong(ids));
                             list.add(attachmentBean);
-                            if("2".equals(tempName)|| ("3".equals(tempName)&&"13".equals(kskm))){
-                                paperQuesBeanService=JNDIHelper.getJNDIServiceForName(IPaperQuesBeanService.class.getName());
-                                List<PaperQuesBean> list1=paperQuesBeanService.findByPaperId(Long.parseLong(paperId));
-                                for(PaperQuesBean paperQuesBean:list1){
-                                    Long quesId=  paperQuesBean.getQuesid();
-                                    List<AttachmentBean> attachmentBean_fujian= attachmentBeanService.findByMainId(quesId);
-                                    for(AttachmentBean attachment:attachmentBean_fujian){
+                            if ("2".equals(tempName) || ("3".equals(tempName) && "13".equals(kskm))) {
+                                paperQuesBeanService = JNDIHelper.getJNDIServiceForName(IPaperQuesBeanService.class.getName());
+                                List<PaperQuesBean> list1 = paperQuesBeanService.findByPaperId(Long.parseLong(paperId));
+                                for (PaperQuesBean paperQuesBean : list1) {
+                                    Long quesId = paperQuesBean.getQuesid();
+                                    List<AttachmentBean> attachmentBean_fujian = attachmentBeanService.findByMainId(quesId);
+                                    for (AttachmentBean attachment : attachmentBean_fujian) {
                                         list.add(attachment);
                                     }
 
@@ -117,7 +141,7 @@ public class DownloadPaperServlet extends CustomServlet {
                         }
                     }
                     PassWordCreate passWordCreate = new PassWordCreate();
-                    String  password=passWordCreate.createPassWord(10);
+                    String password = passWordCreate.createPassWord(10);
                     PasswordBean passwordBean = new PasswordBean();
                     passwordBean.setPaperId(Long.parseLong(paperId));
                     passwordBean.setFileName(fileName_str);
@@ -126,13 +150,13 @@ public class DownloadPaperServlet extends CustomServlet {
                     Map<String, String> map = SerializeUtil.json2Map(SerializeUtil.serializeJson(passwordBean, "yyyy-MM-dd HH:mm:ss"));
                     map.remove("id");
                     map.remove("version");
-                    HttpClientUtil.shiroPost("/passwords", map, sessionId, access_token);
+                    HttpClientUtil.shiroPost("/passwords", map, sessionId, accessToken);
 
                     Map<String, String> map_str = new HashMap<>();
-                    map_str.put("path",reviewBaseDir);
-                    map_str.put("filename",fileName+"_"+testPaperName);
-                    map_str.put("password",password);
-                    String path=doZipUtils.doZip(list,map_str);
+                    map_str.put("path", reviewBaseDir);
+                    map_str.put("filename", fileName + "_" + testPaperName);
+                    map_str.put("password", password);
+                    String path = doZipUtils.doZip(list, map_str);
                     zipFile = new File(path);
                     zipInputStream = new FileInputStream(zipFile);
                     out_zip = resp.getOutputStream();
@@ -144,21 +168,19 @@ public class DownloadPaperServlet extends CustomServlet {
                     }
                     zipBos.flush();
                     resp.flushBuffer();
-                    default:
+                default:
                     break;
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-
-            if(zipInputStream!=null)
-            {
+            if (zipInputStream != null) {
                 zipInputStream.close();
             }
             if (out_zip != null) {
                 out_zip.close();
             }
-            if(zipFile.exists()){
+            if (zipFile.exists()) {
                 zipFile.delete();
             }
         }
