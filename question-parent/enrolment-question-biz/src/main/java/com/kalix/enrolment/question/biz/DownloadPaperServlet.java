@@ -203,6 +203,11 @@ public class DownloadPaperServlet extends CustomServlet {
                 default:
                     break;
             }
+            for(int i=0;i<list.size();i++){
+                AttachmentBean attachmentBean =(AttachmentBean)list.get(i);
+                attachmentBean.setDownloadStatus("1");
+                attachmentBeanService.saveEntity(attachmentBean);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -215,6 +220,7 @@ public class DownloadPaperServlet extends CustomServlet {
             if (zipFile.exists()) {
                 zipFile.delete();
             }
+
         }
     }
 
