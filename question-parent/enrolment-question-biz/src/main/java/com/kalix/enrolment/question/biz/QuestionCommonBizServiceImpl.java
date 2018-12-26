@@ -1,19 +1,19 @@
 package com.kalix.enrolment.question.biz;
 
 import com.kalix.enrolment.question.api.biz.*;
+import com.kalix.enrolment.question.biz.util.PassWordCreate;
+import com.kalix.enrolment.question.biz.util.doZipUtils;
 import com.kalix.enrolment.question.dto.model.BatchDeleteDTO;
 import com.kalix.enrolment.question.dto.model.QuestionDTO;
 import com.kalix.enrolment.question.dto.model.RuleDto;
 import com.kalix.enrolment.question.entities.BaseQuestionEntity;
 import com.kalix.enrolment.question.entities.PaperBean;
+import com.kalix.enrolment.question.entities.PasswordBean;
 import com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService;
 import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
 import com.kalix.framework.core.api.persistence.JsonData;
 import com.kalix.framework.core.api.persistence.JsonStatus;
-import com.kalix.framework.core.util.ConfigUtil;
-import com.kalix.framework.core.util.JNDIHelper;
-import com.kalix.framework.core.util.SerializeUtil;
-import com.kalix.framework.core.util.StringUtils;
+import com.kalix.framework.core.util.*;
 import com.kalix.middleware.attachment.api.biz.IAttachmentBeanService;
 import com.kalix.middleware.attachment.entities.AttachmentBean;
 import com.kalix.middleware.couchdb.api.biz.ICouchdbService;
@@ -45,7 +45,6 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
     private IRuleBeanService ruleBeanService;
     private IPaperQuesBeanService paperQuesBeanService;
     private IQuestionRepeatedBeanService questionRepeatedBeanService;
-
     private IRepeatedService repeatedService;
     private IQuestionService questionService;
 
@@ -260,6 +259,8 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
     public JsonStatus autoCreateTestPaper(Long paperId) {
         JsonStatus jsonStatus = new JsonStatus();
         String uuid_str = "";
+        List interview=null;
+        File outFile=null;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
         try {
             int copies = 1;
@@ -284,6 +285,9 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             if (total == paperTotal || "3".equals(tempName)) {
                 if (paperBean.getCopies() > 1) {
                     copies = paperBean.getCopies();
+                }
+                if("3".equals(tempName)){
+                    interview=new ArrayList();
                 }
                 for (int j = 0; j < copies; j++) {
                     String uuid = UUID.randomUUID().toString();
@@ -347,15 +351,18 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                         jsonStatus.setMsg(type + "数量不足，成卷失败，已生成" + j + "套卷!");
                         break;
                     } else {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+                        String testPaperName = sdf.format(new Date());
                         String tmp = "";
                         tempMap.put("year", year_str);
                         tempMap.put("quesList", quesList);
                         tempMap.put("uuid", uuid);
-
+                        tempMap.put("testPaperName", testPaperName);
                         if ("1".equals(tempName)) {
 
                             tempMap.put("kskm", kskm);
                             tmp = "testPaper.ftl";
+                            jsonStatus = produceTestPaper(tmp, tempMap, paperId, j);
                         } else if ("2".equals(tempName)) {
                             EnrolmentDictBean enrolmentDictBean_zgt = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_ZGTLX, kskmValue);
                             //String kskm_zgt = enrolmentDictBean_zgt.getLabel();
@@ -365,7 +372,9 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                             }
                             tempMap.put("kskm", kskm_zgt);
                             tmp = "subject.ftl";
+                            jsonStatus = produceTestPaper(tmp, tempMap, paperId, j);
                         } else {
+
                             if ("7".equals(kskmValue) || "8".equals(kskmValue) || "9".equals(kskmValue)) {
                                 tmp = "Interview_subtype.ftl";
                             } else {
@@ -379,9 +388,44 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                                 kskm_xmt = enrolmentDictBean_mst.getLabel();
                             }
                             tempMap.put("kskm", kskm_xmt);
+                            jsonStatus = produceTestPaper(interview, tmp, tempMap);
                         }
-                        jsonStatus = produceTestPaper(tmp, tempMap, paperId, j);
+
                     }
+                }
+                if("3".equals(tempName)){
+                    // 设置默认预览文件地址
+                    // 预览文件真实路径地址
+                    String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
+                    if (realPath.charAt(realPath.length() - 1) != '/') {
+                        realPath += "/";
+                    }
+                    String reviewBaseDir = realPath + "reviewfiles";
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+                    String testPaperName = sdf.format(new Date());
+                    Map<String, String> map_str = new HashMap<>();
+                    map_str.put("path", reviewBaseDir);
+                    map_str.put("filename", paperBean.getTitle() + "_" + testPaperName);
+                    map_str.put("password", "");
+                    doZipUtils doZipUtils = new doZipUtils();
+                    String path = doZipUtils.doZip_inStream(interview, map_str);
+                     outFile = new File(path);
+                    if (outFile.exists()) {
+                        InputStream input = new FileInputStream(outFile);
+                        Response  response = couchdbService.addAttachment(input,
+                                testPaperName  +  ".zip", "application/vnd.ms-word");
+
+                        AttachmentBean attachmentBean = new AttachmentBean();
+                        attachmentBean.setAttachmentId(String.valueOf(paperId));
+                        attachmentBean.setAttachmentName(testPaperName + ".zip");
+                        attachmentBean.setAttachmentPath(couchdbService.getDBUrl() + response.getId() + "/" + testPaperName  + ".zip");
+                        attachmentBean.setAttachmentRev(response.getRev());
+                        attachmentBean.setMainId(paperId);
+                        attachmentBeanService.saveEntity(attachmentBean);
+
+                    }
+                    jsonStatus.setSuccess(true);
+                    jsonStatus.setMsg("试卷生成成功!");
                 }
             } else {
                 jsonStatus.setSuccess(false);
@@ -404,6 +448,11 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             jsonStatus.setMsg(e.getMessage());
         } catch (ParseException e) {
             e.printStackTrace();
+        }
+        finally {
+            if(outFile!=null&&outFile.exists()){
+                outFile.delete();
+            }
         }
         return jsonStatus;
     }
@@ -436,11 +485,9 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             t = configuration.getTemplate(fileName, "utf-8");
             t_answer= configuration.getTemplate("answer.ftl", "utf-8");
             //输出文档路径及名称
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-            String testPaperName = sdf.format(new Date());
+            String testPaperName=tempMap.get("tempMap").toString();
             outFile = new File(reviewBaseDir + "\\" + testPaperName+"_"+j + ".doc");
             outFile_answer = new File(reviewBaseDir + "\\" + testPaperName+"_"+j+"_answer.doc");
-            outFile = new File(reviewBaseDir + "\\" + testPaperName + "_" + j + ".doc");
 
             fos = new FileOutputStream(outFile);
             fos_answer = new FileOutputStream(outFile_answer);
@@ -508,6 +555,71 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             if(outFile_answer!=null) {
                 outFile_answer.delete();
             }
+        }
+        return jsonStatus;
+    }
+
+    private JsonStatus produceTestPaper(List list,String fileName, Map tempMap) throws IOException {
+        JsonStatus jsonStatus = new JsonStatus();
+
+        Configuration configuration = new Configuration();
+        File outFile = null;
+        //dataMap 要填入模本的数据文件
+        //设置模本装置方法和路径,
+        Template t = null;
+        Response response = null;
+        Writer out = null;
+        FileOutputStream fos = null;
+        String uuid = null;
+        try {
+            String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
+            if (realPath.charAt(realPath.length() - 1) != '/') {
+                realPath += "/";
+            }
+            String reviewBaseDir = realPath + "reviewfiles" + File.separatorChar + "ftl";
+            configuration.setDirectoryForTemplateLoading(new File(reviewBaseDir));
+            //test.ftl为要装载的模板
+            t = configuration.getTemplate(fileName, "utf-8");
+
+            //输出文档路径及名称
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+            String testPaperName = sdf.format(new Date());
+            outFile = new File(reviewBaseDir + "\\" + testPaperName + ".doc");
+            fos = new FileOutputStream(outFile);
+            OutputStreamWriter oWriter = new OutputStreamWriter(fos, "UTF-8");
+            //这个地方对流的编码不可或缺，使用main（）单独调用时，应该可以，但是如果是web请求导出时导出后word文档就会打不开，并且包XML文件错误。主要是编码格式不正确，无法解析。
+            //out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile)));
+            out = new BufferedWriter(oWriter);
+            t.process(tempMap, out);
+            uuid = tempMap.get("uuid").toString();
+//            jsonStatus.setSuccess(true);
+//            jsonStatus.setMsg("试卷生成成功!");
+            if (outFile.exists()) {
+                InputStream input = new FileInputStream(outFile);
+
+                list.add(input);
+            }
+
+        } catch (Exception e) {
+            //logger.error("导出出错", e);
+            jsonStatus.setSuccess(false);
+            jsonStatus.setMsg("试卷生成失败!");
+            e.printStackTrace();
+            paperQuesBeanService.deleteByUuid(uuid);
+            // throw new BusinessException(CommonResultEnum.COMMON_ERROR_637);
+        } finally {
+            if(out!=null){
+                out.close();
+            }
+            if(fos!=null) {
+                fos.close();
+            }
+
+            if(outFile!=null) {
+                outFile.delete();
+            }
+
+
         }
         return jsonStatus;
     }

@@ -111,6 +111,62 @@ public class doZipUtils {
         return rtnUrl+".zip";
     }
 
+
+    public String doZip_inStream(List list,Map map) throws IOException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String testPaperName = sdf.format(new Date());
+        ArrayList filesToAdd = new ArrayList();
+        String rtnUrl="";
+        HttpURLConnection httpUrl = null;
+        URL urlfile = null;
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+        String path=map.get("path").toString();
+        String filename=map.get("filename").toString();
+        String password=map.get("password")==null?"":map.get("password").toString();
+        rtnUrl=path+File.separatorChar+filename;
+        // parameters.setSourceExternalStream(true);
+        try {
+            //如果路径为目录（文件夹）
+            if(list!=null&&list.size()>0)
+            {
+
+                ZipFile zipFile = new ZipFile(rtnUrl+".zip");
+                ZipParameters parameters = new ZipParameters();
+                // 压缩方式
+                parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+                // 压缩级别
+                parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
+                parameters.setSourceExternalStream(true);
+                if(!StringUtils.isEmpty(password)){
+                    parameters.setEncryptFiles(true);
+                    parameters.setEncryptionMethod(Zip4jConstants.ENC_METHOD_STANDARD);
+                    //parameters.setAesKeyStrength(Zip4jConstants.AES_STRENGTH_256);
+                    parameters.setPassword(password);
+                }
+
+                for(int i=0;i<list.size();i++)
+                {
+                    InputStream inputStream = (InputStream)list.get(i);
+
+                    parameters.setFileNameInZip(testPaperName+"_"+i+".doc");
+                    zipFile.addStream(inputStream, parameters);
+
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }  finally {
+
+//            if (bis != null) bis.close();
+//            if (bos != null) bos.close();
+            if (httpUrl != null) httpUrl.disconnect();
+            //  delFolder(path+File.separatorChar+filename);
+
+        }
+        return rtnUrl+".zip";
+    }
     public static void creatFile(String filePath, String fileName) {
         File folder = new File(filePath);
         //文件夹路径不存在
