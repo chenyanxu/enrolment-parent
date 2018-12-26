@@ -510,7 +510,7 @@
 						<wp:positionV relativeFrom="paragraph">
 							<wp:posOffset>4351937</wp:posOffset>
 						</wp:positionV>
-						<wp:extent cx="8991600" cy="27940"/>
+						<wp:extent cx="13000000" cy="27940"/>
 						<wp:effectExtent l="19050" t="19050" r="19050" b="29210"/>
 						<wp:wrapNone/>
 						<wp:docPr id="2" name="直接连接符 2"/><wp:cNvGraphicFramePr>
@@ -525,7 +525,7 @@
 								<wps:spPr>
 									<a:xfrm flipV="1">
 										<a:off x="0" y="0"/>
-										<a:ext cx="8991600" cy="27940"/>
+										<a:ext cx="13000000" cy="27940"/>
 									</a:xfrm>
 									<a:prstGeom prst="line">
 										<a:avLst/>
