@@ -33,11 +33,11 @@
 						<#list quesList as ques>
 							<#list (ques.question)! as question>
 								<#if question_index = 0>
-									<#assign questionType1 = "${kskm!}"/>
+									<#assign questionType1 = "${question.type!}"/>
 									<#assign questionStem1 = "${question.stem!}"/>
 								</#if>
 								<#if question_index = 1>
-									<#assign questionType2 = "${kskm!}"/>
+									<#assign questionType2 = "${question.type!}"/>
 									<#assign questionStem2 = "${question.stem!}"/>
 									<#break>
 								</#if>
@@ -505,12 +505,12 @@
 					<wp:anchor distT="0" distB="0" distL="114300" distR="114300" simplePos="0" relativeHeight="251662336" behindDoc="1" locked="0" layoutInCell="1" allowOverlap="1" wp14:anchorId="53A5D267" wp14:editId="1B85991B">
 						<wp:simplePos x="0" y="0"/>
 						<wp:positionH relativeFrom="column">
-							<wp:posOffset>-5000000</wp:posOffset>
+							<wp:posOffset>-1525905</wp:posOffset>
 						</wp:positionH>
 						<wp:positionV relativeFrom="paragraph">
 							<wp:posOffset>4351937</wp:posOffset>
 						</wp:positionV>
-						<wp:extent cx="13000000" cy="27940"/>
+						<wp:extent cx="8991600" cy="27940"/>
 						<wp:effectExtent l="19050" t="19050" r="19050" b="29210"/>
 						<wp:wrapNone/>
 						<wp:docPr id="2" name="直接连接符 2"/><wp:cNvGraphicFramePr>
@@ -525,7 +525,7 @@
 								<wps:spPr>
 									<a:xfrm flipV="1">
 										<a:off x="0" y="0"/>
-										<a:ext cx="13000000" cy="27940"/>
+										<a:ext cx="8991600" cy="27940"/>
 									</a:xfrm>
 									<a:prstGeom prst="line">
 										<a:avLst/>
@@ -554,7 +554,7 @@
 		</mc:Choice>
 		<mc:Fallback>
 			<w:pict>
-				<v:line w14:anchorId="43F13D54" id="直接连接符 2" o:spid="_x0000_s1026" style="position:absolute;left:0;text-align:left;flip:y;z-index:-251654144;visibility:visible;mso-wrap-style:square;mso-width-percent:0;mso-height-percent:0;mso-wrap-distance-left:9pt;mso-wrap-distance-top:0;mso-wrap-distance-right:9pt;mso-wrap-distance-bottom:0;mso-position-horizontal:absolute;mso-position-horizontal-relative:text;mso-position-vertical:absolute;mso-position-vertical-relative:text;mso-width-percent:0;mso-height-percent:0;mso-width-relative:page;mso-height-relative:page" from="-300pt,340pt" to="408pt,340pt" o:gfxdata="UEsDBBQABgAIAAAAIQC2gziS/gAAAOEBAAATAAAAW0NvbnRlbnRfVHlwZXNdLnhtbJSRQU7DMBBF&#xA;90jcwfIWJU67QAgl6YK0S0CoHGBkTxKLZGx5TGhvj5O2G0SRWNoz/78nu9wcxkFMGNg6quQqL6RA&#xA;0s5Y6ir5vt9lD1JwBDIwOMJKHpHlpr69KfdHjyxSmriSfYz+USnWPY7AufNIadK6MEJMx9ApD/oD&#xA;OlTrorhX2lFEilmcO2RdNtjC5xDF9pCuTyYBB5bi6bQ4syoJ3g9WQ0ymaiLzg5KdCXlKLjvcW893&#xA;SUOqXwnz5DrgnHtJTxOsQfEKIT7DmDSUCaxw7Rqn8787ZsmRM9e2VmPeBN4uqYvTtW7jvijg9N/y&#xA;JsXecLq0q+WD6m8AAAD//wMAUEsDBBQABgAIAAAAIQA4/SH/1gAAAJQBAAALAAAAX3JlbHMvLnJl&#xA;bHOkkMFqwzAMhu+DvYPRfXGawxijTi+j0GvpHsDYimMaW0Yy2fr2M4PBMnrbUb/Q94l/f/hMi1qR&#xA;JVI2sOt6UJgd+ZiDgffL8ekFlFSbvV0oo4EbChzGx4f9GRdb25HMsYhqlCwG5lrLq9biZkxWOiqY&#xA;22YiTra2kYMu1l1tQD30/bPm3wwYN0x18gb45AdQl1tp5j/sFB2T0FQ7R0nTNEV3j6o9feQzro1i&#xA;OWA14Fm+Q8a1a8+Bvu/d/dMb2JY5uiPbhG/ktn4cqGU/er3pcvwCAAD//wMAUEsDBBQABgAIAAAA&#xA;IQCl2FOc9AEAALYDAAAOAAAAZHJzL2Uyb0RvYy54bWysU81uEzEQviPxDpbvZJOItskqmx4ayqWC&#xA;SAXuE9ubtfCfPCabvAQvgMQNThx7521oH6NjJ6QULgixh5HtGX8z3+dvZ+dba9hGRdTeNXw0GHKm&#xA;nPBSu3XD3765fDbhDBM4CcY71fCdQn4+f/pk1odajX3njVSREYjDug8N71IKdVWh6JQFHPigHCVb&#xA;Hy0k2sZ1JSP0hG5NNR4OT6veRxmiFwqRThf7JJ8X/LZVIr1uW1SJmYbTbKnEWOIqx2o+g3odIXRa&#xA;HMaAf5jCgnbU9Ai1gATsQ9R/QFktokffpoHwtvJtq4UqHIjNaPgbm+sOgipcSBwMR5nw/8GKV5tl&#xA;ZFo2fMyZA0tPdPvp5sfHL3ffP1O8/faVjbNIfcCaai/cMmaaYuuuw5UX75Fy1aNk3mDYl23baFlr&#xA;dHhH3ij6EGO2LfLvjvKrbWKCDifT6eh0SK8kKDc+mz4vz1NBnWFy1xAxvVTesrxouNEuqwM1bK4w&#xA;5UEeSvKxcawnoMnJ2QlhArmrNZBoaQPxRbcul9EbLS+1MfkKxvXqwkS2ge
+				<v:line w14:anchorId="43F13D54" id="直接连接符 2" o:spid="_x0000_s1026" style="position:absolute;left:0;text-align:left;flip:y;z-index:-251654144;visibility:visible;mso-wrap-style:square;mso-width-percent:0;mso-height-percent:0;mso-wrap-distance-left:9pt;mso-wrap-distance-top:0;mso-wrap-distance-right:9pt;mso-wrap-distance-bottom:0;mso-position-horizontal:absolute;mso-position-horizontal-relative:text;mso-position-vertical:absolute;mso-position-vertical-relative:text;mso-width-percent:0;mso-height-percent:0;mso-width-relative:page;mso-height-relative:page" from="-120.15pt,342.65pt" to="587.85pt,344.85pt" o:gfxdata="UEsDBBQABgAIAAAAIQC2gziS/gAAAOEBAAATAAAAW0NvbnRlbnRfVHlwZXNdLnhtbJSRQU7DMBBF&#xA;90jcwfIWJU67QAgl6YK0S0CoHGBkTxKLZGx5TGhvj5O2G0SRWNoz/78nu9wcxkFMGNg6quQqL6RA&#xA;0s5Y6ir5vt9lD1JwBDIwOMJKHpHlpr69KfdHjyxSmriSfYz+USnWPY7AufNIadK6MEJMx9ApD/oD&#xA;OlTrorhX2lFEilmcO2RdNtjC5xDF9pCuTyYBB5bi6bQ4syoJ3g9WQ0ymaiLzg5KdCXlKLjvcW893&#xA;SUOqXwnz5DrgnHtJTxOsQfEKIT7DmDSUCaxw7Rqn8787ZsmRM9e2VmPeBN4uqYvTtW7jvijg9N/y&#xA;JsXecLq0q+WD6m8AAAD//wMAUEsDBBQABgAIAAAAIQA4/SH/1gAAAJQBAAALAAAAX3JlbHMvLnJl&#xA;bHOkkMFqwzAMhu+DvYPRfXGawxijTi+j0GvpHsDYimMaW0Yy2fr2M4PBMnrbUb/Q94l/f/hMi1qR&#xA;JVI2sOt6UJgd+ZiDgffL8ekFlFSbvV0oo4EbChzGx4f9GRdb25HMsYhqlCwG5lrLq9biZkxWOiqY&#xA;22YiTra2kYMu1l1tQD30/bPm3wwYN0x18gb45AdQl1tp5j/sFB2T0FQ7R0nTNEV3j6o9feQzro1i&#xA;OWA14Fm+Q8a1a8+Bvu/d/dMb2JY5uiPbhG/ktn4cqGU/er3pcvwCAAD//wMAUEsDBBQABgAIAAAA&#xA;IQCl2FOc9AEAALYDAAAOAAAAZHJzL2Uyb0RvYy54bWysU81uEzEQviPxDpbvZJOItskqmx4ayqWC&#xA;SAXuE9ubtfCfPCabvAQvgMQNThx7521oH6NjJ6QULgixh5HtGX8z3+dvZ+dba9hGRdTeNXw0GHKm&#xA;nPBSu3XD3765fDbhDBM4CcY71fCdQn4+f/pk1odajX3njVSREYjDug8N71IKdVWh6JQFHPigHCVb&#xA;Hy0k2sZ1JSP0hG5NNR4OT6veRxmiFwqRThf7JJ8X/LZVIr1uW1SJmYbTbKnEWOIqx2o+g3odIXRa&#xA;HMaAf5jCgnbU9Ai1gATsQ9R/QFktokffpoHwtvJtq4UqHIjNaPgbm+sOgipcSBwMR5nw/8GKV5tl&#xA;ZFo2fMyZA0tPdPvp5sfHL3ffP1O8/faVjbNIfcCaai/cMmaaYuuuw5UX75Fy1aNk3mDYl23baFlr&#xA;dHhH3ij6EGO2LfLvjvKrbWKCDifT6eh0SK8kKDc+mz4vz1NBnWFy1xAxvVTesrxouNEuqwM1bK4w&#xA;5UEeSvKxcawnoMnJ2QlhArmrNZBoaQPxRbcul9EbLS+1MfkKxvXqwkS2ge
 					yX8mX2BPyoLPdfAHb7&#xA;Otzhwqe9lToF8oWTLO0CSenI8zwPYZXkzCj6RfKKEKFOoM3fVFJv4w4i73XNCq+83C3jT/HJHGXI&#xA;g5Gz+37dl9sPv9v8HgAA//8DAFBLAwQUAAYACAAAACEAwhSrr+EAAAANAQAADwAAAGRycy9kb3du&#xA;cmV2LnhtbEyPPU/DMBCGdyT+g3VIbK2dltYlxKkQFWLo1BbB6sYmiYjPIXaT9N9zmWC7j0fvPZdt&#xA;R9ew3nah9qggmQtgFgtvaiwVvJ9eZxtgIWo0uvFoFVxtgG1+e5Pp1PgBD7Y/xpJRCIZUK6hibFPO&#xA;Q1FZp8PctxZp9+U7pyO1XclNpwcKdw1fCLHmTtdIFyrd2pfKFt/Hi1Ow3vWnnUu6Yb//lNcfgcsP&#xA;Wb4pdX83Pj8Bi3aMfzBM+qQOOTmd/QVNYI2C2eJBLImltM2KiglJ5EoCO0+jRwk8z/j/L/JfAAAA&#xA;//8DAFBLAQItABQABgAIAAAAIQC2gziS/gAAAOEBAAATAAAAAAAAAAAAAAAAAAAAAABbQ29udGVu&#xA;dF9UeXBlc10ueG1sUEsBAi0AFAAGAAgAAAAhADj9If/WAAAAlAEAAAsAAAAAAAAAAAAAAAAALwEA&#xA;AF9yZWxzLy5yZWxzUEsBAi0AFAAGAAgAAAAhAKXYU5z0AQAAtgMAAA4AAAAAAAAAAAAAAAAALgIA&#xA;AGRycy9lMm9Eb2MueG1sUEsBAi0AFAAGAAgAAAAhAMIUq6/hAAAADQEAAA8AAAAAAAAAAAAAAAAA&#xA;TgQAAGRycy9kb3ducmV2LnhtbFBLBQYAAAAABAAEAPMAAABcBQAAAAA=&#xA;" strokeweight="2.25pt">
 					<v:stroke dashstyle="1 1"/>
 					<o:lock v:ext="edit" shapetype="f"/>
