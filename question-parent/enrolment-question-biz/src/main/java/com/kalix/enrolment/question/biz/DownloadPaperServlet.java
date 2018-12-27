@@ -38,7 +38,7 @@ public class DownloadPaperServlet extends CustomServlet {
         // 预览文件目录
         String ids = req.getParameter("ids") == null ? "" : req.getParameter("ids");
         // 预览文件名称
-        String paperId = req.getParameter("paperId") == null ? "" : req.getParameter("paperId");
+        Long paperId = req.getParameter("paperId") == null ? -1L : Long.parseLong(req.getParameter("paperId"));
         // access_token
         String access_token = req.getParameter("access_token") == null ? "" : req.getParameter("access_token");
         // sessionId
@@ -50,22 +50,27 @@ public class DownloadPaperServlet extends CustomServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        this.doGet(req, resp);
+    }
+
+    @Override
+    protected void doAxiosPost(HttpServletRequest req, HttpServletResponse resp, Map bodyMap) throws ServletException, IOException {
         // 预览文件类型
-        String fileType = req.getParameter("filetype") == null ? "" : req.getParameter("filetype");
+        String fileType = bodyMap.get("filetype") == null ? "" : (String) bodyMap.get("filetype");
         // 预览文件目录
-        String ids = req.getParameter("ids") == null ? "" : req.getParameter("ids");
+        String ids = bodyMap.get("ids") == null ? "" : (String) bodyMap.get("ids");
         // 预览文件名称
-        String paperId = req.getParameter("paperId") == null ? "" : req.getParameter("paperId");
+        Long paperId = bodyMap.get("paperId") == null ? -1L : Long.parseLong(String.valueOf((Integer) bodyMap.get("paperId")));
         // access_token
-        String access_token = req.getParameter("access_token") == null ? "" : req.getParameter("access_token");
+        String access_token = bodyMap.get("access_token") == null ? "" : (String) bodyMap.get("access_token");
         // sessionId
-        String sessionId = req.getParameter("sessionId") == null ? "" : req.getParameter("sessionId");
+        String sessionId = bodyMap.get("sessionId") == null ? "" : (String) bodyMap.get("sessionId");
         // answer
-        String answer = req.getParameter("answer") == null ? "" : req.getParameter("answer");
+        String answer = bodyMap.get("answer") == null ? "" : (String) bodyMap.get("answer");
         this.downloadPaper(fileType, ids, paperId, answer, access_token, sessionId, resp);
     }
 
-    private void downloadPaper(String fileType, String ids, String paperId, String answer, String accessToken, String sessionId,
+    private void downloadPaper(String fileType, String ids, Long paperId, String answer, String accessToken, String sessionId,
                                HttpServletResponse resp) throws ServletException, IOException {
         OutputStream out_zip = null;
         FileInputStream zipInputStream = null;
@@ -74,7 +79,7 @@ public class DownloadPaperServlet extends CustomServlet {
             String fileName = "";
             List list = null;
             paperBeanService = JNDIHelper.getJNDIServiceForName(IPaperBeanService.class.getName());
-            PaperBean paperBean = paperBeanService.getEntity(Long.parseLong(paperId));
+            PaperBean paperBean = paperBeanService.getEntity(paperId);
             fileName = paperBean.getTitle();
             String kskm = paperBean.getKskm();
             String tempName = paperBean.getTempName();
@@ -114,7 +119,7 @@ public class DownloadPaperServlet extends CustomServlet {
                                     list.add(attachmentBean);
                                     if ("2".equals(tempName) || ("3".equals(tempName) && "13".equals(kskm))) {
                                         paperQuesBeanService = JNDIHelper.getJNDIServiceForName(IPaperQuesBeanService.class.getName());
-                                        List<PaperQuesBean> list1 = paperQuesBeanService.findByPaperId(Long.parseLong(paperId));
+                                        List<PaperQuesBean> list1 = paperQuesBeanService.findByPaperId(paperId);
                                         for (PaperQuesBean paperQuesBean : list1) {
                                             Long quesId = paperQuesBean.getQuesid();
                                             List<AttachmentBean> attachmentBean_fujian = attachmentBeanService.findByMainId(quesId);
@@ -129,7 +134,7 @@ public class DownloadPaperServlet extends CustomServlet {
                                 list.add(attachmentBean);
                                 if ("2".equals(tempName) || ("3".equals(tempName) && "13".equals(kskm))) {
                                     paperQuesBeanService = JNDIHelper.getJNDIServiceForName(IPaperQuesBeanService.class.getName());
-                                    List<PaperQuesBean> list1 = paperQuesBeanService.findByPaperId(Long.parseLong(paperId));
+                                    List<PaperQuesBean> list1 = paperQuesBeanService.findByPaperId(paperId);
                                     for (PaperQuesBean paperQuesBean : list1) {
                                         Long quesId = paperQuesBean.getQuesid();
                                         List<AttachmentBean> attachmentBean_fujian = attachmentBeanService.findByMainId(quesId);
@@ -143,7 +148,7 @@ public class DownloadPaperServlet extends CustomServlet {
                         PassWordCreate passWordCreate = new PassWordCreate();
                         String password = passWordCreate.createPassWord(10);
                         PasswordBean passwordBean = new PasswordBean();
-                        passwordBean.setPaperId(Long.parseLong(paperId));
+                        passwordBean.setPaperId(paperId);
                         passwordBean.setFileName(fileName_str);
                         passwordBean.setPassword(password);
 
@@ -203,8 +208,8 @@ public class DownloadPaperServlet extends CustomServlet {
                 default:
                     break;
             }
-            for(int i=0;i<list.size();i++){
-                AttachmentBean attachmentBean =(AttachmentBean)list.get(i);
+            for (int i = 0; i < list.size(); i++) {
+                AttachmentBean attachmentBean = (AttachmentBean) list.get(i);
                 attachmentBean.setDownloadStatus("1");
                 attachmentBeanService.saveEntity(attachmentBean);
             }
