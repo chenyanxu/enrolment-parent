@@ -388,6 +388,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                                 kskm_xmt = enrolmentDictBean_mst.getLabel();
                             }
                             tempMap.put("kskm", kskm_xmt);
+                            Thread.sleep(500);
                             jsonStatus = produceTestPaper(interview, tmp, tempMap);
                         }
 
@@ -448,8 +449,9 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             jsonStatus.setMsg(e.getMessage());
         } catch (ParseException e) {
             e.printStackTrace();
-        }
-        finally {
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
             if(outFile!=null&&outFile.exists()){
                 outFile.delete();
             }
