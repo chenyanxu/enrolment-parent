@@ -8,6 +8,7 @@ import com.kalix.enrolment.question.dto.model.QuestionDTO;
 import com.kalix.enrolment.question.dto.model.RuleDto;
 import com.kalix.enrolment.question.entities.BaseQuestionEntity;
 import com.kalix.enrolment.question.entities.PaperBean;
+import com.kalix.enrolment.question.entities.PaperQuesBean;
 import com.kalix.enrolment.question.entities.PasswordBean;
 import com.kalix.enrolment.system.dict.api.biz.IEnrolmentDictBeanService;
 import com.kalix.enrolment.system.dict.entities.EnrolmentDictBean;
@@ -414,6 +415,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                     map_str.put("filename", paperBean.getTitle() + "_" + testPaperName);
                     map_str.put("password", "");
                     doZipUtils doZipUtils = new doZipUtils();
+
                     String path = doZipUtils.doZip_inStream(interview, map_str);
                      outFile = new File(path);
                     if (outFile.exists()) {
