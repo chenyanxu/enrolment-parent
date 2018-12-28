@@ -378,9 +378,9 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                             if ("7".equals(kskmValue) || "8".equals(kskmValue) || "9".equals(kskmValue)) {
                                 tmp = "Interview_subtype.ftl";
                             } else if("1".equals(kskmValue)) {
-                                tmp = "Interview.ftl";
-                            }else {
                                 tmp = "Interview_bobao.ftl";
+                            }else {
+                                tmp = "Interview.ftl";
                             }
 
                             EnrolmentDictBean enrolmentDictBean_mst = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_MSTLX, kskmValue);
