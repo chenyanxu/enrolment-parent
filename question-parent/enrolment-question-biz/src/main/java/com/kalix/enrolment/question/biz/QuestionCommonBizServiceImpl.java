@@ -376,7 +376,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                             jsonStatus = produceTestPaper(tmp, tempMap, paperId, j);
                         } else {
 
-                            if ("7".equals(kskmValue) || "8".equals(kskmValue) || "9".equals(kskmValue)) {
+                            if ("7".equals(kskmValue) || "8".equals(kskmValue) || "9".equals(kskmValue)|| "13".equals(kskmValue)) {
                                 tmp = "Interview_subtype.ftl";
                             } else if("1".equals(kskmValue)) {
                                 tmp = "Interview_bobao.ftl";

@@ -60,7 +60,7 @@ public class doZipUtils {
 
                     httpUrl = (HttpURLConnection) urlfile.openConnection();
                     httpUrl.connect();
-                    parameters.setFileNameInZip(attachmentBean.getAttachmentName()+"_"+i);
+                    parameters.setFileNameInZip(attachmentBean.getAttachmentName());
                     zipFile.addStream(httpUrl.getInputStream(), parameters);
 
                 }
