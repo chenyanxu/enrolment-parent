@@ -55,12 +55,14 @@ public class doZipUtils {
 
                 for(int i=0;i<list.size();i++)
                 {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+                    String testPaperName = sdf.format(new Date());
                     AttachmentBean attachmentBean = (AttachmentBean)list.get(i);
                     urlfile = new URL(attachmentBean.getAttachmentPath());
 
                     httpUrl = (HttpURLConnection) urlfile.openConnection();
                     httpUrl.connect();
-                    parameters.setFileNameInZip(attachmentBean.getAttachmentName());
+                    parameters.setFileNameInZip(testPaperName+"_"+attachmentBean.getAttachmentName());
                     zipFile.addStream(httpUrl.getInputStream(), parameters);
 
                 }
