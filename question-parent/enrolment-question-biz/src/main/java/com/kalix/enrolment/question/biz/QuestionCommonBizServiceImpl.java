@@ -388,10 +388,13 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                                 kskm_xmt = enrolmentDictBean_mst.getLabel();
                             }
                             tempMap.put("kskm", kskm_xmt);
-                            Thread.sleep(500);
+//                            System.out.print(((Map)((List)quesList.get(0).get("question")).get(0)).get("stem"));
+//                            System.out.print(",");
+//                            System.out.print(((Map)((List)quesList.get(0).get("question")).get(1)).get("stem"));
+//                            System.out.println("-----");
+                            Thread.sleep(1000);
                             jsonStatus = produceTestPaper(interview, tmp, tempMap);
                         }
-
                     }
                 }
                 if("3".equals(tempName)){
