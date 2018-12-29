@@ -260,7 +260,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
     public JsonStatus autoCreateTestPaper(Long paperId) {
         JsonStatus jsonStatus = new JsonStatus();
         String uuid_str = "";
-        String uuid="";
+
         List interview=null;
         File outFile=null;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
@@ -292,7 +292,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                     interview=new ArrayList();
                 }
                 for (int j = 0; j < copies; j++) {
-                     uuid = UUID.randomUUID().toString();
+                    String uuid = UUID.randomUUID().toString();
                     uuid_str += uuid + ",";
                     quesList = new ArrayList<Map>();
                     if (list_rule != null && list_rule.size() > 0) {
@@ -425,7 +425,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                                 testPaperName  +  ".zip", "application/vnd.ms-word");
 
                         AttachmentBean attachmentBean = new AttachmentBean();
-                        attachmentBean.setAttachmentId(uuid);
+                        attachmentBean.setAttachmentId(uuid_str);
                         attachmentBean.setAttachmentName(testPaperName + ".zip");
                         attachmentBean.setAttachmentPath(couchdbService.getDBUrl() + response.getId() + "/" + testPaperName  + ".zip");
                         attachmentBean.setAttachmentRev(response.getRev());
@@ -495,7 +495,8 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             t = configuration.getTemplate(fileName, "utf-8");
             t_answer= configuration.getTemplate("answer.ftl", "utf-8");
             //输出文档路径及名称
-            String testPaperName=tempMap.get("tempMap").toString();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+            String testPaperName = sdf.format(new Date());
             outFile = new File(reviewBaseDir + "\\" + testPaperName+"_"+j + ".doc");
             outFile_answer = new File(reviewBaseDir + "\\" + testPaperName+"_"+j+"_answer.doc");
 
