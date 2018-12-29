@@ -4322,7 +4322,7 @@
 								<w:sz w:val="28"/>
 								<w:szCs w:val="28"/>
 							</w:rPr>
-							<w:t>${(kskm)!} <#if ques.quesdesc !=''>（${(ques.quesdesc)!}）</#if></w:t>
+							<w:t>${(kskm?html)!} <#if ques.quesdesc !=''>（${(ques.quesdesc?html)!}）</#if></w:t>
 						</w:r>
 					</w:p>
 				<#list (ques.question)! as question>
@@ -4338,7 +4338,7 @@
 								<w:rFonts w:hint="eastAsia"/>
 								<w:b/>
 							</w:rPr>
-							<w:t>${(question.answerConstraint)!}</w:t>
+							<w:t>${(question.answerConstraint?html)!}</w:t>
 						</w:r>
 					</w:p>
 		
@@ -4355,7 +4355,7 @@
 							<w:rPr>
 								<w:rFonts w:hint="eastAsia"/>
 							</w:rPr>
-							<w:t>${question.stem}</w:t>
+							<w:t>${(question.stem?html)!}</w:t>
 						</w:r>
 					</w:p>
 					</#list>
@@ -15924,7 +15924,7 @@
 							<w:sz w:val="44"/>
 							<w:szCs w:val="44"/>
 						</w:rPr>
-						<w:t>${(year)!}年吉林动画学院专业测试试题      科目：${(kskm)!}</w:t>
+						<w:t>${(year)!}年吉林动画学院专业测试试题      科目：${(kskm?html)!}</w:t>
 					</w:r>
 				</w:p>
 				<w:p w:rsidR="007D145B" w:rsidRDefault="00FD712F">

@@ -415,7 +415,7 @@
 								<w:b/>
 								<w:szCs w:val="21"/>
 							</w:rPr>
-							<w:t xml:space="preserve">${(ques.title)!} <#if ques.quesdesc !=''>（${(ques.quesdesc)!}）</#if>  </w:t>
+							<w:t xml:space="preserve">${(ques.title?html)!} <#if ques.quesdesc !=''>（${(ques.quesdesc?html)!}）</#if>  </w:t>
 						</w:r>
 					</w:p>
 					<#list (ques.question)! as question>
@@ -425,7 +425,7 @@
 							<w:rPr>
 								<w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
 							</w:rPr>
-							<w:t>${question_index+1}、${question.stem}</w:t>
+							<w:t>${question_index+1}、${(question.stem?html)!}</w:t>
 						</w:r>
 					</w:p>
 					</#if>
@@ -435,7 +435,7 @@
 							<w:rPr>
 								<w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
 							</w:rPr>
-							<w:t>${question_index+1}、${question.stem}</w:t>
+							<w:t>${question_index+1}、${(question.stem?html)!}</w:t>
 						</w:r>
 					</w:p>
 					<w:p w:rsidR="00131753" w:rsidRDefault="00131753">
@@ -470,7 +470,7 @@
 							<w:rPr>
 								<w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
 							</w:rPr>
-							<w:t>${question_index+1}、${question.stem}</w:t>
+							<w:t>${question_index+1}、${(question.stem?html)!}</w:t>
 						</w:r>
 					</w:p>
 					<w:p w:rsidR="00131753" w:rsidRDefault="00131753">
@@ -478,7 +478,7 @@
 							<w:rPr>
 								<w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
 							</w:rPr>
-							<w:t>A ${question.answerA}       B ${question.answerB}        C ${question.answerC}        D ${question.answerD}</w:t>
+							<w:t>A ${(question.answerA?html)!}       B ${(question.answerB?html)!}        C ${(question.answerC?html)!}        D ${(question.answerD?html)!}</w:t>
 						</w:r>
 					</w:p>
 					</#if>
@@ -15883,7 +15883,7 @@
 							<w:sz w:val="44"/>
 							<w:szCs w:val="44"/>
 						</w:rPr>
-						<w:t>${(year)!}年吉林动画学院专业测试试题      科目：${(kskm)!}</w:t>
+						<w:t>${(year)!}年吉林动画学院专业测试试题      科目：${(kskm?html)!}</w:t>
 					</w:r>
 				</w:p>
 			</w:hdr>

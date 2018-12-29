@@ -147,22 +147,22 @@ lang=EN-US>20</span>分）</span></b><span lang=EN-US style='mso-bidi-font-size:
 
 <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
 line-height:115%'><span lang=EN-US><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1、</span>${question.stem}<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1、</span>${(question.stem?html)!}<span
 lang=EN-US><span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span></span></p>
 
 <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
 line-height:115%'><span lang=EN-US><span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>A </span>${question.answerA}<span lang=EN-US><span
+</span>A </span>${(question.answerA?html)!}<span lang=EN-US><span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>B </span>${question.answerB} </p>
+</span>B </span>${(question.answerB?html)!} </p>
 
 <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
 line-height:115%'><span lang=EN-US><span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>C </span>${question.answerC}<span lang=EN-US><span
+</span>C </span>${(question.answerC?html)!}<span lang=EN-US><span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>D </span>${question.answerD}</p>
+</span>D </span>${(question.answerD?html)!}</p>
 
 
 <p class=reader-word-layer style='margin:0cm;margin-bottom:.0001pt;line-height:
