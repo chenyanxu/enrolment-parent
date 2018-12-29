@@ -405,7 +405,7 @@
 					<w:sz w:val="28"/>
 					<w:sz-cs w:val="28"/>
 				</w:rPr>
-				<w:t>${(ques.title)!} </w:t>
+				<w:t>${(ques.title?html)!} </w:t>
 			</w:r>
 		</w:p>
 		<#list (ques.answer)! as answer>
@@ -423,7 +423,7 @@
 					<w:sz w:val="28"/>
 					<w:sz-cs w:val="28"/>
 				</w:rPr>
-				<w:t>${answer_index+1}、${(answer.answerA)!}、${(answer.answerB)!}、${(answer.answerC)!}、${(answer.answerD)!}、${(answer.answerE)!}、${(answer.answerF)!}、${(answer.answerG)!}</w:t>
+				<w:t>${answer_index+1}、${(answer.answerA?html)!}、${(answer.answerB?html)!}、${(answer.answerC?html)!}、${(answer.answerD?html)!}、${(answer.answerE?html)!}、${(answer.answerF?html)!}、${(answer.answerG?html)!}</w:t>
 			</w:r>
 		</w:p>
 		</#if>
@@ -441,7 +441,7 @@
 					<w:sz w:val="28"/>
 					<w:sz-cs w:val="28"/>
 				</w:rPr>
-				<w:t>${answer_index+1}、${(answer.answer)!}</w:t>
+				<w:t>${answer_index+1}、${(answer.answer?html)!}</w:t>
 			</w:r>
 		</w:p>
 		</#if>

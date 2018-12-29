@@ -133,7 +133,7 @@ lang=EN-US>30</span>分）</span></b><span lang=EN-US style='mso-bidi-font-size:
 <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
 text-indent:18.0pt;mso-char-indent-count:1.5;line-height:115%;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt;
 background:white'><span lang=EN-US style='mso-bidi-font-size:10.5pt;line-height:
-115%'>1、</span><span style='mso-bidi-font-size:10.5pt;line-height:115%'>${question.stem}</span>。<span lang=EN-US><o:p></o:p></span></span></p>
+115%'>1、</span><span style='mso-bidi-font-size:10.5pt;line-height:115%'>${(question.stem?html)!}</span>。<span lang=EN-US><o:p></o:p></span></span></p>
 
 
 

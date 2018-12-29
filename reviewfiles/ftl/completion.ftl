@@ -151,7 +151,7 @@ lang=EN-US style='mso-bidi-font-size:10.5pt;line-height:115%'><o:p></o:p></span>
 <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
 text-indent:24.0pt;mso-char-indent-count:2.0;line-height:115%'><span
 lang=EN-US style='mso-bidi-font-size:10.5pt;line-height:115%'>1、</span><span
-style='mso-bidi-font-size:10.5pt;line-height:115%'>${question.stem}<span
+style='mso-bidi-font-size:10.5pt;line-height:115%'>${(question.stem?html)!}<span
 lang=EN-US>&nbsp;<o:p></o:p></span></span></p>
 
 

@@ -33,12 +33,12 @@
 						<#list quesList as ques>
 							<#list (ques.question)! as question>
 								<#if question_index = 0>
-									<#assign questionType1 = "${kskm!}"/>
-									<#assign questionStem1 = "${question.stem!}"/>
+									<#assign questionType1 = "${(kskm?html)!}"/>
+									<#assign questionStem1 = "${(question.stem?html)!}"/>
 								</#if>
 								<#if question_index = 1>
-									<#assign questionType2 = "${kskm!}"/>
-									<#assign questionStem2 = "${question.stem!}"/>
+									<#assign questionType2 = "${(kskm?html)!}"/>
+									<#assign questionStem2 = "${(question.stem?html)!}"/>
 									<#break>
 								</#if>
 							</#list>

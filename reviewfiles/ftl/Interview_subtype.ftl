@@ -435,7 +435,7 @@
 					<wx:font wx:val="宋体"/>
 					<w:sz w:val="24"/>
 				</w:rPr>
-				<w:t>${(question.stem)!} </w:t>
+				<w:t>${(question.stem?html)!} </w:t>
 			</w:r>
 			<w:r wsp:rsidR="00756553">
 				<w:rPr>
@@ -459,7 +459,7 @@
 					<wx:font wx:val="宋体"/>
 					<w:sz w:val="24"/>
 				</w:rPr>
-				<w:t>${(question.analysis)!}</w:t>
+				<w:t>${(question.analysis?html)!}</w:t>
 			</w:r>
 		</w:p>
 		</#list>
