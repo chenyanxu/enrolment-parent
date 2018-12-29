@@ -114,8 +114,8 @@ public class ChoiceBeanServiceImpl extends QuestionGenericBizServiceImpl<IChoice
                 map.put("answerB", choiceBean.getAnswerB());
                 map.put("answerC", choiceBean.getAnswerC());
                 map.put("answerD", choiceBean.getAnswerD());
+                map_answer.put("type", "选择题");
                 if(!StringUtils.isEmpty(choiceBean.getAnswer())){
-                    map_answer.put("type", "选择题");
                     map_answer.put("answer",choiceBean.getAnswer());
                 }
 
