@@ -209,16 +209,14 @@
 																		<w:rPr>
 																			<w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:cs="宋体"/>
 																			<w:bCs/>
-																			<w:sz w:val="28"/>
-																			<w:szCs w:val="28"/>
+																			<w:szCs w:val="21"/>
 																		</w:rPr>
 																	</w:pPr>
 																	<w:r w:rsidRPr="008C131C">
 																		<w:rPr>
 																			<w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:cs="宋体" w:hint="eastAsia"/>
 																			<w:bCs/>
-																			<w:sz w:val="28"/>
-																			<w:szCs w:val="28"/>
+																			<w:szCs w:val="21"/>
 																		</w:rPr>
 																		<w:t>题目：${questionStem1!}</w:t>
 																	</w:r>
@@ -251,16 +249,14 @@
 															<w:rPr>
 																<w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:cs="宋体"/>
 																<w:bCs/>
-																<w:sz w:val="28"/>
-																<w:szCs w:val="28"/>
+																<w:szCs w:val="21"/>
 															</w:rPr>
 														</w:pPr>
 														<w:r w:rsidRPr="008C131C">
 															<w:rPr>
 																<w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:cs="宋体" w:hint="eastAsia"/>
 																<w:bCs/>
-																<w:sz w:val="28"/>
-																<w:szCs w:val="28"/>
+																<w:szCs w:val="21"/>
 															</w:rPr>
 															<w:t>题目：${questionStem1!}</w:t>
 														</w:r>
@@ -443,16 +439,14 @@
 																		<w:rPr>
 																			<w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:cs="宋体"/>
 																			<w:bCs/>
-																			<w:sz w:val="28"/>
-																			<w:szCs w:val="28"/>
+																			<w:szCs w:val="21"/>
 																		</w:rPr>
 																	</w:pPr>
 																	<w:r w:rsidRPr="008C131C">
 																		<w:rPr>
 																			<w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:cs="宋体" w:hint="eastAsia"/>
 																			<w:bCs/>
-																			<w:sz w:val="28"/>
-																			<w:szCs w:val="28"/>
+																			<w:szCs w:val="21"/>
 																		</w:rPr>
 																		<w:t>题目：${questionStem2!}</w:t>
 																	</w:r>
@@ -485,16 +479,14 @@
 															<w:rPr>
 																<w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:cs="宋体"/>
 																<w:bCs/>
-																<w:sz w:val="28"/>
-																<w:szCs w:val="28"/>
+																<w:szCs w:val="21"/>
 															</w:rPr>
 														</w:pPr>
 														<w:r w:rsidRPr="008C131C">
 															<w:rPr>
 																<w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:cs="宋体" w:hint="eastAsia"/>
 																<w:bCs/>
-																<w:sz w:val="28"/>
-																<w:szCs w:val="28"/>
+																<w:szCs w:val="21"/>
 															</w:rPr>
 															<w:t>题目：${questionStem2!}</w:t>
 														</w:r>
