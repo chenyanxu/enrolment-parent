@@ -20,4 +20,9 @@ public class PaperQuesBeanServiceImpl extends LogicDeleteGenericBizServiceImpl<I
     public List findByPaperId(Long paperid) {
       return  this.dao.findByPaperId(paperid);
     }
+
+    @Override
+    public List findByPaperId(Long paperid,String uuid) {
+        return  this.dao.findByPaperId(paperid,uuid);
+    }
 }

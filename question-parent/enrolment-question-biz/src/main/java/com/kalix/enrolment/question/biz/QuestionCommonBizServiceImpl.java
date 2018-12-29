@@ -260,6 +260,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
     public JsonStatus autoCreateTestPaper(Long paperId) {
         JsonStatus jsonStatus = new JsonStatus();
         String uuid_str = "";
+        String uuid="";
         List interview=null;
         File outFile=null;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
@@ -291,7 +292,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                     interview=new ArrayList();
                 }
                 for (int j = 0; j < copies; j++) {
-                    String uuid = UUID.randomUUID().toString();
+                     uuid = UUID.randomUUID().toString();
                     uuid_str += uuid + ",";
                     quesList = new ArrayList<Map>();
                     if (list_rule != null && list_rule.size() > 0) {
@@ -424,7 +425,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                                 testPaperName  +  ".zip", "application/vnd.ms-word");
 
                         AttachmentBean attachmentBean = new AttachmentBean();
-                        attachmentBean.setAttachmentId(String.valueOf(paperId));
+                        attachmentBean.setAttachmentId(uuid);
                         attachmentBean.setAttachmentName(testPaperName + ".zip");
                         attachmentBean.setAttachmentPath(couchdbService.getDBUrl() + response.getId() + "/" + testPaperName  + ".zip");
                         attachmentBean.setAttachmentRev(response.getRev());
@@ -443,8 +444,8 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             if (!StringUtils.isEmpty(uuid_str)) {
                 if (uuid_str.indexOf(",") > -1) {
                     String[] str = uuid_str.split(",");
-                    for (String uuid : str) {
-                        paperQuesBeanService.deleteByUuid(uuid);
+                    for (String uuid1 : str) {
+                        paperQuesBeanService.deleteByUuid(uuid1);
                     }
                 } else {
                     paperQuesBeanService.deleteByUuid(uuid_str);
@@ -459,7 +460,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
-            if(outFile!=null&&outFile.exists()){
+            if(outFile!=null){
                 outFile.delete();
             }
         }
@@ -606,7 +607,18 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             if (outFile.exists()) {
                 InputStream input = new FileInputStream(outFile);
 
-                list.add(input);
+                ByteArrayOutputStream out_in = new ByteArrayOutputStream();
+                byte[] buffer = new byte[1024];
+                int len;
+                while ((len = input.read(buffer)) > -1 ) {
+                    out_in.write(buffer, 0, len);
+                }
+                out_in.flush();
+                out_in.close();
+                input.close();
+                byte[] byteArray = out_in.toByteArray();
+                InputStream inputStream1 = new ByteArrayInputStream(byteArray);
+                list.add(inputStream1);
             }
 
         } catch (Exception e) {
