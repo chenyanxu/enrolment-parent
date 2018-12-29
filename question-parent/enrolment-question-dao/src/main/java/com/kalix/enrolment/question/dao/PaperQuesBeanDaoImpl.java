@@ -20,4 +20,10 @@ public class PaperQuesBeanDaoImpl extends BaseBeanDao<PaperQuesBean, Long> imple
         String sql = "select *  from " + super.getTableName() + " where paperid =?1 " ;
         return this.findByNativeSql(sql, PaperQuesBean.class, paperId);
     }
+
+    @Override
+    public List findByPaperId(Long paperId,String uuid)  {
+        String sql = "select *  from " + super.getTableName() + "  where  paperid =?1 and uuid=?2 " ;
+        return this.findByNativeSql(sql, PaperQuesBean.class, paperId,uuid);
+    }
 }

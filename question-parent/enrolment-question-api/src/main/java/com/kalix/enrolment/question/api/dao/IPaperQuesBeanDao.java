@@ -11,4 +11,5 @@ import java.util.List;
 public interface IPaperQuesBeanDao extends IGenericDao<PaperQuesBean, Long> {
     void deleteByUuid(String uuid);
     List findByPaperId(Long paperId);
+    List findByPaperId(Long paperId,String uuid);
 }

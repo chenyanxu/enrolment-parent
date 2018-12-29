@@ -119,7 +119,7 @@ public class DownloadPaperServlet extends CustomServlet {
                                     list.add(attachmentBean);
                                     if ("2".equals(tempName) || ("3".equals(tempName) && "13".equals(kskm))) {
                                         paperQuesBeanService = JNDIHelper.getJNDIServiceForName(IPaperQuesBeanService.class.getName());
-                                        List<PaperQuesBean> list1 = paperQuesBeanService.findByPaperId(paperId);
+                                        List<PaperQuesBean> list1 = paperQuesBeanService.findByPaperId(paperId,attachmentBean.getAttachmentId());
                                         for (PaperQuesBean paperQuesBean : list1) {
                                             Long quesId = paperQuesBean.getQuesid();
                                             List<AttachmentBean> attachmentBean_fujian = attachmentBeanService.findByMainId(quesId);
@@ -134,7 +134,7 @@ public class DownloadPaperServlet extends CustomServlet {
                                 list.add(attachmentBean);
                                 if ("2".equals(tempName) || ("3".equals(tempName) && "13".equals(kskm))) {
                                     paperQuesBeanService = JNDIHelper.getJNDIServiceForName(IPaperQuesBeanService.class.getName());
-                                    List<PaperQuesBean> list1 = paperQuesBeanService.findByPaperId(paperId);
+                                    List<PaperQuesBean> list1 = paperQuesBeanService.findByPaperId(paperId,attachmentBean.getAttachmentId());
                                     for (PaperQuesBean paperQuesBean : list1) {
                                         Long quesId = paperQuesBean.getQuesid();
                                         List<AttachmentBean> attachmentBean_fujian = attachmentBeanService.findByMainId(quesId);

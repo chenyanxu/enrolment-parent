@@ -11,4 +11,5 @@ import java.util.List;
 public interface IPaperQuesBeanService extends ILogicDeleteService<PaperQuesBean> {
     void deleteByUuid(String uuid);
     List findByPaperId(Long paperid);
+    List findByPaperId(Long paperId,String uuid);
 }
