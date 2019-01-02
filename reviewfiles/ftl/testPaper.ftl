@@ -435,7 +435,7 @@
 							<w:rPr>
 								<w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
 							</w:rPr>
-							<w:t>${question_index+1}、${(question.stem?html)!}</w:t>
+							<w:t>${question_index+1}、${(question.stem?html)!} ${(question.answerConstraint)!}</w:t>
 						</w:r>
 					</w:p>
 					<w:p w:rsidR="00131753" w:rsidRDefault="00131753">
