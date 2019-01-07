@@ -427,7 +427,7 @@
 			</w:r>
 		</w:p>
 		</#if>
-		<#if answer.type='选择题'||answer.type='面试题'>
+		<#if answer.type='选择题'>
 		<w:p wsp:rsidR="00EA3241" wsp:rsidRPr="00EA3241" wsp:rsidRDefault="00EA3241">
 			<w:pPr>
 				<w:rPr>
@@ -442,6 +442,40 @@
 					<w:sz-cs w:val="28"/>
 				</w:rPr>
 				<w:t>${answer_index+1}、${(answer.answer?html)!}</w:t>
+			</w:r>
+		</w:p>
+		</#if>
+		<#if answer.type='面试题'>
+		<w:p wsp:rsidR="00EA3241" wsp:rsidRPr="00EA3241" wsp:rsidRDefault="00EA3241">
+			<w:pPr>
+				<w:rPr>
+					<w:sz w:val="28"/>
+					<w:sz-cs w:val="28"/>
+				</w:rPr>
+			</w:pPr>
+			<w:r>
+				<w:rPr>
+					<w:rFonts w:hint="fareast"/>
+					<w:sz w:val="28"/>
+					<w:sz-cs w:val="28"/>
+				</w:rPr>
+				<w:t>${answer_index+1}、${(answer.stem?html)!} </w:t>
+			</w:r>
+		</w:p>
+		<w:p wsp:rsidR="00EA3241" wsp:rsidRPr="00EA3241" wsp:rsidRDefault="00EA3241">
+			<w:pPr>
+				<w:rPr>
+					<w:sz w:val="28"/>
+					<w:sz-cs w:val="28"/>
+				</w:rPr>
+			</w:pPr>
+			<w:r>
+				<w:rPr>
+					<w:rFonts w:hint="fareast"/>
+					<w:sz w:val="28"/>
+					<w:sz-cs w:val="28"/>
+				</w:rPr>
+				<w:t>${(answer.answer?html)!}</w:t>
 			</w:r>
 		</w:p>
 		</#if>

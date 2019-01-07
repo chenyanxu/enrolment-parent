@@ -101,6 +101,7 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
                 question.add(map);
 
                 map_answer.put("answer",interviewIssueBean.getAnalysis());
+                map_answer.put("stem", interviewIssueBean.getStem());
                 map_answer.put("type", "面试题");
                 answer.add(map_answer);
                 PaperQuesBean paperQuesBean = new PaperQuesBean();
