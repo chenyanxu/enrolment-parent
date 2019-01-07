@@ -80,6 +80,8 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
         String year_str = simpleDateFormat.format(year);
         if ("7".equals(subtype) || "8".equals(subtype) || "9".equals(subtype)|| "13".equals(subtype)) {
             sql = "select * from enrolment_question_interview where delflag='0' and  to_char(year, 'yyyy') in (" + year_ques + ") and checkFlag='1' and subtype='" + subtype + "'   ";
+        } else if("5".equals(subtype)){
+            sql = "select * from enrolment_question_interview where delflag='0' and  to_char(year, 'yyyy') in (" + year_ques + ") and checkFlag='1' and subtype='" + subtype + "' order by random()";
         } else {
             sql = "select * from enrolment_question_interview where delflag='0' and  to_char(year, 'yyyy') in (" + year_ques + ") and checkFlag='1' and subtype='" + subtype + "' order by random() limit 2";
         }
