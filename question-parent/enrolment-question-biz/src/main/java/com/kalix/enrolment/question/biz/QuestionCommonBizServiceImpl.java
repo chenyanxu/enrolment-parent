@@ -378,9 +378,9 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                         } else {
 
                             if ("7".equals(kskmValue) || "8".equals(kskmValue) || "9".equals(kskmValue)|| "13".equals(kskmValue)) {
-                                tmp = "Interview_subtype.ftl";
+                                tmp = "Interview_ask_answer.ftl";
                             } else if("1".equals(kskmValue)) {
-                                tmp = "Interview_bobao.ftl";
+                                tmp = "Interview_news.ftl";
                             }else {
                                 tmp = "Interview.ftl";
                             }
@@ -575,12 +575,16 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
 
         Configuration configuration = new Configuration();
         File outFile = null;
+        File outFile_answer = null;
         //dataMap 要填入模本的数据文件
         //设置模本装置方法和路径,
         Template t = null;
+        Template t_answer = null;
         Response response = null;
         Writer out = null;
+        Writer out_answer = null;
         FileOutputStream fos = null;
+        FileOutputStream fos_answer = null;
         String uuid = null;
         try {
             String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
@@ -591,22 +595,43 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             configuration.setDirectoryForTemplateLoading(new File(reviewBaseDir));
             //test.ftl为要装载的模板
             t = configuration.getTemplate(fileName, "utf-8");
-
+            t_answer = configuration.getTemplate("answer.ftl", "utf-8");
             //输出文档路径及名称
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
             String testPaperName = sdf.format(new Date());
             outFile = new File(reviewBaseDir + "\\" + testPaperName + ".doc");
+            outFile_answer = new File(reviewBaseDir + "\\" + testPaperName+"_"+"_answer.doc");
             fos = new FileOutputStream(outFile);
+            fos_answer = new FileOutputStream(outFile_answer);
             OutputStreamWriter oWriter = new OutputStreamWriter(fos, "UTF-8");
+            OutputStreamWriter oWriter_answer = new OutputStreamWriter(fos_answer, "UTF-8");
             //这个地方对流的编码不可或缺，使用main（）单独调用时，应该可以，但是如果是web请求导出时导出后word文档就会打不开，并且包XML文件错误。主要是编码格式不正确，无法解析。
             //out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile)));
             out = new BufferedWriter(oWriter);
+            out_answer = new BufferedWriter(oWriter_answer);
             t.process(tempMap, out);
+            t_answer.process(tempMap, out_answer);
             uuid = tempMap.get("uuid").toString();
 //            jsonStatus.setSuccess(true);
 //            jsonStatus.setMsg("试卷生成成功!");
             if (outFile.exists()) {
                 InputStream input = new FileInputStream(outFile);
+
+                ByteArrayOutputStream out_in = new ByteArrayOutputStream();
+                byte[] buffer = new byte[1024];
+                int len;
+                while ((len = input.read(buffer)) > -1 ) {
+                    out_in.write(buffer, 0, len);
+                }
+                out_in.flush();
+                out_in.close();
+                input.close();
+                byte[] byteArray = out_in.toByteArray();
+                InputStream inputStream1 = new ByteArrayInputStream(byteArray);
+                list.add(inputStream1);
+            }
+            if (outFile_answer.exists()) {
+                InputStream input = new FileInputStream(outFile_answer);
 
                 ByteArrayOutputStream out_in = new ByteArrayOutputStream();
                 byte[] buffer = new byte[1024];
@@ -639,6 +664,15 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
 
             if(outFile!=null) {
                 outFile.delete();
+            }
+            if(out_answer!=null) {
+                out_answer.close();
+            }
+            if(fos_answer!=null) {
+                fos_answer.close();
+            }
+            if(outFile_answer!=null) {
+                outFile_answer.delete();
             }
 
 

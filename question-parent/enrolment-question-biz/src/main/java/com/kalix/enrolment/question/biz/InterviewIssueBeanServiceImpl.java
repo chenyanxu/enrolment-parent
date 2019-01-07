@@ -86,16 +86,23 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
 
         // 创建试题内容
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
+        // 创建答案
+        List<Map<String, Object>> answer = new ArrayList<Map<String, Object>>();
         // 以下需要通过算法动态获取（抽取试题）
         List<InterviewIssueBean> list = this.dao.findByNativeSql(sql, InterviewIssueBean.class);
-        if ("7".equals(subtype) || "8".equals(subtype) || "9".equals(subtype) || "13".equals(subtype)|| (list.size() == 2)) {
+        if ("7".equals(subtype) || "8".equals(subtype) || "9".equals(subtype) || "13".equals(subtype)||"5".equals(subtype)|| (list.size() == 2)) {
             for (int i = 0; i < list.size(); i++) {
                 InterviewIssueBean interviewIssueBean = list.get(i);
                 Map<String, Object> map = new HashMap<String, Object>();
+                Map<String, Object> map_answer = new HashMap<String, Object>();
                 map.put("type", kskm);
                 map.put("stem", interviewIssueBean.getStem());
                 map.put("analysis", interviewIssueBean.getAnalysis());
                 question.add(map);
+
+                map_answer.put("answer",interviewIssueBean.getAnalysis());
+                map_answer.put("type", "面试题");
+                answer.add(map_answer);
                 PaperQuesBean paperQuesBean = new PaperQuesBean();
                 paperQuesBean.setQuesid(interviewIssueBean.getId());
                 paperQuesBean.setYear(year);
@@ -107,7 +114,7 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
             }
         }
         singleTestPaper.put("question", question);
-
+        singleTestPaper.put("answer", answer);
         return singleTestPaper;
     }
 
