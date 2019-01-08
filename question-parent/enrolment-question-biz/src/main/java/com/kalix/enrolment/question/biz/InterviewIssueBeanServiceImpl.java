@@ -78,13 +78,13 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
 
         Date year = (Date) paperMap.get("year");
         String year_str = simpleDateFormat.format(year);
-        if ("7".equals(subtype) || "8".equals(subtype) || "9".equals(subtype)|| "13".equals(subtype)) {
-            sql = "select * from enrolment_question_interview where delflag='0' and  to_char(year, 'yyyy') in (" + year_ques + ") and checkFlag='1' and subtype='" + subtype + "'   ";
-        } else if("5".equals(subtype)){
+//        if ("7".equals(subtype) || "8".equals(subtype) || "9".equals(subtype)|| "13".equals(subtype)) {
+//            sql = "select * from enrolment_question_interview where delflag='0' and  to_char(year, 'yyyy') in (" + year_ques + ") and checkFlag='1' and subtype='" + subtype + "'   ";
+//        } else if("5".equals(subtype)){
             sql = "select * from enrolment_question_interview where delflag='0' and  to_char(year, 'yyyy') in (" + year_ques + ") and checkFlag='1' and subtype='" + subtype + "' order by random()";
-        } else {
-            sql = "select * from enrolment_question_interview where delflag='0' and  to_char(year, 'yyyy') in (" + year_ques + ") and checkFlag='1' and subtype='" + subtype + "' order by random() limit 2";
-        }
+//        } else {
+//            sql = "select * from enrolment_question_interview where delflag='0' and  to_char(year, 'yyyy') in (" + year_ques + ") and checkFlag='1' and subtype='" + subtype + "' order by random() limit 2";
+//        }
 
         // 创建试题内容
         List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
@@ -92,7 +92,7 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
         List<Map<String, Object>> answer = new ArrayList<Map<String, Object>>();
         // 以下需要通过算法动态获取（抽取试题）
         List<InterviewIssueBean> list = this.dao.findByNativeSql(sql, InterviewIssueBean.class);
-        if ("7".equals(subtype) || "8".equals(subtype) || "9".equals(subtype) || "13".equals(subtype)||"5".equals(subtype)|| (list.size() == 2)) {
+        //if ("7".equals(subtype) || "8".equals(subtype) || "9".equals(subtype) || "13".equals(subtype)||"5".equals(subtype)|| (list.size() == 2)) {
             for (int i = 0; i < list.size(); i++) {
                 InterviewIssueBean interviewIssueBean = list.get(i);
                 Map<String, Object> map = new HashMap<String, Object>();
@@ -115,7 +115,7 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
                 paperQuesBean.setPaperId(paperId);
                 paperQuesBeanService.saveEntity(paperQuesBean);
             }
-        }
+        //}
         singleTestPaper.put("question", question);
         singleTestPaper.put("answer", answer);
         return singleTestPaper;
