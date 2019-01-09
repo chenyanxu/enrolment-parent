@@ -396,46 +396,46 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
 //                            System.out.print(",");
 //                            System.out.print(((Map)((List)quesList.get(0).get("question")).get(1)).get("stem"));
 //                            System.out.println("-----");
-                            Thread.sleep(1000);
-                            jsonStatus = produceTestPaper(interview, tmp, tempMap);
+                            //Thread.sleep(1000);
+                            jsonStatus = produceTestPaper(tmp, tempMap, paperId, j);
                         }
                     }
                 }
-                if("3".equals(tempName)){
-                    // 设置默认预览文件地址
-                    // 预览文件真实路径地址
-                    String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
-                    if (realPath.charAt(realPath.length() - 1) != '/') {
-                        realPath += "/";
-                    }
-                    String reviewBaseDir = realPath + "reviewfiles";
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-                    String testPaperName = sdf.format(new Date());
-                    Map<String, String> map_str = new HashMap<>();
-                    map_str.put("path", reviewBaseDir);
-                    map_str.put("filename", paperBean.getTitle() + "_" + testPaperName);
-                    map_str.put("password", "");
-                    doZipUtils doZipUtils = new doZipUtils();
-
-                    String path = doZipUtils.doZip_inStream(interview, map_str);
-                     outFile = new File(path);
-                    if (outFile.exists()) {
-                        InputStream input = new FileInputStream(outFile);
-                        Response  response = couchdbService.addAttachment(input,
-                                testPaperName  +  ".zip", "application/vnd.ms-word");
-
-                        AttachmentBean attachmentBean = new AttachmentBean();
-                        attachmentBean.setAttachmentId(uuid_str);
-                        attachmentBean.setAttachmentName(testPaperName + ".zip");
-                        attachmentBean.setAttachmentPath(couchdbService.getDBUrl() + response.getId() + "/" + testPaperName  + ".zip");
-                        attachmentBean.setAttachmentRev(response.getRev());
-                        attachmentBean.setMainId(paperId);
-                        attachmentBeanService.saveEntity(attachmentBean);
-
-                    }
-                    jsonStatus.setSuccess(true);
-                    jsonStatus.setMsg("试卷生成成功!");
-                }
+//                if("3".equals(tempName)){
+//                    // 设置默认预览文件地址
+//                    // 预览文件真实路径地址
+//                    String realPath = (String) ConfigUtil.getConfigProp("word.review.realpath", "ConfigOpenOffice");
+//                    if (realPath.charAt(realPath.length() - 1) != '/') {
+//                        realPath += "/";
+//                    }
+//                    String reviewBaseDir = realPath + "reviewfiles";
+//                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+//                    String testPaperName = sdf.format(new Date());
+//                    Map<String, String> map_str = new HashMap<>();
+//                    map_str.put("path", reviewBaseDir);
+//                    map_str.put("filename", paperBean.getTitle() + "_" + testPaperName);
+//                    map_str.put("password", "");
+//                    doZipUtils doZipUtils = new doZipUtils();
+//
+//                    String path = doZipUtils.doZip_inStream(interview, map_str);
+//                     outFile = new File(path);
+//                    if (outFile.exists()) {
+//                        InputStream input = new FileInputStream(outFile);
+//                        Response  response = couchdbService.addAttachment(input,
+//                                testPaperName  +  ".zip", "application/vnd.ms-word");
+//
+//                        AttachmentBean attachmentBean = new AttachmentBean();
+//                        attachmentBean.setAttachmentId(uuid_str);
+//                        attachmentBean.setAttachmentName(testPaperName + ".zip");
+//                        attachmentBean.setAttachmentPath(couchdbService.getDBUrl() + response.getId() + "/" + testPaperName  + ".zip");
+//                        attachmentBean.setAttachmentRev(response.getRev());
+//                        attachmentBean.setMainId(paperId);
+//                        attachmentBeanService.saveEntity(attachmentBean);
+//
+//                    }
+//                    jsonStatus.setSuccess(true);
+//                    jsonStatus.setMsg("试卷生成成功!");
+//                }
             } else {
                 jsonStatus.setSuccess(false);
                 jsonStatus.setMsg("试卷分数与参数分数不符，请核对后重新提交！");
@@ -457,9 +457,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             jsonStatus.setMsg(e.getMessage());
         } catch (ParseException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
+        }  finally {
             if(outFile!=null){
                 outFile.delete();
             }
