@@ -102,10 +102,13 @@ public class InterviewIssueBeanServiceImpl extends QuestionGenericBizServiceImpl
                 map.put("analysis", interviewIssueBean.getAnalysis());
                 question.add(map);
 
-                map_answer.put("answer",interviewIssueBean.getAnalysis());
-                map_answer.put("stem", interviewIssueBean.getStem());
-                map_answer.put("type", "面试题");
-                answer.add(map_answer);
+                if("5".equals(subtype)){
+                    map_answer.put("answer",interviewIssueBean.getAnalysis());
+                    map_answer.put("stem", interviewIssueBean.getStem());
+                    map_answer.put("type", "面试题");
+                    answer.add(map_answer);
+                }
+
                 PaperQuesBean paperQuesBean = new PaperQuesBean();
                 paperQuesBean.setQuesid(interviewIssueBean.getId());
                 paperQuesBean.setYear(year);
