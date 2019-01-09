@@ -26,6 +26,7 @@
 			<w:document mc:Ignorable="w14 w15 wp14" xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">
 				<w:body>
 					<#list quesList as ques>
+						<#assign questionSubType = "${(subtype)!}"/>
 						<#assign questionCount = ques.question!?size />
 						<#assign num = ((questionCount+1)/2)?int />
 						<#list 0..(num-1) as i>
@@ -226,7 +227,11 @@
 																					<w:bCs/>
 																					<w:sz w:val="24"/>
 																				</w:rPr>
-																				<w:t>【${2*i+1}】题目：${questionStem1!}</w:t>
+																				<#if questionSubType = '5'>
+																					<w:t>【${2*i+1}】题目：${questionStem1!}</w:t>
+																				<#else>
+																					<w:t>题目：${questionStem1!}</w:t>
+																				</#if>
 																			</w:r>
 																		</w:p>
 																	</w:txbxContent>
@@ -267,7 +272,11 @@
 																		<w:bCs/>
 																		<w:sz w:val="24"/>
 																	</w:rPr>
-																	<w:t>【${2*i+1}】题目：${questionStem1!}</w:t>
+																	<#if questionSubType = '5'>
+																		<w:t>【${2*i+1}】题目：${questionStem1!}</w:t>
+																	<#else>
+																		<w:t>题目：${questionStem1!}</w:t>
+																	</#if>
 																</w:r>
 															</w:p>
 														</w:txbxContent>
@@ -456,7 +465,11 @@
 																					<w:bCs/>
 																					<w:sz w:val="24"/>
 																				</w:rPr>
-																				<w:t>【${2*i+2}】题目：${questionStem2!}</w:t>
+																				<#if questionSubType = '5'>
+																					<w:t>【${2*i+2}】题目：${questionStem2!}</w:t>
+																				<#else>
+																					<w:t>题目：${questionStem2!}</w:t>
+																				</#if>
 																			</w:r>
 																		</w:p>
 																	</w:txbxContent>
@@ -498,7 +511,11 @@
 																		<w:bCs/>
 																		<w:sz w:val="24"/>
 																	</w:rPr>
-																	<w:t>【${2*i+2}】题目：${questionStem2!}</w:t>
+																	<#if questionSubType = '5'>
+																		<w:t>【${2*i+2}】题目：${questionStem2!}</w:t>
+																	<#else>
+																		<w:t>题目：${questionStem2!}</w:t>
+																	</#if>
 																</w:r>
 															</w:p>
 														</w:txbxContent>
