@@ -65,7 +65,7 @@
 													<wp:extent cx="2261870" cy="437871"/>
 													<wp:effectExtent l="0" t="0" r="0" b="635"/>
 													<wp:wrapSquare wrapText="bothSides"/>
-													<wp:docPr id="${5*i+1}" name="文本框 2"/>
+													<wp:docPr id="${(5*i+1)?c}" name="文本框 2"/>
 													<wp:cNvGraphicFramePr>
 														<a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"/>
 													</wp:cNvGraphicFramePr>
@@ -184,7 +184,7 @@
 													<wp:extent cx="5116195" cy="3562350"/>
 													<wp:effectExtent l="0" t="0" r="0" b="0"/>
 													<wp:wrapSquare wrapText="bothSides"/>
-													<wp:docPr id="${5*i+2}" name="文本框 2"/>
+													<wp:docPr id="${(5*i+2)?c}" name="文本框 2"/>
 													<wp:cNvGraphicFramePr>
 														<a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"/>
 													</wp:cNvGraphicFramePr>
@@ -306,7 +306,7 @@
 													<wp:extent cx="2360930" cy="411480"/>
 													<wp:effectExtent l="0" t="0" r="0" b="0"/>
 													<wp:wrapSquare wrapText="bothSides"/>
-													<wp:docPr id="${5*i+3}" name="文本框 2"/>
+													<wp:docPr id="${(5*i+3)?c}" name="文本框 2"/>
 													<wp:cNvGraphicFramePr>
 														<a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"/>
 													</wp:cNvGraphicFramePr>
@@ -421,7 +421,7 @@
 													<wp:extent cx="5121275" cy="3636010"/>
 													<wp:effectExtent l="0" t="0" r="0" b="0"/>
 													<wp:wrapSquare wrapText="bothSides"/>
-													<wp:docPr id="${5*i+4}" name="文本框 2"/>
+													<wp:docPr id="${(5*i+4)?c}" name="文本框 2"/>
 													<wp:cNvGraphicFramePr>
 														<a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"/>
 													</wp:cNvGraphicFramePr>
@@ -537,7 +537,7 @@
 												<wp:anchor distT="0" distB="0" distL="114300" distR="114300" simplePos="0" relativeHeight="251668480" behindDoc="1" locked="0" layoutInCell="1" allowOverlap="1" wp14:anchorId="52D5EF4A" wp14:editId="7449C405">
 													<wp:simplePos x="0" y="0"/>
 													<wp:positionH relativeFrom="column">
-														<wp:posOffset>-1525905</wp:posOffset>
+														<wp:posOffset>-5000000</wp:posOffset>
 													</wp:positionH>
 													<wp:positionV relativeFrom="paragraph">
 														<wp:posOffset>4351937</wp:posOffset>
@@ -545,7 +545,7 @@
 													<wp:extent cx="8991600" cy="27940"/>
 													<wp:effectExtent l="19050" t="19050" r="19050" b="29210"/>
 													<wp:wrapNone/>
-													<wp:docPr id="${5*i+5}" name="直接连接符 9"/>
+													<wp:docPr id="${(5*i+5)?c}" name="直接连接符 9"/>
 													<wp:cNvGraphicFramePr>
 														<a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"/>
 													</wp:cNvGraphicFramePr>
