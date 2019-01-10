@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns:jpa="http://aries.apache.org/xmlns/jpa/v2.0.0"
+           xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.2.0"
+           xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+    <jpa:enable/>
+    <tx:enable-annotations/>
+
+    <reference id="examStudentBeanDao" interface="com.kalix.enrolment.examinee.api.dao.IExamStudentBeanDao"/>
+    <reference id="examScoreBeanDao" interface="com.kalix.enrolment.examinee.api.dao.IExamScoreBeanDao"/>
+
+    <!-- 考生信息设置服务 -->
+    <bean id="examStudentBeanServiceImpl" class="com.kalix.enrolment.examinee.biz.ExamStudentBeanServiceImpl">
+        <property name="dao" ref="examStudentBeanDao"/>
+    </bean>
+    <service id="examStudentBeanService" ref="examStudentBeanServiceImpl"
+             interface="com.kalix.enrolment.examinee.api.biz.IExamStudentBeanService"/>
+
+    <!-- 考生成绩录入服务 -->
+    <bean id="examScoreBeanServiceImpl" class="com.kalix.enrolment.examinee.biz.ExamScoreBeanServiceImpl">
+        <property name="dao" ref="examScoreBeanDao"/>
+    </bean>
+    <service id="examScoreBeanService" ref="examScoreBeanServiceImpl"
+             interface="com.kalix.enrolment.examinee.api.biz.IExamScoreBeanService"/>
+
+</blueprint>

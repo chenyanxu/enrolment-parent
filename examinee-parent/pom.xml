@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>enrolment-parent</artifactId>
+        <groupId>com.kalix.enrolment</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>examinee-parent</artifactId>
+    <groupId>com.kalix.enrolment.examinee</groupId>
+    <name>Kalix Enrolment Examinee</name>
+    <packaging>pom</packaging>
+    <modules>
+        <module>enrolment-examinee-entities</module>
+        <module>enrolment-examinee-api</module>
+        <module>enrolment-examinee-biz</module>
+        <module>enrolment-examinee-dao</module>
+        <module>enrolment-examinee-rest</module>
+        <!--<module>enrolment-examinee-dto</module>-->
+    </modules>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.kalix.enrolment.examinee</groupId>
+                <artifactId>enrolment-examinee-entities</artifactId>
+                <version>${project.enrolment.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kalix.enrolment.examinee</groupId>
+                <artifactId>enrolment-examinee-api</artifactId>
+                <version>${project.enrolment.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+
+</project>

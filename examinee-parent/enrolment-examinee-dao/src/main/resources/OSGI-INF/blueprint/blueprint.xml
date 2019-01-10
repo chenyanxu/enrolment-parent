@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- default-activation="lazy" -->
+<blueprint xmlns:jpa="http://aries.apache.org/xmlns/jpa/v2.0.0"
+           xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.2.0"
+           xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+    <jpa:enable/>
+    <tx:enable-annotations/>
+
+    <!--考生dao-->
+    <bean id="examStudentBeanDaoImpl" class="com.kalix.enrolment.examinee.dao.ExamStudentBeanDaoImpl">
+        <tx:transaction method="*" value="Required"/>
+    </bean>
+    <service id="examStudentBeanDao" ref="examStudentBeanDaoImpl" interface="com.kalix.enrolment.examinee.api.dao.IExamStudentBeanDao"/>
+
+
+    <!--考生成绩dao-->
+    <bean id="examScoreBeanDaoImpl" class="com.kalix.enrolment.examinee.dao.ExamScoreBeanDaoImpl">
+        <tx:transaction method="*" value="Required"/>
+    </bean>
+    <service id="examScoreBeanDao" ref="examScoreBeanDaoImpl" interface="com.kalix.enrolment.examinee.api.dao.IExamScoreBeanDao"/>
+</blueprint>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+       http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+    <reference id="examStudentService" interface="com.kalix.enrolment.examinee.api.biz.IExamStudentBeanService"/>
+    <reference id="examScoreService" interface="com.kalix.enrolment.examinee.api.biz.IExamScoreBeanService"/>
+
+    <camelContext id="examStudentCamel" xmlns="http://camel.apache.org/schema/blueprint">
+        <restConfiguration component="servlet" bindingMode="json">
+            <dataFormatProperty key="prettyPrint" value="${rest.pretty}"/>
+        </restConfiguration>
+
+        <rest path="/examStudents" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>examStudent rest service</description>
+            <get id="route-getexamStudent">
+                <description>create examStudent</description>
+                <to uri="bean:examStudentService?method=getAllEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+            </get>
+            <!-- this is a rest POST to create an choice -->
+            <post id="route-addExamStudent" type="com.kalix.enrolment.examinee.entities.ExamStudentBean"
+                  outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Create a ExamStudent</description>
+                <to uri="bean:examStudentService?method=saveEntity"/>
+            </post>
+
+        </rest>
+
+        <rest path="/examScores" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>examStudent rest service</description>
+            <get id="route-getexamScore">
+                <description>create examScore</description>
+                <to uri="bean:examScoreService?method=getAllEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+            </get>
+            <!-- this is a rest POST to create an choice -->
+            <post id="route-addExamScore" type="com.kalix.enrolment.examinee.entities.ExamScoreBean"
+                  outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Create a ExamStudent</description>
+                <to uri="bean:examScoreService?method=saveEntity"/>
+            </post>
+
+        </rest>
+        <rest path="/examStudentBarCodes" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>examScoreBarCodes rest service</description>
+            <get id="route-getbyBarcode">
+                <description>find by BarCodes</description>
+                <to uri="bean:examStudentService?method=findByBarCode(${header.barCode})"/>
+            </get>
+        </rest>
+
+    </camelContext>
+</blueprint>
