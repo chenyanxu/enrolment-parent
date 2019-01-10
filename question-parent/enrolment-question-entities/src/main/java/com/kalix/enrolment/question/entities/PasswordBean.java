@@ -26,6 +26,16 @@ public class PasswordBean extends BaseLogicDeleteEntity {
 
     private String fileName;
 
+    private String paperName;
+
+    public String getPaperName() {
+        return paperName;
+    }
+
+    public void setPaperName(String paperName) {
+        this.paperName = paperName;
+    }
+
     public String getFileName() {
         return fileName;
     }

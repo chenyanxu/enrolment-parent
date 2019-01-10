@@ -74,6 +74,7 @@ public class DownloadPaperServlet extends CustomServlet {
                                HttpServletResponse resp) throws ServletException, IOException {
         OutputStream out_zip = null;
         FileInputStream zipInputStream = null;
+        String paperName="";
         File zipFile = null;
         try {
             String fileName = "";
@@ -116,6 +117,7 @@ public class DownloadPaperServlet extends CustomServlet {
                                 String[] str = ids.split(",");
                                 for (String id : str) {
                                     AttachmentBean attachmentBean = attachmentBeanService.getEntity(Long.parseLong(id));
+                                    paperName+=attachmentBean.getAttachmentName()+",";
                                     list.add(attachmentBean);
                                     if ("2".equals(tempName) || ("3".equals(tempName) && "13".equals(kskm))) {
                                         paperQuesBeanService = JNDIHelper.getJNDIServiceForName(IPaperQuesBeanService.class.getName());
@@ -131,6 +133,7 @@ public class DownloadPaperServlet extends CustomServlet {
                                 }
                             } else {
                                 AttachmentBean attachmentBean = attachmentBeanService.getEntity(Long.parseLong(ids));
+                                paperName+=attachmentBean.getAttachmentName()+",";
                                 list.add(attachmentBean);
                                 if ("2".equals(tempName) || ("3".equals(tempName) && "13".equals(kskm))) {
                                     paperQuesBeanService = JNDIHelper.getJNDIServiceForName(IPaperQuesBeanService.class.getName());
@@ -151,7 +154,7 @@ public class DownloadPaperServlet extends CustomServlet {
                         passwordBean.setPaperId(paperId);
                         passwordBean.setFileName(fileName_str);
                         passwordBean.setPassword(password);
-
+                        passwordBean.setPaperName(paperName);
                         Map<String, String> map = SerializeUtil.json2Map(SerializeUtil.serializeJson(passwordBean, "yyyy-MM-dd HH:mm:ss"));
                         map.remove("id");
                         map.remove("version");
