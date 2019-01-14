@@ -1,4 +1,4 @@
-package com.kalix.middleware.excel.api.model;
+package com.kalix.middleware.excel.api.model.enrolment.examinee;
 
 import com.kalix.framework.core.api.web.model.BaseDTO;
 import com.kalix.middleware.excel.api.annotation.ExcelField;

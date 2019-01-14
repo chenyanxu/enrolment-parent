@@ -5,5 +5,5 @@
 Bundle-Activator: ${bundle.namespace}.internal.InitActivator
 #Import-Package:com.kalix.framework.core.api.biz,com.kalix.framework.core.api.persistence,cn.com.rexen.admin.entities,*
 Import-Package:*
-Export-Package: com.kalix.middleware.excel.api.model,com.kalix.enrolment.question.dto.model
+Export-Package: com.kalix.middleware.excel.api.model.enrolment.question,com.kalix.enrolment.question.dto.model
 Bundle-Category:Kalix Enrolment Question

@@ -1,4 +1,4 @@
-package com.kalix.middleware.excel.api.model;
+package com.kalix.middleware.excel.api.model.enrolment.question;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kalix.framework.core.api.web.model.BaseDTO;
@@ -12,14 +12,15 @@ import java.util.Date;
  * Created by zangyanming on 2018/10/8.
  */
 
-public class InterviewIssueDto extends BaseDTO {
+public class SubjectDto extends BaseDTO {
     @Column(nullable = false)
-    private String subType;               // 面试题类型,字典（面试题类型）
+    private String subType;               // 主观题类型,字典（主观题类型）
     @Lob
     @Column(nullable = false)
     private String stem;               // 题干
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy", timezone = "GMT+8")
     private Date year;                 // 年份
+    private String answerConstraint;   // 答题要求
     private String analysis;           // 试题解析
     private String scoreStandard;      // 评分标准
     private String checkFlag = "0";    // 审核状态，字典[审核状态]
@@ -30,7 +31,7 @@ public class InterviewIssueDto extends BaseDTO {
     private String checkReason;        // 审核不通过原因
     private String repeatedFlag = "0"; // 题库排重标识
 
-    @ExcelField(title = "面试题类型",type=0, align = 1, dictType = "面试题类型", sort = 10)
+    @ExcelField(title = "主观题类型",type=0, align = 1, dictType = "主观题类型", sort = 10)
     public String getSubType() {
         return subType;
     }
@@ -57,7 +58,16 @@ public class InterviewIssueDto extends BaseDTO {
         this.year = year;
     }
 
-    @ExcelField(title = "试题解析",type=0, align = 1, sort = 40)
+    @ExcelField(title = "答题要求", type=0,align = 1, sort = 40)
+    public String getAnswerConstraint() {
+        return answerConstraint;
+    }
+
+    public void setAnswerConstraint(String answerConstraint) {
+        this.answerConstraint = answerConstraint;
+    }
+
+    @ExcelField(title = "试题解析",type=0, align = 1, sort = 50)
     public String getAnalysis() {
         return analysis;
     }
@@ -66,7 +76,7 @@ public class InterviewIssueDto extends BaseDTO {
         this.analysis = analysis;
     }
 
-    @ExcelField(title = "评分标准",type=0, align = 1, sort = 50)
+    @ExcelField(title = "评分标准", type=0,align = 1, sort = 60)
     public String getScoreStandard() {
         return scoreStandard;
     }

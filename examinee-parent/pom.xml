@@ -19,7 +19,7 @@
         <module>enrolment-examinee-biz</module>
         <module>enrolment-examinee-dao</module>
         <module>enrolment-examinee-rest</module>
-        <!--<module>enrolment-examinee-dto</module>-->
+        <module>enrolment-examinee-dto</module>
     </modules>
     <dependencyManagement>
         <dependencies>

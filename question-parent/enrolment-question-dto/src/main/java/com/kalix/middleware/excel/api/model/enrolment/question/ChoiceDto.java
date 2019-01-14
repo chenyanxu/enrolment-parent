@@ -1,22 +1,32 @@
-package com.kalix.middleware.excel.api.model;
+package com.kalix.middleware.excel.api.model.enrolment.question;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kalix.framework.core.api.web.model.BaseDTO;
 import com.kalix.middleware.excel.api.annotation.ExcelField;
 
+import javax.persistence.Column;
+import javax.persistence.Lob;
 import java.util.Date;
 
+/**
+ * Created by zangyanming on 2018/9/13.
+ */
 
-public class CompletionDto  extends BaseDTO {
-    private String type;               // 类别,字典（类别）
+public class ChoiceDto extends BaseDTO {
+    @Column(nullable = false)
+    private String type;               // 类别，字典[类别]
+    @Lob
+    @Column(nullable = false)
     private String stem;               // 题干
-    private String answerA;            // 答案A
-    private String answerB;            // 答案B
-    private String answerC;            // 答案C
-    private String answerD;            // 答案D
-    private String answerE;            // 答案E
-    private String answerF;            // 答案F
-    private String answerG;            // 答案G
+    @Column(nullable = false)
+    private String answerA;            // 选项A
+    private String answerB;            // 选项B
+    private String answerC;            // 选项C
+    private String answerD;            // 选项D
+    private String answerE;            // 选项E
+    private String answerF;            // 选项F
+    private String answerG;            // 选项G
+    private String answer;             // 正确选项
     private String analysis;           // 试题解析
     private String checkFlag = "0";    // 审核状态，字典[审核状态]
     private Long checkerId;            // 审核员id
@@ -25,26 +35,8 @@ public class CompletionDto  extends BaseDTO {
     private Date checkDate;            // 审核时间
     private String checkReason;        // 审核不通过原因
     private String repeatedFlag = "0"; // 题库排重标识
-    private String delFlag = "0";
-    private String reason;
 
-    public String getDelFlag() {
-        return delFlag;
-    }
-
-    public void setDelFlag(String delFlag) {
-        this.delFlag = delFlag;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
-    @ExcelField(title = "类别", type=0, align = 1, dictType = "类别", sort = 10)
+    @ExcelField(title = "类别",type=0, align = 1, dictType = "类别", sort = 10)
     public String getType() {
         return type;
     }
@@ -53,7 +45,7 @@ public class CompletionDto  extends BaseDTO {
         this.type = type;
     }
 
-    @ExcelField(title = "题干", type=0,align = 2, sort = 20)
+    @ExcelField(title = "题干", type=0,align = 1, sort = 20)
     public String getStem() {
         return stem;
     }
@@ -62,7 +54,7 @@ public class CompletionDto  extends BaseDTO {
         this.stem = stem;
     }
 
-    @ExcelField(title = "空格A答案",type=0, align = 2, sort = 30)
+    @ExcelField(title = "选项A",type=0, align = 1, sort = 30)
     public String getAnswerA() {
         return answerA;
     }
@@ -71,7 +63,7 @@ public class CompletionDto  extends BaseDTO {
         this.answerA = answerA;
     }
 
-    @ExcelField(title = "空格B答案", type=0,align = 2, sort = 40)
+    @ExcelField(title = "选项B",type=0, align = 1, sort = 40)
     public String getAnswerB() {
         return answerB;
     }
@@ -80,7 +72,7 @@ public class CompletionDto  extends BaseDTO {
         this.answerB = answerB;
     }
 
-    @ExcelField(title = "空格C答案", type=0, align = 2, sort = 50)
+    @ExcelField(title = "选项C",type=0, align = 1, sort = 50)
     public String getAnswerC() {
         return answerC;
     }
@@ -89,7 +81,7 @@ public class CompletionDto  extends BaseDTO {
         this.answerC = answerC;
     }
 
-    @ExcelField(title = "空格D答案",type=0, align = 2, sort = 60)
+    @ExcelField(title = "选项D", type=0,align = 1, sort = 60)
     public String getAnswerD() {
         return answerD;
     }
@@ -98,7 +90,7 @@ public class CompletionDto  extends BaseDTO {
         this.answerD = answerD;
     }
 
-    @ExcelField(title = "空格E答案",type=0, align = 2, sort = 70)
+    @ExcelField(title = "选项E",type=0, align = 1, sort = 70)
     public String getAnswerE() {
         return answerE;
     }
@@ -107,7 +99,7 @@ public class CompletionDto  extends BaseDTO {
         this.answerE = answerE;
     }
 
-    @ExcelField(title = "空格F答案",type=0, align = 2, sort = 80)
+    @ExcelField(title = "选项F", type=0,align = 1, sort = 80)
     public String getAnswerF() {
         return answerF;
     }
@@ -116,7 +108,7 @@ public class CompletionDto  extends BaseDTO {
         this.answerF = answerF;
     }
 
-    @ExcelField(title = "空格G答案",type=0, align = 2, sort = 90)
+    @ExcelField(title = "选项G",type=0, align = 1, sort = 90)
     public String getAnswerG() {
         return answerG;
     }
@@ -125,7 +117,16 @@ public class CompletionDto  extends BaseDTO {
         this.answerG = answerG;
     }
 
-    @ExcelField(title = "试题解析",type=0, align = 2, sort = 100)
+    @ExcelField(title = "答案",type=0, align = 1, sort = 100)
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
+    @ExcelField(title = "试题解析", type=0,align = 1, sort = 110)
     public String getAnalysis() {
         return analysis;
     }

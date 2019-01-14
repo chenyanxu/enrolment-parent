@@ -1,4 +1,4 @@
-package com.kalix.middleware.excel.api.model;
+package com.kalix.middleware.excel.api.model.enrolment.question;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kalix.framework.core.api.web.model.BaseDTO;

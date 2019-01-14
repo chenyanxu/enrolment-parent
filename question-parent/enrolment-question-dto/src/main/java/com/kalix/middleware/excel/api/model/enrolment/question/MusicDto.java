@@ -1,4 +1,4 @@
-package com.kalix.middleware.excel.api.model;
+package com.kalix.middleware.excel.api.model.enrolment.question;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kalix.framework.core.api.web.model.BaseDTO;
@@ -12,12 +12,11 @@ import java.util.Date;
  * Created by zangyanming on 2018/10/8.
  */
 
-public class SubjectDto extends BaseDTO {
-    @Column(nullable = false)
-    private String subType;               // 主观题类型,字典（主观题类型）
+public class MusicDto extends BaseDTO {
     @Lob
     @Column(nullable = false)
     private String stem;               // 题干
+    @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy", timezone = "GMT+8")
     private Date year;                 // 年份
     private String answerConstraint;   // 答题要求
@@ -31,16 +30,7 @@ public class SubjectDto extends BaseDTO {
     private String checkReason;        // 审核不通过原因
     private String repeatedFlag = "0"; // 题库排重标识
 
-    @ExcelField(title = "主观题类型",type=0, align = 1, dictType = "主观题类型", sort = 10)
-    public String getSubType() {
-        return subType;
-    }
-
-    public void setSubType(String subType) {
-        this.subType = subType;
-    }
-
-    @ExcelField(title = "题干",type=0, align = 1, sort = 20)
+    @ExcelField(title = "题干",type=0, align = 1, sort = 10)
     public String getStem() {
         return stem;
     }
@@ -49,7 +39,7 @@ public class SubjectDto extends BaseDTO {
         this.stem = stem;
     }
 
-    @ExcelField(title = "年份",type=0, align = 1, sort = 30, pattern = "yyyy")
+    @ExcelField(title = "年份",type=0, align = 1, sort = 20)
     public Date getYear() {
         return year;
     }
@@ -58,7 +48,7 @@ public class SubjectDto extends BaseDTO {
         this.year = year;
     }
 
-    @ExcelField(title = "答题要求", type=0,align = 1, sort = 40)
+    @ExcelField(title = "答题要求",type=0, align = 1, sort = 30)
     public String getAnswerConstraint() {
         return answerConstraint;
     }
@@ -67,7 +57,7 @@ public class SubjectDto extends BaseDTO {
         this.answerConstraint = answerConstraint;
     }
 
-    @ExcelField(title = "试题解析",type=0, align = 1, sort = 50)
+    @ExcelField(title = "试题解析", type=0,align = 1, sort = 40)
     public String getAnalysis() {
         return analysis;
     }
@@ -76,21 +66,13 @@ public class SubjectDto extends BaseDTO {
         this.analysis = analysis;
     }
 
-    @ExcelField(title = "评分标准", type=0,align = 1, sort = 60)
+    @ExcelField(title = "评分标准",type=0, align = 1, sort = 50)
     public String getScoreStandard() {
         return scoreStandard;
     }
 
     public void setScoreStandard(String scoreStandard) {
         this.scoreStandard = scoreStandard;
-    }
-
-    public String getCheckFlag() {
-        return checkFlag;
-    }
-
-    public void setCheckFlag(String checkFlag) {
-        this.checkFlag = checkFlag;
     }
 
     public Long getCheckerId() {
@@ -131,5 +113,13 @@ public class SubjectDto extends BaseDTO {
 
     public void setRepeatedFlag(String repeatedFlag) {
         this.repeatedFlag = repeatedFlag;
+    }
+
+    public String getCheckFlag() {
+        return checkFlag;
+    }
+
+    public void setCheckFlag(String checkFlag) {
+        this.checkFlag = checkFlag;
     }
 }
