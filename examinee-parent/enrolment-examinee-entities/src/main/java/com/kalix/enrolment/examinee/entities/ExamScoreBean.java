@@ -16,10 +16,29 @@ import javax.persistence.Table;
 @Table(name = "enrolment_examinee_score")
 public class ExamScoreBean extends BaseLogicDeleteEntity {
     private String examNumber; //考号
+    private String examName; //考生姓名
+    private String major; //专业
     private String artScore;  //文艺常识、摄影作品赏析、面试单项分
     private String  barCode; // 条形码
     private String  storyScore; // 故事编写、摄影主题创作阐释、笔试单项分
     private String  totalScore; // 总分
+
+
+    public String getExamName() {
+        return examName;
+    }
+
+    public void setExamName(String examName) {
+        this.examName = examName;
+    }
+
+    public String getMajor() {
+        return major;
+    }
+
+    public void setMajor(String major) {
+        this.major = major;
+    }
 
     public String getArtScore() {
         return artScore;
