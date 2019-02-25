@@ -13,10 +13,15 @@
     </bean>
     <service id="examStudentBeanDao" ref="examStudentBeanDaoImpl" interface="com.kalix.enrolment.examinee.api.dao.IExamStudentBeanDao"/>
 
-
     <!--考生成绩dao-->
     <bean id="examScoreBeanDaoImpl" class="com.kalix.enrolment.examinee.dao.ExamScoreBeanDaoImpl">
         <tx:transaction method="*" value="Required"/>
     </bean>
     <service id="examScoreBeanDao" ref="examScoreBeanDaoImpl" interface="com.kalix.enrolment.examinee.api.dao.IExamScoreBeanDao"/>
+
+    <!--成绩转换系数设置dao-->
+    <bean id="examScoreSettingBeanDaoImpl" class="com.kalix.enrolment.examinee.dao.ExamScoreSettingBeanDaoImpl">
+        <tx:transaction method="*" value="Required"/>
+    </bean>
+    <service id="examScoreSettingBeanDao" ref="examScoreSettingBeanDaoImpl" interface="com.kalix.enrolment.examinee.api.dao.IExamScoreSettingBeanDao"/>
 </blueprint>

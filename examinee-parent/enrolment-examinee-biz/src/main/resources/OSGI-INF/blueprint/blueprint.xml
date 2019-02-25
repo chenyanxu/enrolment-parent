@@ -7,6 +7,7 @@
 
     <reference id="examStudentBeanDao" interface="com.kalix.enrolment.examinee.api.dao.IExamStudentBeanDao"/>
     <reference id="examScoreBeanDao" interface="com.kalix.enrolment.examinee.api.dao.IExamScoreBeanDao"/>
+    <reference id="examScoreSettingBeanDao" interface="com.kalix.enrolment.examinee.api.dao.IExamScoreSettingBeanDao"/>
 
     <!-- 考生信息设置服务 -->
     <bean id="examStudentBeanServiceImpl" class="com.kalix.enrolment.examinee.biz.ExamStudentBeanServiceImpl">
@@ -22,4 +23,10 @@
     <service id="examScoreBeanService" ref="examScoreBeanServiceImpl"
              interface="com.kalix.enrolment.examinee.api.biz.IExamScoreBeanService"/>
 
+    <!-- 成绩转换系数设置服务 -->
+    <bean id="examScoreSettingBeanServiceImpl" class="com.kalix.enrolment.examinee.biz.ExamScoreSettingBeanServiceImpl">
+        <property name="dao" ref="examScoreSettingBeanDao"/>
+    </bean>
+    <service id="examScoreSettingBeanService" ref="examScoreSettingBeanServiceImpl"
+             interface="com.kalix.enrolment.examinee.api.biz.IExamScoreSettingBeanService"/>
 </blueprint>
