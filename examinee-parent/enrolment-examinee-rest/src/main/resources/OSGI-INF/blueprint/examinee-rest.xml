@@ -13,33 +13,68 @@
 
         <rest path="/examStudents" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <description>examStudent rest service</description>
-            <get id="route-getexamStudent">
+            <get id="route-getAllExamStudents">
                 <description>create examStudent</description>
                 <to uri="bean:examStudentService?method=getAllEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
             </get>
             <!-- this is a rest POST to create an choice -->
             <post id="route-addExamStudent" type="com.kalix.enrolment.examinee.entities.ExamStudentBean"
                   outType="com.kalix.framework.core.api.persistence.JsonStatus">
-                <description>Create a ExamStudent</description>
+                <description>Create an ExamStudent</description>
                 <to uri="bean:examStudentService?method=saveEntity"/>
             </post>
+        </rest>
 
+        <rest path="/examStudents/{id}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <!-- this is a rest GET to view an examstudent by the given id -->
+            <get id="route-getExamStudent">
+                <description>Find an examstudent by id</description>
+                <to uri="bean:examStudentService?method=getEntity(${header.id})"/>
+            </get>
+            <put id="route-update-ExamStudent" type="com.kalix.enrolment.examinee.entities.ExamStudentBean"
+                 outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Updates an ExamStudent</description>
+                <to uri="bean:examStudentService?method=updateEntity"/>
+            </put>
+            <!-- this is a rest DELETE to delete an examstudent -->
+            <delete id="route-deleteExamStudent" outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Delete an ExamStudent</description>
+                <to uri="bean:examStudentService?method=deleteEntity(${header.id})"/>
+            </delete>
         </rest>
 
         <rest path="/examScores" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
-            <description>examStudent rest service</description>
-            <get id="route-getexamScore">
+            <description>examScore rest service</description>
+            <get id="route-getAllExamScores">
                 <description>create examScore</description>
                 <to uri="bean:examScoreService?method=getAllEntityByQuery(${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
             </get>
             <!-- this is a rest POST to create an choice -->
             <post id="route-addExamScore" type="com.kalix.enrolment.examinee.entities.ExamScoreBean"
                   outType="com.kalix.framework.core.api.persistence.JsonStatus">
-                <description>Create a ExamStudent</description>
+                <description>Create an ExamScore</description>
                 <to uri="bean:examScoreService?method=saveEntity"/>
             </post>
-
         </rest>
+
+        <rest path="/examScores/{id}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <!-- this is a rest GET to view an examscore by the given id -->
+            <get id="route-getExamScore">
+                <description>Find an examscore by id</description>
+                <to uri="bean:examScoreService?method=getEntity(${header.id})"/>
+            </get>
+            <put id="route-update-ExamScore" type="com.kalix.enrolment.examinee.entities.ExamScoreBean"
+                 outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Updates an ExamScore</description>
+                <to uri="bean:examScoreService?method=updateEntity"/>
+            </put>
+            <!-- this is a rest DELETE to delete an examscore -->
+            <delete id="route-deleteExamScore" outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Delete an ExamScore</description>
+                <to uri="bean:examScoreService?method=deleteEntity(${header.id})"/>
+            </delete>
+        </rest>
+
         <rest path="/examStudentBarCodes" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
             <description>examScoreBarCodes rest service</description>
             <get id="route-getbyBarcode">
