@@ -19,6 +19,8 @@
     <!-- 考生成绩录入服务 -->
     <bean id="examScoreBeanServiceImpl" class="com.kalix.enrolment.examinee.biz.ExamScoreBeanServiceImpl">
         <property name="dao" ref="examScoreBeanDao"/>
+        <property name="examStudentBeanDao" ref="examStudentBeanDao"/>
+        <property name="examScoreSettingBeanDao" ref="examScoreSettingBeanDao"/>
     </bean>
     <service id="examScoreBeanService" ref="examScoreBeanServiceImpl"
              interface="com.kalix.enrolment.examinee.api.biz.IExamScoreBeanService"/>

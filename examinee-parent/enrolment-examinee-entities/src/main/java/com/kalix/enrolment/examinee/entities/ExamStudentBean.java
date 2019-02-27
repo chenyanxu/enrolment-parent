@@ -2,6 +2,7 @@ package com.kalix.enrolment.examinee.entities;
 
 import com.kalix.framework.extend.api.entities.BaseLogicDeleteEntity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -21,16 +22,16 @@ import java.util.List;
 @Entity
 @Table(name = "enrolment_examinee_student")
 public class ExamStudentBean extends BaseLogicDeleteEntity {
-    private String examNumber; //考号
-    private String examName; //考生姓名
-    private String identificationCard; //身份证
-    private String major; //专业
-    private String university; // 毕业院校
-    private String address; // 联系地址
-    private String phone; // 联系电话
-    private String province; // 省份
-    private String  barCode; // 条形码
-
+    @Column(unique = true)
+    private String barCode;            // 条形码
+    private String examNumber;         // 考号
+    private String examName;           // 考生姓名
+    private String identificationCard; // 身份证
+    private String major;              // 专业，字典[考生专业]
+    private String province;           // 省份
+    private String university;         // 毕业院校
+    private String address;            // 联系地址
+    private String phone;              // 联系电话
 
     public String getExamNumber() {
         return examNumber;
