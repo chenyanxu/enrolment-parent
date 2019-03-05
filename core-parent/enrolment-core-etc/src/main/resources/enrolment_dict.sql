@@ -65,19 +65,18 @@ INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updated
 --INSERT INTO public.enrolment_dict ("id", "createby", "createbyid", "creationdate", "updateby", "updatebyid", "updatedate", "description", "label", "type", "value", "version_", "subtype") VALUES ('52', '管理员', '-1', '2018-11-21 14:53:09.791', '管理员', '-1', '2018-11-21 14:53:09.787', '', '摄影作品赏析', '考试科目', '3', '1', '');
 --INSERT INTO public.enrolment_dict ("id", "createby", "createbyid", "creationdate", "updateby", "updatebyid", "updatedate", "description", "label", "type", "value", "version_", "subtype") VALUES ('53', '管理员', '-1', '2018-11-21 14:54:44.006', '管理员', '-1', '2018-11-21 14:54:44.002', '', '故事续写', '考试科目', '5', '1', '');
 --INSERT INTO public.enrolment_dict ("id", "createby", "createbyid", "creationdate", "updateby", "updatebyid", "updatedate", "description", "label", "type", "value", "version_", "subtype") VALUES ('54', '管理员', '-1', '2018-11-21 14:52:32.152', '管理员', '-1', '2018-11-21 14:52:32.145', '', '文艺常识', '考试科目', '1', '1', '');
-INSERT INTO "public"."enrolment_dict" VALUES ('48', '管理员', '-1', '2018-11-21 14:55:01', '管理员', '-1', '2018-12-25 08:27:15.616', '数码造型设计基础（二）', '数码造型设计基础（二）', '', '考试科目', '10042', '2');
-INSERT INTO "public"."enrolment_dict" VALUES ('49', '管理员', '-1', '2018-11-21 14:53:49', '管理员', '-1', '2018-12-25 08:28:32.837', '角色动画设计（二）', '角色动画设计（二）', '', '考试科目', '10046', '2');
-INSERT INTO "public"."enrolment_dict" VALUES ('50', '管理员', '-1', '2018-11-21 14:52:50', '管理员', '-1', '2018-12-25 08:29:34.196', '游戏引擎应用', '游戏引擎应用', '', '考试科目', '10048', '2');
-INSERT INTO "public"."enrolment_dict" VALUES ('51', '管理员', '-1', '2018-11-21 14:55:19', '管理员', '-1', '2018-12-25 08:26:36.604', '三维专业软件3DMAX', '三维专业软件3DMAX', '', '考试科目', '10041', '2');
-INSERT INTO "public"."enrolment_dict" VALUES ('52', '管理员', '-1', '2018-11-21 14:53:09', '管理员', '-1', '2018-12-25 08:29:05.788', '游戏材质与渲染', '游戏材质与渲染', '', '考试科目', '10047', '2');
-INSERT INTO "public"."enrolment_dict" VALUES ('53', '管理员', '-1', '2018-11-21 14:54:44', '管理员', '-1', '2018-12-25 08:27:55.099', '游戏画面设计（二）', '游戏画面设计（二）', '', '考试科目', '10044', '2');
-INSERT INTO "public"."enrolment_dict" VALUES ('54', '管理员', '-1', '2018-11-21 14:52:32', '管理员', '-1', '2018-12-25 08:30:08.502', '游戏艺术设计毕业设计', '游戏艺术设计毕业设计', '', '考试科目', '10049', '2');
-INSERT INTO "public"."enrolment_dict" VALUES ('120256', '管理员', '-1', '2018-12-25 08:30:50.137', '管理员', '-1', '2018-12-25 08:30:50.131', '游戏艺术设计毕业论文', '游戏艺术设计毕业论文', '', '考试科目', '10050', '1');
-INSERT INTO "public"."enrolment_dict" VALUES ('120257', '管理员', '-1', '2018-12-25 08:31:28.513', '管理员', '-1', '2018-12-25 08:31:28.507', '数码造型设计技术（一）', '数码造型设计技术（一）', '', '考试科目', '09511', '1');
-INSERT INTO "public"."enrolment_dict" VALUES ('120258', '管理员', '-1', '2018-12-25 08:32:06.389', '管理员', '-1', '2018-12-25 08:32:06.385', '三维动画设计基础', '三维动画设计基础', '', '考试科目', '03839', '1');
-INSERT INTO "public"."enrolment_dict" VALUES ('120259', '管理员', '-1', '2018-12-25 08:33:00.189', '管理员', '-1', '2018-12-25 08:33:00.184', '游戏画面设计（一）', '游戏画面设计（一）', '', '考试科目', '09513', '1');
-INSERT INTO "public"."enrolment_dict" VALUES ('120260', '管理员', '-1', '2018-12-25 08:33:29.137', '管理员', '-1', '2018-12-25 08:33:29.132', '角色动画设计（一）', '角色动画设计（一）', '', '考试科目', '09514', '1');
-
+INSERT INTO "public"."enrolment_dict" (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, description, label, type, value, version_)
+  VALUES ('48', '管理员', '-1', '2018-11-21 14:55:01', '管理员', '-1', '2018-12-25 08:27:15.616', '数码造型设计基础（二）', '数码造型设计基础（二）', '考试科目', '10042', '1');
+INSERT INTO "public"."enrolment_dict" (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, description, label, type, value, version_)
+  VALUES ('49', '管理员', '-1', '2018-11-21 14:53:49', '管理员', '-1', '2018-12-25 08:28:32.837', '角色动画设计（二）', '角色动画设计（二）', '考试科目', '10046', '2');
+INSERT INTO "public"."enrolment_dict" (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, description, label, type, value, version_)
+  VALUES ('50', '管理员', '-1', '2018-11-21 14:52:50', '管理员', '-1', '2018-12-25 08:29:34.196', '游戏引擎应用', '游戏引擎应用', '考试科目', '10048', '2');
+INSERT INTO "public"."enrolment_dict" (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, description, label, type, value, version_)
+  VALUES ('51', '管理员', '-1', '2018-11-21 14:55:19', '管理员', '-1', '2018-12-25 08:26:36.604', '三维专业软件3DMAX', '三维专业软件3DMAX', '考试科目', '10041', '2');
+INSERT INTO "public"."enrolment_dict" (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, description, label, type, value, version_)
+  VALUES ('52', '管理员', '-1', '2018-11-21 14:53:09', '管理员', '-1', '2018-12-25 08:29:05.788', '游戏材质与渲染', '游戏材质与渲染', '考试科目', '10047', '2');
+INSERT INTO "public"."enrolment_dict" (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, description, label, type, value, version_)
+  VALUES ('53', '管理员', '-1', '2018-11-21 14:54:44', '管理员', '-1', '2018-12-25 08:27:55.099', '游戏画面设计（二）', '游戏画面设计（二）', '考试科目', '10044', '2');
 
 INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (55, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '', '视唱练耳', '面试题类型', '13', 1);
 
