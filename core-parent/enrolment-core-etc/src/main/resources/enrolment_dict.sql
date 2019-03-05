@@ -86,3 +86,11 @@ INSERT INTO public.enrolment_dict ("id", "createby", "createbyid", "creationdate
 INSERT INTO public.enrolment_dict ("id", "createby", "createbyid", "creationdate", "updateby", "updatebyid", "updatedate", "description", "label", "type", "value", "version_", "subtype") VALUES ('58', '管理员', '-1', '2018-11-23 14:38:57.751', '管理员', '-1', '2018-11-23 14:38:57.744', '', '客观题模板', '模板名称', '1', '1', '');
 
 INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (59, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '', '历史及地理等相关类别', '类别', '4', 1);
+
+
+INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (71, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '', '三维专业软件', '主观题类型', '11', 1);
+INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (72, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '', '数码造型设计', '主观题类型', '12', 1);
+INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (73, 'admin', '2018-09-13 09:14:46.699000', 'admin', '2018-09-13 09:14:46.699000', '', '角色动画设计', '主观题类型', '13', 1);
+INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (74, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '', '游戏引擎应用', '主观题类型', '14', 1);
+INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (75, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '', '游戏画面设计', '主观题类型', '15', 1);
+INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (76, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '', '游戏材质渲染', '主观题类型', '16', 1);
