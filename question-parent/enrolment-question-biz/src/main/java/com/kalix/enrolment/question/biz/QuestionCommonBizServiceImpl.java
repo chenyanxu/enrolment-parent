@@ -388,7 +388,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
     }
 
     @Override
-    public Map<String, Object> autoCreateTestPaperMap(Long paperId, Long examId) {
+    public Map<String, Object> autoCreateTestPaperMap(Long paperId, String quesIds) {
         String uuid_str="";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
         Map<String, Object> tempMap = new HashMap<>();
@@ -435,7 +435,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                             paper_map.put("questypename", ruleBean.getQuesTypeName());
                             paper_map.put("typeCount", ruleBean.getTypeCount());
                             paper_map.put("uuid", uuid);
-                            paper_map.put("examId", examId);
+                            paper_map.put("quesIds", quesIds);
                             type= ruleBean.getQuesTypeName();
                             String beanName = ruleBean.getQuesTypeDesc();
                             Map<String, String> map = new HashMap<String, String>();
@@ -454,7 +454,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                         paper_map.put("year", year);
                         paper_map.put("uuid", uuid);
                         paper_map.put("paperid", paperId);
-                        paper_map.put("examId", examId);
+                        paper_map.put("quesIds", quesIds);
                         paper_map.put("subtype", kskmValue);
                         EnrolmentDictBean enrolmentDictBean_mst = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_MSTLX, kskmValue);
                         String kskm_xmt = enrolmentDictBean_mst.getLabel();

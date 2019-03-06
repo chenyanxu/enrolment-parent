@@ -50,13 +50,14 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
     public Map<String, Object> createSingleTestPaper(Map paperMap) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
 
-        Map<String, Object> singleTestPaper = new HashMap<String, Object>();
+        Map<String, Object> singleTestPaper = new HashMap<>();
         String sql = "";
         // 创建试题标题
         String title = "";
         // 以下需要通过参数动态获取
+
         Long paperId=Long.parseLong(paperMap.get("paperid").toString());
-        Long examId = Long.parseLong(paperMap.get("examId").toString());
+        // Long examId = Long.parseLong(paperMap.get("examId").toString());
         int titleNum = Integer.parseInt(paperMap.get("titlenum").toString());
 
         int perScore = Integer.parseInt(paperMap.get("score").toString());
@@ -74,42 +75,72 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
         singleTestPaper.put("titleNum", titleNum);
         singleTestPaper.put("quesdesc", quesdesc);
         singleTestPaper.put("perScore", perScore);
+        singleTestPaper.put("quesType", questype);
+        singleTestPaper.put("subType", subtype);
+
         int quesNum = total / perScore;
 
         Date year = (Date) paperMap.get("year");
         String year_str = simpleDateFormat.format(year);
 //        sql = "select * from enrolment_question_subject where checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "')  and subtype='" + subtype + "'  order by random() limit " + quesNum;
         // sql = "select * from enrolment_question_subject where checkFlag='1' and subtype='" + subtype + "'  order by random() limit " + quesNum;
-        sql = "select * from enrolment_question_subject where subtype='" + subtype + "'  order by random() limit " + quesNum;
+        Object quesIdsObj = paperMap.get("quesIds");
+        if (quesIdsObj != null) {
+            String quesIds = quesIdsObj.toString();
+            sql = "select * from enrolment_question_subject where subtype='" + subtype + "' and id in("+quesIds+")";
+        } else {
+            sql = "select * from enrolment_question_subject where id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "')  and subtype='" + subtype + "'  order by random() limit " + quesNum;
+            // sql = "select * from enrolment_question_subject where subtype='" + subtype + "'  order by random() limit " + quesNum;
+        }
+
         // 创建试题内容
-        List<Map<String, Object>> question = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> question = new ArrayList<>();
         // 以下需要通过算法动态获取（抽取试题）
         List<SubjectBean> list = this.dao.findByNativeSql(sql, SubjectBean.class);
         if (list.size() == quesNum) {
+            String quesIds = "";
             for (int i = 0; i < list.size(); i++) {
-                Map<String, Object> map = new HashMap<String, Object>();
+                Map<String, Object> map = new HashMap<>();
                 SubjectBean subjectBean = list.get(i);
-                PaperQuesBean paperQuesBean = new PaperQuesBean();
+                quesIds = String.valueOf(subjectBean.getId());
                 map.put("answerConstraint", subjectBean.getAnswerConstraint());
                 map.put("type", "论述题");
                 map.put("stem", subjectBean.getStem());
-                paperQuesBean.setQuesid(subjectBean.getId());
-                paperQuesBean.setYear(year);
-                paperQuesBean.setQuesType(questype);
-                paperQuesBean.setSubType(subtype);
-                paperQuesBean.setUuid(uuid);
-                paperQuesBean.setPaperId(paperId);
-                paperQuesBean.setExamId(examId);
-                paperQuesBean.setCreateById(shiroService.getCurrentUserId());
-                paperQuesBean.setUpdateById(shiroService.getCurrentUserId());
+                PaperQuesBean paperQuesBean = this.getPaperByPaperIdAndQuesId(paperId, subjectBean.getId());
+                if (paperQuesBean == null) {
+                    paperQuesBean = new PaperQuesBean();
+                    paperQuesBean.setQuesid(subjectBean.getId());
+                    paperQuesBean.setYear(year);
+                    paperQuesBean.setQuesType(questype);
+                    paperQuesBean.setSubType(subtype);
+                    paperQuesBean.setUuid(uuid);
+                    paperQuesBean.setPaperId(paperId);
+                    // paperQuesBean.setExamId(examId);
+                    paperQuesBean.setCreateById(shiroService.getCurrentUserId());
+                    paperQuesBean.setUpdateById(shiroService.getCurrentUserId());
+                    paperQuesBeanService.saveEntity(paperQuesBean);
+                } else {
+                    paperQuesBean.setCreateById(shiroService.getCurrentUserId());
+                    paperQuesBean.setUpdateById(shiroService.getCurrentUserId());
+                    paperQuesBeanService.updateEntity(paperQuesBean);
+                }
                 map.put("paperBean", paperQuesBean);
-                paperQuesBeanService.saveEntity(paperQuesBean);
+                map.put("paperBeanId", paperQuesBean.getId());
                 question.add(map);
             }
+            singleTestPaper.put("quesIds", quesIds);
         }
 
         singleTestPaper.put("question", question);
         return singleTestPaper;
+    }
+
+    private PaperQuesBean getPaperByPaperIdAndQuesId(Long paperId, Long quesId) {
+        List<PaperQuesBean> paperQuesBeans = dao.findByNativeSql("select * from enrolment_question_paperques where paperid=" + paperId +" and quesid=" + quesId, PaperQuesBean.class);
+        if (paperQuesBeans != null && !paperQuesBeans.isEmpty()) {
+            return paperQuesBeans.get(0);
+        }
+        return null;
     }
 
     @Override

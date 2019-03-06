@@ -67,7 +67,7 @@ public interface IQuestionCommonBizService extends IService {
      * @param paperId
      * @return
      */
-    java.util.Map<String, Object> autoCreateTestPaperMap(Long paperId, Long examId);
+    java.util.Map<String, Object> autoCreateTestPaperMap(Long paperId, String quesIds);
 
     JsonStatus deletePaper(String ids);
     JsonStatus reductionPaper(String ids);
