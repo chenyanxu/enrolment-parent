@@ -68,9 +68,11 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
         String quesdesc=paperMap.get("quesdesc") == null ? "" : paperMap.get("quesdesc").toString();
         String subtype = paperMap.get("subtype") == null ? "" : paperMap.get("subtype").toString();
         EnrolmentDictBean enrolmentDictBean = enrolmentDictBeanService.getDictBeanByTypeAndValue(DICT_SUBTYPE, subtype);
-        String titleName = enrolmentDictBean.getLabel();
+//        String titleName = enrolmentDictBean.getLabel();
+        String titleName = enrolmentDictBean.getDescription();
         //  String titleName = "评述题";
-        title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
+        // title = Constants.numGetChinese(titleNum) + "、" + titleName + "(每题" + perScore + "分，共" + total + "分)";
+        title = Constants.numGetChinese(titleNum) + "、" + titleName + "(共" + total + "分)";
         singleTestPaper.put("title", title);
         singleTestPaper.put("titleNum", titleNum);
         singleTestPaper.put("quesdesc", quesdesc);
@@ -87,6 +89,14 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
         Object quesIdsObj = paperMap.get("quesIds");
         if (quesIdsObj != null) {
             String quesIds = quesIdsObj.toString();
+            if (quesIds != null && quesIds.trim().length() > 0) {
+                if (quesIds.indexOf(",") == -1) {
+                    quesNum = 1;
+                } else {
+                    String[] quesArr = quesIds.split(",");
+                    quesNum = quesArr.length;
+                }
+            }
             sql = "select * from enrolment_question_subject where subtype='" + subtype + "' and id in("+quesIds+")";
         } else {
             sql = "select * from enrolment_question_subject where id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "')  and subtype='" + subtype + "'  order by random() limit " + quesNum;
