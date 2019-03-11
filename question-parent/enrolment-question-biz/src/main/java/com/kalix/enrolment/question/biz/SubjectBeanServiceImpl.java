@@ -113,8 +113,10 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
                 Map<String, Object> map = new HashMap<>();
                 SubjectBean subjectBean = list.get(i);
                 quesIds = String.valueOf(subjectBean.getId());
+                String scoreStandard = subjectBean.getScoreStandard();
                 map.put("answerConstraint", subjectBean.getAnswerConstraint());
                 map.put("type", "论述题");
+                map.put("scoreStandard", scoreStandard);
                 map.put("stem", subjectBean.getStem());
                 PaperQuesBean paperQuesBean = this.getPaperByPaperIdAndQuesId(paperId, subjectBean.getId());
                 if (paperQuesBean == null) {
