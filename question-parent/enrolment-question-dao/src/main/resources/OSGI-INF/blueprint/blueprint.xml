@@ -78,4 +78,10 @@
         <tx:transaction method="*" value="Required"/>
     </bean>
     <service id="questionRepeatedBeanDao" ref="questionRepeatedBeanDaoImpl" interface="com.kalix.enrolment.question.api.dao.IQuestionRepeatedBeanDao"/>
+
+    <!--评分标准-->
+    <bean id="scoreStanderBeanDaoImpl" class="com.kalix.enrolment.question.dao.ScoreStanderBeanDaoImpl">
+        <tx:transaction method="*" value="Required"/>
+    </bean>
+    <service id="scoreStanderBeanDao" ref="scoreStanderBeanDaoImpl" interface="com.kalix.enrolment.question.api.dao.IScoreStanderBeanDao"/>
 </blueprint>

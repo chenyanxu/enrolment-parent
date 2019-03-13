@@ -22,6 +22,14 @@
     <reference id="passwordBeanDao" interface="com.kalix.enrolment.question.api.dao.IPasswordBeanDao"/>
     <reference id="questionRepeatedBeanDao" interface="com.kalix.enrolment.question.api.dao.IQuestionRepeatedBeanDao"/>
     <reference id="dataAuthBeanService" interface="com.kalix.admin.duty.api.biz.IDataAuthBeanService"/>
+    <reference id="scoreStanderBeanDao" interface="com.kalix.enrolment.question.api.dao.IScoreStanderBeanDao"/>
+    <!--评分标准-->
+    <bean id="scoreStanderBeanServiceImpl" class="com.kalix.enrolment.question.biz.ScoreStanderBeanServiceImpl">
+        <property name="dao" ref="scoreStanderBeanDao"/>
+    </bean>
+    <service ref="scoreStanderBeanServiceImpl"
+             interface="com.kalix.enrolment.question.api.biz.IScoreStanderBeanService">
+    </service>
 
     <!-- 填空题服务 -->
     <bean id="completionBeanServiceImpl" class="com.kalix.enrolment.question.biz.CompletionBeanServiceImpl">

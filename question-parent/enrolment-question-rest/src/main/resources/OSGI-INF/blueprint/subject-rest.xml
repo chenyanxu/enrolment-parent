@@ -6,6 +6,7 @@
     <reference id="subjectService" interface="com.kalix.enrolment.question.api.biz.IQuestionService" filter="(beanName=Subject)"/>
     <reference id="subjectRepeatedService" interface="com.kalix.enrolment.question.api.biz.IRepeatedService" filter="(beanName=Subject)"/>
     <reference id="subjectAuditService" interface="com.kalix.enrolment.question.api.biz.IQuestionAuditService" filter="(beanName=Subject)"/>
+    <reference id="scoreStanderBeanService" interface="com.kalix.enrolment.question.api.biz.IScoreStanderBeanService" />
 
     <camelContext id="subjectCamel" xmlns="http://camel.apache.org/schema/blueprint">
 
@@ -46,6 +47,39 @@
                 <!--<description>Delete a subject</description>-->
                 <!--<to uri="bean:subjectService?method=deleteEntity(${header.id})"/>-->
             <!--</delete>-->
+        </rest>
+
+        <rest path="/subjects/{quesId}/scorestanders" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <description>ScoreStander rest service</description>
+            <!-- this is a rest GET to find all choices -->
+            <get id="route-getAllQuesScoreStanders">
+                <description>create QuesScoreStander</description>
+                <to uri="bean:scoreStanderBeanService?method=getEntitiesByFK(${header.quesId},${header.page},${header.limit},${header.jsonStr},${header.sort})"/>
+            </get>
+            <!-- this is a rest POST to create an choice -->
+            <post id="route-addQuesScoreStander" type="com.kalix.enrolment.question.entities.ScoreStanderBean"
+                  outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Create a paper</description>
+                <to uri="bean:scoreStanderBeanService?method=saveEntity"/>
+            </post>
+        </rest>
+
+        <rest path="/subjects/{quesId}/scorestanders/{id}" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
+            <!-- this is a rest GET to view an choice by the given id -->
+            <get id="route-getQuesScoreStander">
+                <description>Find ques scorestander by id</description>
+                <to uri="bean:scoreStanderBeanService?method=getEntity(${header.id})"/>
+            </get>
+            <put id="route-update-Ques-ScoreStander" type="com.kalix.enrolment.question.entities.ScoreStanderBean"
+                 outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Updates a Scorestander</description>
+                <to uri="bean:scoreStanderBeanService?method=updateEntity"/>
+            </put>
+            <!--this is a rest DELETE to delete an choice -->
+            <delete id="route-deleteScoreStander" outType="com.kalix.framework.core.api.persistence.JsonStatus">
+                <description>Delete a ScoreStander</description>
+                <to uri="bean:scoreStanderBeanService?method=deleteEntity(${header.id})"/>
+            </delete>
         </rest>
 
         <rest path="/subjects/delete/logicDelete" consumes="application/json;charset=utf-8" produces="application/json;charset=utf-8">
