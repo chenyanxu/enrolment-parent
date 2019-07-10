@@ -77,6 +77,14 @@ INSERT INTO "public"."enrolment_dict" (id, createby, createbyid, creationdate, u
   VALUES ('52', '管理员', '-1', '2018-11-21 14:53:09', '管理员', '-1', '2018-12-25 08:29:05.788', '游戏材质与渲染', '游戏材质与渲染', '考试科目', '10047', '2');
 INSERT INTO "public"."enrolment_dict" (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, description, label, type, value, version_)
   VALUES ('53', '管理员', '-1', '2018-11-21 14:54:44', '管理员', '-1', '2018-12-25 08:27:55.099', '游戏画面设计（二）', '游戏画面设计（二）', '考试科目', '10044', '2');
+INSERT INTO "public"."enrolment_dict" (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, description, label, type, value, version_)
+  VALUES ('88', '管理员', '-1', '2018-11-21 14:55:01', '管理员', '-1', '2018-12-25 08:27:15.616', '数码造型设计基础（一）', '数码造型设计基础（一）', '考试科目', '09511', '1');
+INSERT INTO "public"."enrolment_dict" (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, description, label, type, value, version_)
+  VALUES ('89', '管理员', '-1', '2018-11-21 14:55:01', '管理员', '-1', '2018-12-25 08:27:15.616', '三维动画设计基础', '三维动画设计基础', '考试科目', '03839', '1');
+INSERT INTO "public"."enrolment_dict" (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, description, label, type, value, version_)
+  VALUES ('90', '管理员', '-1', '2018-11-21 14:55:01', '管理员', '-1', '2018-12-25 08:27:15.616', '游戏画面设计（一）', '游戏画面设计（一）', '考试科目', '09513', '1');
+INSERT INTO "public"."enrolment_dict" (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, description, label, type, value, version_)
+  VALUES ('91', '管理员', '-1', '2018-11-21 14:55:01', '管理员', '-1', '2018-12-25 08:27:15.616', '角色动画设计（一）', '角色动画设计（一）', '考试科目', '09514', '1');
 
 INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (55, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '', '视唱练耳', '面试题类型', '13', 1);
 
@@ -87,12 +95,16 @@ INSERT INTO public.enrolment_dict ("id", "createby", "createbyid", "creationdate
 INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (59, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '', '历史及地理等相关类别', '类别', '4', 1);
 
 
-INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (71, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '实践题', '三维专业软件', '主观题类型', '11', 1);
-INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (72, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '实践题', '数码造型设计', '主观题类型', '12', 1);
-INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (73, 'admin', '2018-09-13 09:14:46.699000', 'admin', '2018-09-13 09:14:46.699000', '实践题', '角色动画设计', '主观题类型', '13', 1);
+INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (71, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '实践题', '三维专业软件3DMAX', '主观题类型', '11', 1);
+INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (72, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '实践题', '数码造型设计基础（二）', '主观题类型', '12', 1);
+INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (73, 'admin', '2018-09-13 09:14:46.699000', 'admin', '2018-09-13 09:14:46.699000', '实践题', '角色动画设计（二）', '主观题类型', '13', 1);
 INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (74, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '实践题', '游戏引擎应用', '主观题类型', '14', 1);
-INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (75, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '实践题', '游戏画面设计', '主观题类型', '15', 1);
-INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (76, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '实践题', '游戏材质渲染', '主观题类型', '16', 1);
+INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (75, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '实践题', '游戏画面设计（二）', '主观题类型', '15', 1);
+INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (76, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '实践题', '游戏材质与渲染', '主观题类型', '16', 1);
+INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (92, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '实践题', '数码造型设计基础（一）', '主观题类型', '17', 1);
+INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (93, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '实践题', '三维动画设计基础', '主观题类型', '18', 1);
+INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (94, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '实践题', '游戏画面设计（一）', '主观题类型', '19', 1);
+INSERT INTO public.enrolment_dict (id, createby, creationdate, updateby, updatedate, description, label, type, value, version_) VALUES (95, 'admin', '2018-09-13 09:15:07.697000', 'admin', '2018-09-13 09:15:07.697000', '实践题', '角色动画设计（一）', '主观题类型', '20', 1);
 
 INSERT INTO "public"."enrolment_dict" ("id", "createby", "createbyid", "creationdate", "updateby", "updatebyid", "updatedate", "description", "label", "type", "value", "version_", "subtype") VALUES ('69', '管理员', '-1', '2019-01-04 09:56:35.356', '管理员', '-1', '2019-01-04 09:56:35.349', '', '正常', '成绩备注', '0', '1', '');
 INSERT INTO "public"."enrolment_dict" ("id", "createby", "createbyid", "creationdate", "updateby", "updatebyid", "updatedate", "description", "label", "type", "value", "version_", "subtype") VALUES ('70', '管理员', '-1', '2019-01-04 09:56:35.356', '管理员', '-1', '2019-01-04 09:56:35.349', '', '缺考', '成绩备注', '1', '1', '');
