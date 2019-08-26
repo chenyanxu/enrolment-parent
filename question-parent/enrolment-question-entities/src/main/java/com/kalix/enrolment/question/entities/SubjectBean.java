@@ -16,6 +16,7 @@ public class SubjectBean extends BaseQuestionEntity {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy", timezone = "GMT+8")
     private Date year;                 // 年份
+    private String term;               // 1:上半学期，2：下半学期
     @Column(length = 2000)
     private String answerConstraint;   // 答题要求
     @Column(length = 2000)
@@ -27,6 +28,14 @@ public class SubjectBean extends BaseQuestionEntity {
 
     public void setYear(Date year) {
         this.year = year;
+    }
+
+    public String getTerm() {
+        return term;
+    }
+
+    public void setTerm(String term) {
+        this.term = term;
     }
 
     public String getAnswerConstraint() {

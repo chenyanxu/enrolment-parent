@@ -84,6 +84,7 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
 
         Date year = (Date) paperMap.get("year");
         String year_str = simpleDateFormat.format(year);
+        String term = paperMap.get("term") == null ? "" : paperMap.get("term").toString();
 //        sql = "select * from enrolment_question_subject where checkFlag='1' and id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "')  and subtype='" + subtype + "'  order by random() limit " + quesNum;
         // sql = "select * from enrolment_question_subject where checkFlag='1' and subtype='" + subtype + "'  order by random() limit " + quesNum;
         Object quesIdsObj = paperMap.get("quesIds");
@@ -99,7 +100,8 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
             }
             sql = "select * from enrolment_question_subject where subtype='" + subtype + "' and id in("+quesIds+")";
         } else {
-            sql = "select * from enrolment_question_subject where id not in (select quesid from enrolment_question_paperques where  to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "')  and subtype='" + subtype + "'  order by random() limit " + quesNum;
+            sql = "select * from enrolment_question_subject where id not in (select quesid from enrolment_question_paperques where to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "')  and subtype='"
+                    + subtype + "' and to_char(year, 'yyyy')='" + year_str + "' and term='"+term+"' order by random() limit " + quesNum;
             // sql = "select * from enrolment_question_subject where subtype='" + subtype + "'  order by random() limit " + quesNum;
         }
 

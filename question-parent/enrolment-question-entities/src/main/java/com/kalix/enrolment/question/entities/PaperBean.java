@@ -22,6 +22,8 @@ public class PaperBean extends BaseLogicDeleteEntity {
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy", timezone = "GMT+8")
     private Date year;
+    // 学期
+    private String term;
     /**
      * 标题
      */
@@ -71,6 +73,14 @@ public class PaperBean extends BaseLogicDeleteEntity {
 
     public void setYear(Date year) {
         this.year = year;
+    }
+
+    public String getTerm() {
+        return term;
+    }
+
+    public void setTerm(String term) {
+        this.term = term;
     }
 
     public String getTitle() {

@@ -402,6 +402,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
             PaperBean paperBean = paperBeanService.getEntity(paperId);
             String tempName = paperBean.getTempName();
             Date year = paperBean.getYear();
+            String term = paperBean.getTerm(); // 学期
             String year_str = simpleDateFormat.format(year);
             int paperTotal = paperBean.getTotalMark();
             String kskmValue = paperBean.getKskm();
@@ -425,6 +426,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                             RuleDto ruleBean = (RuleDto) list_rule.get(i);
                             Map<String, Object> paper_map = new HashMap();
                             paper_map.put("year", year);
+                            paper_map.put("term", term);
                             paper_map.put("score", ruleBean.getQuesScore());
                             paper_map.put("totalscore", ruleBean.getQuesTotalscore());
                             paper_map.put("titlenum", ruleBean.getTitleNum());
@@ -452,6 +454,7 @@ public class QuestionCommonBizServiceImpl implements IQuestionCommonBizService, 
                     }else {
                         Map<String, Object> paper_map = new HashMap();
                         paper_map.put("year", year);
+                        paper_map.put("term", term);
                         paper_map.put("uuid", uuid);
                         paper_map.put("paperid", paperId);
                         paper_map.put("quesIds", quesIds);
