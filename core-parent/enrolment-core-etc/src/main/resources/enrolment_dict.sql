@@ -116,3 +116,8 @@ INSERT INTO "public"."enrolment_dict" ("id", "createby", "createbyid", "creation
 INSERT INTO "public"."enrolment_dict" ("id", "createby", "createbyid", "creationdate", "updateby", "updatebyid", "updatedate", "description", "label", "type", "value", "version_", "subtype") VALUES ('85', '管理员', '-1', '2019-01-04 09:56:35.356', '管理员', '-1', '2019-01-04 09:56:35.349', '', '第五考场C2006', '考场编号', '5', '1', '');
 INSERT INTO "public"."enrolment_dict" ("id", "createby", "createbyid", "creationdate", "updateby", "updatebyid", "updatedate", "description", "label", "type", "value", "version_", "subtype") VALUES ('86', '管理员', '-1', '2019-01-04 09:56:35.356', '管理员', '-1', '2019-01-04 09:56:35.349', '', '第六考场C2007', '考场编号', '6', '1', '');
 INSERT INTO "public"."enrolment_dict" ("id", "createby", "createbyid", "creationdate", "updateby", "updatebyid", "updatedate", "description", "label", "type", "value", "version_", "subtype") VALUES ('87', '管理员', '-1', '2019-01-04 09:56:35.356', '管理员', '-1', '2019-01-04 09:56:35.349', '', '第七考场C2010', '考场编号', '7', '1', '');
+
+INSERT INTO "public"."enrolment_dict" (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, description, label, type, value, version_)
+  VALUES ('92', '管理员', '-1', '2018-11-21 14:55:01', '管理员', '-1', '2018-12-25 08:27:15.616', '上半学期', '上半学期', '学期', '1', '1');
+INSERT INTO "public"."enrolment_dict" (id, createby, createbyid, creationdate, updateby, updatebyid, updatedate, description, label, type, value, version_)
+  VALUES ('93', '管理员', '-1', '2018-11-21 14:55:01', '管理员', '-1', '2018-12-25 08:27:15.616', '下半学期', '下半学期', '学期', '2', '1');
