@@ -98,10 +98,10 @@ public class SubjectBeanServiceImpl extends QuestionGenericBizServiceImpl<ISubje
                     quesNum = quesArr.length;
                 }
             }
-            sql = "select * from enrolment_question_subject where subtype='" + subtype + "' and id in("+quesIds+")";
+            sql = "select * from enrolment_question_subject where subtype='" + subtype + "' and delflag='0' and id in("+quesIds+")";
         } else {
             sql = "select * from enrolment_question_subject where id not in (select quesid from enrolment_question_paperques where to_char(year, 'yyyy')='" + year_str + "' and questype='" + questype + "' and subtype='" + subtype + "')  and subtype='"
-                    + subtype + "' and to_char(year, 'yyyy')='" + year_str + "' and term='"+term+"' order by random() limit " + quesNum;
+                    + subtype + "' and to_char(year, 'yyyy')='" + year_str + "' and term='"+term+"' and delflag='0' order by random() limit " + quesNum;
             // sql = "select * from enrolment_question_subject where subtype='" + subtype + "'  order by random() limit " + quesNum;
         }
 
